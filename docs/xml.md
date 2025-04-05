@@ -43,7 +43,7 @@ std = json_decode(json_encode(temp));
 
 # Métodos
 
-### function __construct()
+### 🟢 function __construct()
 Método construtor. Instancia a classe
 
 ```Javascript
@@ -70,7 +70,7 @@ nfe.taginfNFe(std);
 
 ```
 
-### function tagide(std)
+### 🟢 function tagide(std)
 Node de identificação da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -110,7 +110,7 @@ nfe.tagide(std);
 ```
 
 
-### function tagrefNFe(std)
+### 🔴 function tagrefNFe(std)
 Node referente a NFe referenciada
 
 | Parâmetro | Tipo | Descrição |
@@ -124,7 +124,7 @@ std.refNFe = '35150271780456000160550010000253101000253101';
 nfe.tagrefNFe(std);
 ```
 
-### function tagrefNF(std)
+### 🔴 function tagrefNF(std)
 Node referente a Nota Fiscal referenciada modelo 1 ou 2
 
 | Parâmetro | Tipo | Descrição |
@@ -143,7 +143,7 @@ std.nNF = 587878;
 nfe.tagrefNF(std);
 ```
 
-### function tagrefNFP(std)
+### 🔴 function tagrefNFP(std)
 Node referente a Nota Fiscal referenciada de produtor rural
 
 | Parâmetro | Tipo | Descrição |
@@ -163,7 +163,7 @@ std.nNF = 5578;
 
 nfe.tagrefNFP(std);
 ```
-### function tagrefCTe(std)
+### 🔴 function tagrefCTe(std)
 Node referente aos CTe referenciados
 
 | Parâmetro | Tipo | Descrição |
@@ -176,7 +176,7 @@ std.refCTe = '35150268252816000146570010000016161002008472';
 nfe.tagrefCTe(std);
 ```
 
-### function tagrefECF(std)
+### 🔴 function tagrefECF(std)
 Node referente aos ECF referenciados
 
 | Parâmetro | Tipo | Descrição |
@@ -191,7 +191,7 @@ std.nCOO = 114;
 nfe.tagrefECF(std);
 ```
 
-### function tagemit(std)
+### 🟢 function tagemit(std)
 Node com os dados do emitente
 
 | Parâmetro | Tipo | Descrição |
@@ -213,7 +213,7 @@ std.CPF;
 nfe.tagemit(std);
 ```
 
-### function tagenderEmit(std)
+### 🟢 function tagenderEmit(std)
 Node com o endereço do emitente
 
 | Parâmetro | Tipo | Descrição |
@@ -237,7 +237,7 @@ std.fone;
 nfe.tagenderEmit(std);
 ```
 
-### function tagdest(std)
+### 🟢 function tagdest(std)
 Node com os dados do destinatário
 
 | Parâmetro | Tipo | Descrição |
@@ -259,7 +259,7 @@ std.idEstrangeiro;
 nfe.tagdest(std);
 ```
 
-### function tagenderDest(std)
+### 🟢 function tagenderDest(std)
 Node de endereço do destinatário
 
 | Parâmetro | Tipo | Descrição |
@@ -283,7 +283,7 @@ std.fone;
 nfe.tagenderDest(std);
 ```
 
-### function tagretirada(std)
+### 🔴 function tagretirada(std)
 > NOTA: Ajustado para NT 2018.005
 Node indicativo de local de retirada diferente do endereço do emitente
 
@@ -314,7 +314,7 @@ nfe.tagretirada(std);
 ```
 
 
-### function tagentrega(std)
+### 🔴 function tagentrega(std)
 > NOTA: Ajustado para NT 2018.005
 Node indicativo de local de entrega diferente do endereço do destinatário
 
@@ -343,7 +343,7 @@ std.email = 'contato@beltrano.com.br';
 nfe.tagentrega(std);
 ```
 
-### function tagautXML(std)
+### 🔴 function tagautXML(std)
 Node de registro de pessoas autorizadas a acessar a NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -356,7 +356,7 @@ std.CPF = null;
 nfe.tagautXML(std);
 ```
 
-### function tagprod(std)
+### 🟢 function tagprod(std)
 Node de dados do produto/serviço
 
 | Parâmetro | Tipo | Descrição |
@@ -394,7 +394,7 @@ std.nFCI;
 nfe.tagprod(std);
 ```
 
-### function tagCreditoPresumidoProd(std): void
+### 🔴 function tagCreditoPresumidoProd(std): void
 Node opcional com dados de Crédito Presumido, são permitidos até 4 registros por item
 
 | Parâmetro | Tipo | Descrição                                                              |
@@ -414,7 +414,7 @@ std.vCredPresumido = '4';
 $make.tagCreditoPresumidoProd(std);
 ```
 
-### function taginfAdProd(std)
+### 🔴 function taginfAdProd(std)
 Node de informações adicionais do produto
 
 | Parâmetro | Tipo | Descrição |
@@ -429,7 +429,7 @@ std.infAdProd = 'informacao adicional do item';
 nfe.taginfAdProd(std);
 ```
 
-### function tagNVE(std)
+### 🔴 function tagNVE(std)
 Node com a Nomenclatura de Valor Aduaneiro e Estatística do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -443,7 +443,7 @@ std.NVE = 'AA0001';
 nfe.tagNVE(std);
 ```
 
-### function tagCEST(std)
+### 🔴 function tagCEST(std)
 Node de detalhamento do Especificador da Substituição Tributária do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -459,7 +459,7 @@ std.CNPJFab = '12345678901234'; //incluido no layout 4.00
 nfe.tagCEST(std);
 ```
 
-### function tagRECOPI(std)
+### 🔴 function tagRECOPI(std)
 Node com o número do RECOPI
 
 | Parâmetro | Tipo | Descrição |
@@ -473,7 +473,7 @@ std.nRECOPI = '12345678901234567890';
 nfe.tagRECOPI(std);
 ```
 
-### function tagDI(std)
+### 🔴 function tagDI(std)
 Node com informações da Declaração de Importação do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -498,7 +498,7 @@ std.cExportador;
 nfe.tagDI(std);
 ```
 
-### function tagadi(std)
+### 🔴 function tagadi(std)
 Node de Adições relativas as DI do item
 
 | Parâmetro | Tipo | Descrição |
@@ -517,7 +517,7 @@ std.nDraw;
 nfe.tagadi(std);
 ```
 
-### function tagdetExport(std)
+### 🔴 function tagdetExport(std)
 Node com informações de exportação para o item
 
 | Parâmetro | Tipo | Descrição |
@@ -531,7 +531,7 @@ std.nDraw = '82828';
 nfe.tagdetExport(std);
 ```
 
-### function tagdetExportInd(std)
+### 🔴 function tagdetExportInd(std)
 Node com Grupo sobre exportação indireta, deve ser indicado logo após
 nfe.tagdetExport(std) pois pertence a essa tag
 
@@ -547,7 +547,7 @@ std.qExport = 1234.123;
 
 nfe.tagdetExportInd(std);
 ```
-### function tagRastro(std)
+### 🔴 function tagRastro(std)
 Node com os dados de rastreabilidade do item da NFe
 
 *Método Incluso para atender layout 4.00*
@@ -567,7 +567,7 @@ std.cAgreg = '1234';
 nfe.tagRastro(std);
 ```
 
-### function tagveicProd(std)
+### 🔴 function tagveicProd(std)
 Node com o detalhamento de Veículos novos do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -604,7 +604,7 @@ std.tpRest;
 nfe.tagveicProd(std);
 ```
 
-### function tagmed(std)
+### 🔴 function tagmed(std)
 > NOTA: Ajustado conforme NT 2018.005
 Node com o detalhamento de Medicamentos e de matérias-primas farmacêuticas
 
@@ -621,7 +621,7 @@ std.vPMC = 102.22;
 nfe.tagmed(std);
 ```
 
-### function tagarma(std)
+### 🔴 function tagarma(std)
 Node com informações e detalhamento de Armamento do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -639,7 +639,7 @@ std.descr;
 nfe.tagarma(std);
 ```
 
-### function tagcomb(std)
+### 🔴 function tagcomb(std)
 Node das informações específicas para combustíveis líquidos e lubrificantes do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -668,7 +668,7 @@ std.vCIDE;
 nfe.tagcomb(std);
 ```
 
-### function tagencerrante(std)
+### 🔴 function tagencerrante(std)
 Node das informações do grupo de “encerrante” disponibilizado por hardware específico acoplado à bomba de Combustível, definido no controle da venda do Posto Revendedor de Combustível.
 Referente ao item da NFe
 
@@ -689,7 +689,7 @@ std.pBio; //NT 2022.001 v1.10
 nfe.tagencerrante(std);
 ```
 
-### function tagorigComb(std)
+### 🔴 function tagorigComb(std)
 Parte do grupo encerrante, podem haver de 0 até 30 tags desse tipo  
 
 | Parâmetro | Tipo | Descrição |
@@ -706,7 +706,7 @@ nfe.tagOrigComb(std);
 ```
 
 
-### function tagimposto(std)
+### 🔴 function tagimposto(std)
 Node inicial dos Tributos incidentes no Produto ou Serviço do item da NFe 
 
 | Parametro | Tipo | Descrição |
@@ -720,7 +720,7 @@ std.vTotTrib = 1000.00;
 nfe.tagimposto(std);
 ```
 
-### function tagICMS(std)
+### 🔴 function tagICMS(std)
 > NOTA: Ajustado conforme NT 2018.005_1.10
 Node com informações do ICMS do item da NFe
 
@@ -782,7 +782,7 @@ std.indDeduzDeson; //NT 2023.004 v1.00
 nfe.tagICMS(std);
 ```
 
-### function tagICMSPart(std)
+### 🔴 function tagICMSPart(std)
 Node com informações da partilha do ICMS entre a UF de origem e UF de destino ou a UF definida na legislação.
 
 | Parâmetro | Tipo | Descrição |
@@ -810,7 +810,7 @@ std.UFST = 'RJ';
 nfe.tagICMSPart(std);
 ```
 
-### function tagICMSST(std)
+### 🔴 function tagICMSST(std)
 > NOTA: Ajustado conforme NT 2018.005 e NT 2018.005_1.10
 Node Repasse de ICMS ST retido anteriormente em operações interestaduais com repasses através do Substituto Tributário
 
@@ -839,7 +839,7 @@ std.vICMSEfet = null;
 nfe.tagICMSST(std);
 ```
 
-### function tagICMSSN(std)
+### 🟢 function tagProdICMSSN(std)
 Node referente Tributação ICMS pelo Simples Nacional do item da NFe
 > NOTA: Ajustado conforme NT 2018.005_1.10
 
@@ -882,7 +882,7 @@ std.vICMSSubstituto = null;
 nfe.tagICMSSN(std);
 ```
 
-### function tagICMSUFDest(std)
+### 🔴 function tagICMSUFDest(std)
 Node de informação do ICMS Interestadual do item na NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -904,7 +904,7 @@ std.vICMSUFRemet = 3.56;
 nfe.tagICMSUFDest(std);
 ```
 
-### function tagIPI(std)
+### 🔴 function tagIPI(std)
 Node referente ao IPI do item da NFe
 
 > NOTA: clEnq foi removido do layout 4.00 na NT_2016_V1.40
@@ -930,7 +930,7 @@ std.vUnid = null;
 nfe.tagIPI(std);
 ```
 
-### function tagII(std)
+### 🔴 function tagII(std)
 Node Imposto de Importação do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -947,7 +947,7 @@ std.vIOF = null;
 nfe.tagII(std);
 ```
 
-### function tagPIS(std)
+### 🟢 function tagProdPIS(std)
 Node PIS do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -966,7 +966,7 @@ std.vAliqProd = null;
 nfe.tagPIS(std);
 ```
 
-### function tagPISST(std)
+### 🔴 function tagPISST(std)
 Node PIS Substituição Tributária do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -986,7 +986,7 @@ std.indSomaPISST = 0; //0=Valor do PISST não compõe o valor total da NF-e
 nfe.tagPISST(std);
 ```
 
-### function tagCOFINS(std)
+### 🟢 function tagProdCOFINS(std)
 Node COFINS do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -1005,7 +1005,7 @@ std.vAliqProd = null;
 nfe.tagCOFINS(std);
 ```
 
-### function tagCOFINSST(std)
+### 🔴 function tagCOFINSST(std)
 Node COFINS Substituição Tributária do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -1025,7 +1025,7 @@ std.indSomaCOFINSST = 0; //0=Valor do COFINS ST não compõe o valor total da NF
 nfe.tagCOFINSST(std);
 ```
 
-### function tagISSQN(std)
+### 🔴 function tagISSQN(std)
 Node ISSQN do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -1054,7 +1054,7 @@ std.indIncentivo = 2;
 nfe.tagISSQN(std);
 ```
 
-### function tagimpostoDevol(std)
+### 🔴 function tagimpostoDevol(std)
 Node referente a informação do Imposto devolvido
 
 > NOTA: O motivo da devolução deverá ser informado pela empresa no campo de Informações Adicionais do Produto (tag:infAdProd).
@@ -1071,7 +1071,7 @@ std.vIPIDevol = 123.36;
 nfe.tagimpostoDevol(std);
 ```
 
-### function tagICMSTot(std)
+### 🟢 function tagICMSTot(std)
 Node dos totais referentes ao ICMS
 
 > NOTA: Esta tag não necessita que sejam passados valores, pois a classe irá calcular esses totais e irá usar essa totalização para complementar e gerar esse node, caso nenhum valor seja passado como parâmetro.
@@ -1115,7 +1115,7 @@ std.vICMSMonoRet;
 nfe.tagICMSTot(std);
 ```
 
-### function tagISSQNTot(std)
+### 🔴 function tagISSQNTot(std)
 Node de Totais referentes ao ISSQN
 
 > NOTA: caso os valores não existam indique "null". Se for indicado 0.00 esse número será incluso no XML o que poderá causar sua rejeição.
@@ -1141,7 +1141,7 @@ std.cRegTrib = 5;
 nfe.tagISSQNTot(std);
 ```
 
-### function tagretTrib(std)
+### 🔴 function tagretTrib(std)
 Node referente a retenções de tributos
 
 > Exemplos de atos normativos que definem obrigatoriedade da retenção de contribuições:
@@ -1168,7 +1168,7 @@ std.vRetPrev = 100.00;
 nfe.tagretTrib(std);
 ```
 
-### function tagtransp(std)
+### 🟢 function tagtransp(std)
 Node indicativo da forma de frete
 
 | Parâmetro | Tipo | Descrição |
@@ -1182,7 +1182,7 @@ std.modFrete = 1;
 nfe.tagtransp(std);
 ```
 
-### function tagtransporta(std)
+### 🔴 function tagtransporta(std)
 Node com os dados da transportadora
 
 | Parâmetro | Tipo | Descrição |
@@ -1201,7 +1201,7 @@ std.CPF = null;
 nfe.tagtransporta(std);
 ```
 
-### function tagretTransp(std)
+### 🔴 function tagretTransp(std)
 Node referente a retenção de ICMS do serviço de transporte
 
 | Parâmetro | Tipo | Descrição |
@@ -1219,7 +1219,7 @@ std.cMunFG = '3518800';
 nfe.tagretTransp(std);
 ```
 
-### function tagveicTransp(std)
+### 🔴 function tagveicTransp(std)
 Node para informação do veículo trator
 
 | Parâmetro | Tipo | Descrição |
@@ -1234,7 +1234,7 @@ std.RNTC = '999999';
 nfe.tagveicTransp(std);
 ```
 
-### function tagreboque(std)
+### 🔴 function tagreboque(std)
 Node para informar os reboques/Dolly
 
 | Parâmetro | Tipo | Descrição |
@@ -1249,7 +1249,7 @@ std.RNTC = '123456';
 nfe.tagreboque(std);
 ```
 
-### function tagvagao(std)
+### 🔴 function tagvagao(std)
 Node para informar o vagão usado
 
 | Parâmetro | Tipo | Descrição |
@@ -1263,7 +1263,7 @@ std.vagao = 'YY452-19';
 nfe.tagvagao(std);
 ```
 
-### function tagbalsa(std)
+### 🔴 function tagbalsa(std)
 Node para informar a balsa usada
 
 | Parâmetro | Tipo | Descrição |
@@ -1278,7 +1278,7 @@ nfe.tagbalsa(std);
 ```
 
 
-### function tagvol(std)
+### 🔴 function tagvol(std)
 Node com as informações dos volumes transportados
 
 | Parâmetro | Tipo | Descrição |
@@ -1297,7 +1297,7 @@ std.pesoB = 11.00;
 nfe.tagvol(std);
 ```
 
-### function taglacres(std)
+### 🔴 function taglacres(std)
 Node com a identificação dos lacres, referentes ao volume
 
 | Parâmetro | Tipo | Descrição |
@@ -1311,7 +1311,7 @@ std.nLacre = 'ZZEX425365';
 nfe.taglacres(std);
 ```
 
-### function tagfat(std)
+### 🔴 function tagfat(std)
 Node com os dados da fatura
 
 | Parâmetro | Tipo | Descrição |
@@ -1326,7 +1326,7 @@ std.vLiq = 1254.22;
 
 nfe.tagfat(std);
 ```
-### function tagdup(std)
+### 🔴 function tagdup(std)
 Node de informações das duplicatas
 
 | Parâmetro | Tipo | Descrição |
@@ -1341,7 +1341,7 @@ std.vDup = 1254.22;
 nfe.tagdup(std);
 ```
 
-### function tagpag(std)
+### 🔴 function tagpag(std)
 Node referente as formas de pagamento **OBRIGATÓRIO para NFCe a partir do layout 3.10**
 e também **obrigatório para NFe (modelo 55)** a partir do layout 4.00
 
@@ -1358,7 +1358,7 @@ nfe.tagpag(std);
 ```
 >NOTA: usualmente para NFe modelo 55, vTroco é null.
 
-### function tagdetPag(std)
+### 🟢 function tagdetPag(std)
 Node com o detalhamento da forma de pagamento **OBRIGATÓRIO para NFCe e NFe layout4.00**
 
 > NOTA: indPag re-incluso no layout 4.00 NT_2016_V1.51
@@ -1401,7 +1401,7 @@ nfe.tagdetPag(std);
 > *Porém podem haver casos que os outros nodes e valores tenham de ser usados.*
 
 
-### function tagIntermed(std)
+### 🔴 function tagIntermed(std)
 Node referente aos dados do Intermediador NT 2020.006
 
 | Parâmetro | Tipo | Descrição |
@@ -1417,7 +1417,7 @@ nfe.tagIntermed(std);
 ```
 
 
-### function taginfAdic(std)
+### 🔴 function taginfAdic(std)
 Node referente as informações adicionais da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -1432,7 +1432,7 @@ std.infCpl = 'informacoes complementares';
 nfe.taginfAdic(std);
 ```
 
-### function tagobsCont(std)
+### 🔴 function tagobsCont(std)
 Campo de uso livre do contribuinte, Informar o nome do campo no atributo xCampo e o conteúdo do campo no xTexto
 
 *NOTA: pode ser usado, por exemplo, para indicar outros destinatários de e-mail, além do próprio destinatário da NFe, como o contador, etc.*
@@ -1448,7 +1448,7 @@ std.xTexto = 'algum@mail.com';
 nfe.tagobsCont(std);
 ```
 
-### function tagobsFisco(std)
+### 🔴 function tagobsFisco(std)
 Campo de uso livre do Fisco. Informar o nome do campo no atributo xCampo e o conteúdo do campo no xTexto
 
 | Parametro | Tipo | Descrição |
@@ -1464,7 +1464,7 @@ nfe.tagobsFisco(std);
 ```
 
 
-### function tagprocRef(std)
+### 🔴 function tagprocRef(std)
 Node com a identificação do processo ou ato concessório
 
 | Parâmetro | Tipo | Descrição |
@@ -1478,7 +1478,7 @@ std.indProc = 0;
 nfe.tagprocRef(std);
 ```
 
-### function tagexporta(std)
+### 🔴 function tagexporta(std)
 Node com dados de exportação.
 
 | Parâmetro | Tipo | Descrição |
@@ -1492,7 +1492,7 @@ std.xLocDespacho = 'Informação do Recinto Alfandegado';
 
 nfe.tagexporta(std);
 ```
-### function tagcompra(std)
+### 🔴 function tagcompra(std)
 Node com a informação adicional de compra
 
 | Parâmetro | Tipo | Descrição |
@@ -1508,7 +1508,7 @@ std.xCont = 'contrato 1234';
 nfe.tagcompra(std);
 ```
 
-### function tagcana(std)
+### 🔴 function tagcana(std)
 Node com as informações de registro aquisições de cana
 
 | Parâmetro | Tipo | Descrição |
@@ -1529,7 +1529,7 @@ std.vLiqFor = 2000.00;
 nfe.tagcana(std);
 ```
 
-### function tagforDia(std)
+### 🔴 function tagforDia(std)
 Node informativo do fornecimento diário de cana
 
 | Parâmetro | Tipo | Descrição |
@@ -1544,7 +1544,7 @@ std.qtde = 1000;
 nfe.tagforDia(std);
 ```
 
-### function tagdeduc(std)
+### 🔴 function tagdeduc(std)
 Node Grupo Deduções – Taxas e Contribuições da aquisição de cana
 
 | Parâmetro | Tipo | Descrição |
@@ -1557,7 +1557,7 @@ std.vDed = 100.00;
 
 nfe.tagdeduc(std);
 ```
-### function taginfNFeSupl(std)
+### 🔴 function taginfNFeSupl(std)
 Node das informações suplementares da NFCe.
 
 *Não é necessário informar será preenchido automaticamente após a assinatura da NFCe*
@@ -1574,7 +1574,7 @@ std.urlChave;
 nfe.taginfNFeSupl(std);
 ```
 
-### function taginfRespTec(std)
+### 🟢 function taginfRespTec(std)
 Node da informação referente ao Responsável Técnico NT 2018.005
 **Esta tag é OPCIONAL mas se for passada todos os campos devem ser passados para a função.**
 
@@ -1594,14 +1594,14 @@ std.idCSRT = '01'; //Identificador do CSRT
 nfe.taginfRespTec(std);
 ```
 
-### function montaNFe():boolean
+### 🔴 function montaNFe():boolean
 Este método chama o metodo monta(), mantido apenas para compatibilidade.
 
 ```javascript
 $xml = nfe.montaNFe();
 ```
 
-### function monta()
+### 🔴 function monta()
 Este método executa a montagem do XML
 
 > NOTA: irá retornar uma Exception caso existam erros na montagem OU retorna o XML montado caso não hajam erros.
@@ -1610,14 +1610,14 @@ Este método executa a montagem do XML
 $xml = nfe.monta();
 ```
 
-### function getXMl():string
+### 🔴 function getXMl():string
 Este método retorna o XML em uma string, mesmo que existam erros.
 
 ```javascript
 $xml = nfe.getXML();
 ```
 
-### function getErrors(): array
+### 🔴 function getErrors(): array
 Este método retorna os erros identificados na passagem dos parâmetros para a classe.
 
 ```javascript
@@ -1625,14 +1625,14 @@ $erros = nfe.getErrors();
 ```
 
 
-### function getChave():string
+### 🔴 function getChave():string
 Este método retorna o numero da chave da NFe
 
 ```javascript
 $chave = nfe.getChave();
 ```
 
-### function getModelo():int
+### 🔴 function getModelo():int
 Este método retorna o modelo de NFe 55 ou 65
 
 ```javascript
