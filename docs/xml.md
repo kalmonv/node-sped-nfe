@@ -1,19 +1,30 @@
-# CONSTRUÇÃO DO XML
+# ATENÇÃO, A BIBLIOTECA NÃO ESTA COMPLETA!
+| Aonde | Motivo            |
+|-------|-------------------|
+| 🔴    | Não implementado  |
+| 🟢    | Implementado      |
 
-Para construir o XML da NFe (ou da NFCe) deve ser usada a classe Make::class
+# Iniciar biblioteca
+```javascript
+import { Make, Tools } from "node-sped-nfe"
+import fs from "fs";
 
-## *NOTA: Esta classe agora recebe os parâmetros dos métodos em forma de Object e não mais com variáveis individuais. É importante salientar que os campos do Object devem ser nomeados com a EXATA nomenclatura contida no manual ou conforme a nomenclatura das estruturas do TXT, observando as letras maiúsculas e minúsculas.*
-## *NOTA: Procure observar a ordem como os métodos devem ser usados. Carregar os dados em sequência errada pode causar problemas, especialmente em nodes dependentes.*
+let myTools = new Tools({ //Configuração de habiente e sistema
+    mod: 55,
+    tpAmb: 2,
+    cUF: 51,
 
-Esses Object podem ser criados diretamente como demonstrado nos exemplos abaixo, mas também podem ser criados a partir de matrizes.
+    /*
+        OPTATIVO!
+        LEIA Instalação do xmllint
+    */
+    xmllint: `../libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`
+}, { //Certificado digital
+    pfx: 'certificado.pfx',
+    senha: "senha-certificado",
+});
+```
 
-## *NOTA: Ajustado para NT 2018.001 v1.00* Usar novos campos dessa NT em produção somente a partir de 29/04/2019. 
-## *NOTA: Ajustado para NT 2018.001 v1.10* Usar novos campos dessa NT em produção somente a partir de 29/04/2019. 
-## *NOTA: Ajustado para NT 2020.006 User o novo campo na tgIde() e novo método sefazIntermed() em produção a partir de 05/04/2021.
-## *NOTA: Ajustado para NT 2020.007 User o novo método sefazAtorInteressado() em produção a partir de 05/04/2021.
-
-
-> Existe um provável ERRO nos XSDs PL_009_V4, fornecidos em 02/01/2019, onde estabelece um comprimento para o campo hashCSRT de 28 digitos base64Binary, **quando na verdade são gerados 30 digitos segundo esta formatação**.
 
 ```javascript
 //criando o Object a partir de um array
@@ -36,15 +47,10 @@ std = json_decode(json_encode(temp));
 Método construtor. Instancia a classe
 
 ```Javascript
-var nfe = new Make({
-    cert: {
-        pfx: 'certificado.pfx',
-        senha: 'SENHA_CERTIFICADO'
-    }
-});
+var nfe = new Make();
 ```
 
-### function taginfNFe(std)
+### 🟢 function taginfNFe(std)
 Node principal
 
 NOTA: **se o parametro std.Id não for passado a chave será criada e inclusa e poderá ser recuperada no parâmetro chNFe da classe,**
