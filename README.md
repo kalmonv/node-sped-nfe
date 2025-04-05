@@ -39,9 +39,12 @@ Para garantir o funcionamento correto da biblioteca, certifique-se de que os seg
 1. Baixe o pacote do libxml para Windows:
    - [Download libxml2 para Windows (64bit)](http://xmlsoft.org/sources/win32/64bit/)
 
-2. Extraia o conteúdo em um diretório acessível, por exemplo: `C:\libxml\`
+2. Extraia o conteúdo em um diretório acessível.
 
-3. Adicione o caminho do executável (`xmllint.exe`) à variável de ambiente `PATH`
+3. Declaração uma das opção:
+    ( ) Declaração de variavel no sistema.
+        Adicione o caminho do executável (`xmllint.exe`) à variável de ambiente `PATH` do windows.
+    ( ) Ao declarar Tools({..., xmllint: 'diretorio/bin/xmllint.exe'}, ...) no proprio codigo.
 
 #### 🐧 Linux (Debian/Ubuntu)
 
