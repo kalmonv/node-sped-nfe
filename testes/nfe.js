@@ -149,9 +149,9 @@ NFe.tagTransp({ modFrete: 9 });
 NFe.tagDetPag([{ indPag: 0, tPag: 17, vPag: "1200.00" }]);
 NFe.tagTroco("0.00");
 NFe.tagInfRespTec({ CNPJ: "47506306000188", xContato: "Guara Dev", email: "admin@guaradev.com", fone: "5566999638922" })
-fs.writeFileSync("nfe_guara.xml", NFe.xml(), { encoding: "utf-8" });
+fs.writeFileSync("nfe.xml", NFe.xml(), { encoding: "utf-8" });
 myTools.xmlSign(NFe.xml()).then(async xmlSign => {
-    fs.writeFileSync("nfe_guara_sign.xml", xmlSign, { encoding: "utf-8" });
+    fs.writeFileSync("nfe_sign.xml", xmlSign, { encoding: "utf-8" });
     myTools.sefazEnviaLote(xmlSign, { indSinc: 1 }).then(res => {
         console.log(res)
     })

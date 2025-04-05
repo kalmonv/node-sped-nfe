@@ -70,6 +70,6 @@ sudo apt -y install libxml2-utils
 ### 1. Instalação
 
 ```bash
-npm install biblioteca-nfe
+npm install node-sped-nfe
 # ou
-yarn add biblioteca-nfe
+yarn add node-sped-nfe
