@@ -2,6 +2,15 @@
 
 Seja bem-vindo(a) à **Biblioteca de Emissão de NF-e** — sua parceira definitiva para integrar **emissão de Nota Fiscal Eletrônica modelo 55 (NF-e)** e **modelo 65 (NFC-e)** em aplicações modernas, com simplicidade, robustez e total conformidade com a legislação brasileira! 🇧🇷🚀
 
+<div align="center">
+
+📣 **Participe da comunidade!**  
+💬 Tire dúvidas, compartilhe experiências e colabore com outros desenvolvedores!
+
+👉 [Grupo de Discussão no Google Groups](https://groups.google.com/g/node-sped-nfe)
+
+</div>
+
 ---
 
 ## ✨ Por que usar esta biblioteca?
