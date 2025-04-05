@@ -25,18 +25,6 @@ let myTools = new Tools({ //Configuração de habiente e sistema
 });
 ```
 
-
-```javascript
-//criando o Object a partir de um array
-var temp = [
-    'versao' => '3.10',
-    'Id' => 'NFe35150271780456000160550010000000021800700082',
-    'pk_nItem' => null
-];
-
-std = json_decode(json_encode(temp));
-```
-
 > NOTA: Muitos campos não são obrigatórios. Caso não haja nenhum valor a ser informado, devem ser criados como NULL.
 > NOTA: Caso existam erros na passagem de parâmetros para a classe, será disparada uma Exception e esses erros poderão ser recuperados pelo método getErrors().
  
