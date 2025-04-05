@@ -23,6 +23,36 @@ Seja bem-vindo(a) à **Biblioteca de Emissão de NF-e** — sua parceira definit
 
 ---
 
+## 📌 Requisitos
+
+Para garantir o funcionamento correto da biblioteca, certifique-se de que os seguintes requisitos estejam atendidos:
+
+### 🔧 Ambiente
+
+- **Node.js** `v22.14.0` (versão testada e recomendada)
+- **xmllint** `2.9.3` (utilizado para validação dos XMLs gerados)
+
+### 🖥 Instalação do `xmllint`
+
+#### 🔵 Windows
+
+1. Baixe o pacote do libxml para Windows:
+   - [Download libxml2 para Windows (64bit)](http://xmlsoft.org/sources/win32/64bit/)
+
+2. Extraia o conteúdo em um diretório acessível, por exemplo: `C:\libxml\`
+
+3. Adicione o caminho do executável (`xmllint.exe`) à variável de ambiente `PATH`
+
+#### 🐧 Linux (Debian/Ubuntu)
+
+Execute o comando abaixo para instalar via APT:
+
+```bash
+sudo apt -y install libxml2-utils
+
+
+---
+
 ## 🚀 Começando
 
 ### 1. Instalação
