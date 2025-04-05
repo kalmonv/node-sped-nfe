@@ -1,4 +1,29 @@
 # ATENÇÃO, A BIBLIOTECA NÃO ESTA COMPLETA!
+O XML é estruturado em uma ordem específica, sendo indispensável que se observe a sequência de chamadas das funções mencionadas abaixo, bem como a ordem de seus atributos. Por exemplo:
+```javascript
+var usuario = new Object();
+
+// 1 OPÇÃO - CORRETO
+usuario.nome = "Joao"
+usuario.ultNome = "Silva"
+
+// 2 OPÇÃO -  CORRETO
+usuario = {
+    nome: "Joao",
+    ultNome: "Silva"
+}
+
+// 3 OPÇÃO - INVALIDO
+usuario.ultNome = "Silva"
+usuario.nome = "Joao"
+
+// 4 OPÇÃO - INVALIDO
+usuario = {
+    ultNome: "Silva",
+    nome: "Joao"
+}
+```
+
 | Aonde | Motivo            |
 |-------|-------------------|
 | 🔴    | Não implementado  |
