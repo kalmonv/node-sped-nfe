@@ -4,7 +4,7 @@ import https from "https";
 import { spawnSync, SpawnSyncReturns } from "child_process"
 import tmp from "tmp"
 import crypto from "crypto";
-import { urlServicos } from "./eventos.js"
+import { urlServicos } from "./eventos"
 import fs from "fs"
 
 

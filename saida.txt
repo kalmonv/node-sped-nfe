@@ -1,4 +1,4 @@
 
-> node-sped-nfe@1.0.0 build
+> node-sped-nfe@1.0.2 build
 > tsc
 

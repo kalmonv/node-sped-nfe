@@ -16,7 +16,7 @@ import https from "https";
 import { spawnSync } from "child_process";
 import tmp from "tmp";
 import crypto from "crypto";
-import { urlServicos } from "./eventos.js";
+import { urlServicos } from "./eventos";
 import fs from "fs";
 class Tools {
     constructor(config = { mod: "", xmllint: 'xmllint', cUF: '51', tpAmb: 2 }, certificado = { pfx: "", senha: "" }) {
