@@ -48,33 +48,33 @@ Para garantir o funcionamento correto da biblioteca, certifique-se de que os seg
 
 A biblioteca já foi testada com sucesso nos seguintes estados brasileiros:
 
-- [x] MT — Mato Grosso
-- [ ] AC — Acre
-- [ ] AL — Alagoas
-- [ ] AM — Amazonas
-- [ ] AP — Amapá
-- [ ] BA — Bahia
-- [ ] CE — Ceará
-- [ ] DF — Distrito Federal
-- [ ] ES — Espírito Santo
-- [ ] GO — Goiás
-- [ ] MA — Maranhão
-- [ ] MG — Minas Gerais
-- [ ] MS — Mato Grosso do Sul
-- [ ] PA — Pará
-- [ ] PB — Paraíba
-- [ ] PE — Pernambuco
-- [ ] PI — Piauí
-- [ ] PR — Paraná
-- [ ] RJ — Rio de Janeiro
-- [ ] RN — Rio Grande do Norte
-- [ ] RO — Rondônia
-- [ ] RR — Roraima
-- [ ] RS — Rio Grande do Sul
-- [ ] SC — Santa Catarina
-- [ ] SE — Sergipe
-- [ ] SP — São Paulo
-- [ ] TO — Tocantins
+- ✅ MT — Mato Grosso
+- ⬜ AC — Acre
+- ⬜ AL — Alagoas
+- ⬜ AM — Amazonas
+- ⬜ AP — Amapá
+- ⬜ BA — Bahia
+- ⬜ CE — Ceará
+- ⬜ DF — Distrito Federal
+- ⬜ ES — Espírito Santo
+- ⬜ GO — Goiás
+- ⬜ MA — Maranhão
+- ⬜ MG — Minas Gerais
+- ⬜ MS — Mato Grosso do Sul
+- ⬜ PA — Pará
+- ⬜ PB — Paraíba
+- ⬜ PE — Pernambuco
+- ⬜ PI — Piauí
+- ⬜ PR — Paraná
+- ⬜ RJ — Rio de Janeiro
+- ⬜ RN — Rio Grande do Norte
+- ⬜ RO — Rondônia
+- ⬜ RR — Roraima
+- ⬜ RS — Rio Grande do Sul
+- ⬜ SC — Santa Catarina
+- ⬜ SE — Sergipe
+- ⬜ SP — São Paulo
+- ⬜ TO — Tocantins
 
 Contribua com a comunidade! Testou com sucesso em algum estado? Envie um PR ou abra uma issue!
 

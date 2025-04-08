@@ -4,9 +4,13 @@ import https from "https";
 import { spawnSync, SpawnSyncReturns } from "child_process"
 import tmp from "tmp"
 import crypto from "crypto";
-import { urlServicos } from "./eventos"
+import { urlServicos } from "./eventos.js"
 import fs from "fs"
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class Tools {
     #cert: {
@@ -20,7 +24,15 @@ class Tools {
             XMLBuilder: {} as XMLBuilder,
             XMLParser: {} as XMLParser
         };
-    #pem: Record<string, any> = {};
+    #pem: {
+        key: string;
+        cert: string;
+        ca: string[]; // <- define que pode ser uma lista de strings
+    } = {
+            key: "",            // A chave privada extraída do PKCS#12, em formato PEM
+            cert: "",           // O certificado extraído, em formato PEM
+            ca: []     // Uma lista de certificados da cadeia (se houver), ou null
+        };
     #config: {
         mod: string;
         xmllint: string;
@@ -43,7 +55,11 @@ class Tools {
         });
     }
 
-    sefazEnviaLote(xml: string, data = { idLote: 1, indSinc: 0, compactar: false }) {
+    async teste() {
+        return await this.#certTools()
+    }
+
+    sefazEnviaLote(xml: string, data: any = { idLote: 1, indSinc: 0, compactar: false }): Promise<string> {
         return new Promise(async (resvol, reject) => {
             if (typeof data.idLote == "undefined") data.idLote = 1;
             if (typeof data.indSinc == "undefined") data.indSinc = 0;
@@ -107,13 +123,14 @@ class Tools {
         })
     }
 
-    async xmlSign(xmlJSON: string, data: any) {
+    async xmlSign(xmlJSON: string, data: any = { tag: "infNFe" }): Promise<string> {
         return new Promise(async (resvol, reject) => {
             if (data.tag === undefined) data.tag = "infNFe";
 
             //Obter a tag que ira ser assinada
             let xml = await this.xml2json(xmlJSON) as any;
-            let pem = await this.getCertificado() as { key: string; cert: string };
+            let tempPem = await this.#certTools() as any;
+
             const sign = crypto.createSign('RSA-SHA1'); // Correção: Alterado para RSA-SHA1
             let signedInfo = {
                 "SignedInfo": {
@@ -149,10 +166,10 @@ class Tools {
             xml.NFe.Signature = {
                 ...signedInfo,
                 ...{
-                    "SignatureValue": sign.sign(pem.key, 'base64'),
+                    "SignatureValue": sign.sign(tempPem.key, 'base64'),
                     "KeyInfo": {
                         "X509Data": {
-                            "X509Certificate": pem.cert.replace(/-----BEGIN CERTIFICATE-----/g, '').replace(/-----END CERTIFICATE-----/g, '').replace(/\r\n/g, '')
+                            "X509Certificate": tempPem.cert.replace(/-----BEGIN CERTIFICATE-----/g, '').replace(/-----END CERTIFICATE-----/g, '').replace(/\r\n/g, '')
                         }
                     },
                     "@xmlns": "http://www.w3.org/2000/09/xmldsig#"
@@ -259,9 +276,10 @@ class Tools {
         const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
         fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
 
+        const schemaPath = path.resolve(__dirname, '../../schemas/nfe_v4.00.xsd');
         const verif: SpawnSyncReturns<string> = spawnSync(
             this.#config.xmllint,
-            ['--noout', '--schema', './utils/schemas/nfe_v4.00.xsd', xmlFile.name],
+            ['--noout', '--schema', schemaPath, xmlFile.name],
             { encoding: 'utf8' }
         );
 
@@ -280,12 +298,13 @@ class Tools {
 
 
     //Extrair dados do certificado pem
-    #certTools() {
+    #certTools(): Promise<object> {
         return new Promise(async (resvol, reject) => {
-            if (this.#pem != null) resvol(this.#pem);
+            if (this.#pem.key != "") resvol(this.#pem);
             pem.readPkcs12(this.#cert.pfx, { p12Password: this.#cert.senha }, (err, myPem) => {
+                if (err) return reject(err); // <-- importante!
                 this.#pem = myPem;
-                resvol(myPem);
+                resvol(this.#pem);
             });
         })
     }

@@ -16,8 +16,12 @@ import https from "https";
 import { spawnSync } from "child_process";
 import tmp from "tmp";
 import crypto from "crypto";
-import { urlServicos } from "./eventos";
+import { urlServicos } from "./eventos.js";
 import fs from "fs";
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 class Tools {
     constructor(config = { mod: "", xmllint: 'xmllint', cUF: '51', tpAmb: 2 }, certificado = { pfx: "", senha: "" }) {
         _Tools_instances.add(this);
@@ -26,7 +30,11 @@ class Tools {
             XMLBuilder: {},
             XMLParser: {}
         });
-        _Tools_pem.set(this, {});
+        _Tools_pem.set(this, {
+            key: "", // A chave privada extraída do PKCS#12, em formato PEM
+            cert: "", // O certificado extraído, em formato PEM
+            ca: [] // Uma lista de certificados da cadeia (se houver), ou null
+        });
         _Tools_config.set(this, void 0);
         //Configurar certificado
         __classPrivateFieldSet(this, _Tools_config, config, "f");
@@ -40,6 +48,9 @@ class Tools {
             attributeNamePrefix: "@",
             parseTagValue: false, // Evita conversão automática de valores
         });
+    }
+    async teste() {
+        return await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this);
     }
     sefazEnviaLote(xml, data = { idLote: 1, indSinc: 0, compactar: false }) {
         return new Promise(async (resvol, reject) => {
@@ -104,13 +115,13 @@ class Tools {
             }
         });
     }
-    async xmlSign(xmlJSON, data) {
+    async xmlSign(xmlJSON, data = { tag: "infNFe" }) {
         return new Promise(async (resvol, reject) => {
             if (data.tag === undefined)
                 data.tag = "infNFe";
             //Obter a tag que ira ser assinada
             let xml = await this.xml2json(xmlJSON);
-            let pem = await this.getCertificado();
+            let tempPem = await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this);
             const sign = crypto.createSign('RSA-SHA1'); // Correção: Alterado para RSA-SHA1
             let signedInfo = {
                 "SignedInfo": {
@@ -145,10 +156,10 @@ class Tools {
             xml.NFe.Signature = {
                 ...signedInfo,
                 ...{
-                    "SignatureValue": sign.sign(pem.key, 'base64'),
+                    "SignatureValue": sign.sign(tempPem.key, 'base64'),
                     "KeyInfo": {
                         "X509Data": {
-                            "X509Certificate": pem.cert.replace(/-----BEGIN CERTIFICATE-----/g, '').replace(/-----END CERTIFICATE-----/g, '').replace(/\r\n/g, '')
+                            "X509Certificate": tempPem.cert.replace(/-----BEGIN CERTIFICATE-----/g, '').replace(/-----END CERTIFICATE-----/g, '').replace(/\r\n/g, '')
                         }
                     },
                     "@xmlns": "http://www.w3.org/2000/09/xmldsig#"
@@ -246,7 +257,8 @@ _Tools_cert = new WeakMap(), _Tools_xmlTools = new WeakMap(), _Tools_pem = new W
 async function _Tools_xmlValido(xml) {
     const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
     fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
-    const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', './utils/schemas/nfe_v4.00.xsd', xmlFile.name], { encoding: 'utf8' });
+    const schemaPath = path.resolve(__dirname, '../../schemas/nfe_v4.00.xsd');
+    const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', schemaPath, xmlFile.name], { encoding: 'utf8' });
     xmlFile.removeCallback();
     // Aqui, usamos o operador de encadeamento opcional (?.)
     if (verif.error) {
@@ -258,11 +270,13 @@ async function _Tools_xmlValido(xml) {
     return 1;
 }, _Tools_certTools = function _Tools_certTools() {
     return new Promise(async (resvol, reject) => {
-        if (__classPrivateFieldGet(this, _Tools_pem, "f") != null)
+        if (__classPrivateFieldGet(this, _Tools_pem, "f").key != "")
             resvol(__classPrivateFieldGet(this, _Tools_pem, "f"));
         pem.readPkcs12(__classPrivateFieldGet(this, _Tools_cert, "f").pfx, { p12Password: __classPrivateFieldGet(this, _Tools_cert, "f").senha }, (err, myPem) => {
+            if (err)
+                return reject(err); // <-- importante!
             __classPrivateFieldSet(this, _Tools_pem, myPem, "f");
-            resvol(myPem);
+            resvol(__classPrivateFieldGet(this, _Tools_pem, "f"));
         });
     });
 };

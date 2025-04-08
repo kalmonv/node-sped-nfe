@@ -1,0 +1,194 @@
+{
+    "NFe": {
+        "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+        "infNFe": {
+            "@Id": "NFe51241047506306000188550000000002471000020235",
+            "@versao": "4.00",
+            "ide": {
+                "cUF": "51",
+                "cNF": "00002023",
+                "natOp": "VENDA",
+                "mod": "55",
+                "serie": "0",
+                "nNF": "247",
+                "dhEmi": "2024-10-10T18:01:59-04:00",
+                "tpNF": "1",
+                "idDest": "1",
+                "cMunFG": "5106257",
+                "tpImp": "1",
+                "tpEmis": "1",
+                "cDV": "5",
+                "tpAmb": "1",
+                "finNFe": "1",
+                "indFinal": "0",
+                "indPres": "1",
+                "indIntermed": "0",
+                "procEmi": "0",
+                "verProc": "4.13"
+            },
+            "emit": {
+                "CNPJ": "47506306000188",
+                "xNome": "47.506.306 KALMON VALADAO TAVARES",
+                "xFant": "GUARA DEV",
+                "enderEmit": {
+                    "xLgr": "AV PARA",
+                    "nro": "138",
+                    "xBairro": "UNIÃO",
+                    "cMun": "5106257",
+                    "xMun": "Nova Xavantina",
+                    "UF": "MT",
+                    "CEP": "78690000",
+                    "cPais": "1058",
+                    "xPais": "BRASIL",
+                    "fone": "66981352912"
+                },
+                "IE": "139551956",
+                "CRT": "1"
+            },
+            "dest": {
+                "CPF": "04079907125",
+                "xNome": "ADELMO CARLOS CIQUEIRA SILVA",
+                "enderDest": {
+                    "xLgr": "RUA DAS SAMAMBAIAS",
+                    "nro": "144",
+                    "xBairro": "PARQUE ELDORADO",
+                    "cMun": "5107040",
+                    "xMun": "PRIMAVERA DO LESTE",
+                    "UF": "MT",
+                    "CEP": "78850000",
+                    "cPais": "1058",
+                    "xPais": "BRASIL"
+                },
+                "indIEDest": "2"
+            },
+            "det": [
+                {
+                    "@nItem": "1",
+                    "prod": {
+                        "cProd": "126",
+                        "cEAN": "SEM GTIN",
+                        "xProd": "CABOS MICROFONE DMX XR CANON BALANCEADO 20 METROS",
+                        "NCM": "85044010",
+                        "CFOP": "5102",
+                        "uCom": "UNID",
+                        "qCom": "3.0000",
+                        "vUnCom": "132.0000000000",
+                        "vProd": "396.00",
+                        "cEANTrib": "SEM GTIN",
+                        "uTrib": "UNID",
+                        "qTrib": "3.0000",
+                        "vUnTrib": "132.0000000000",
+                        "indTot": "1"
+                    },
+                    "imposto": {
+                        "ICMS": {
+                            "ICMSSN102": {
+                                "orig": "0",
+                                "CSOSN": "400"
+                            }
+                        },
+                        "PIS": {
+                            "PISOutr": {
+                                "CST": "49",
+                                "qBCProd": "0.0000",
+                                "vAliqProd": "0.0000",
+                                "vPIS": "0.00"
+                            }
+                        },
+                        "COFINS": {
+                            "COFINSOutr": {
+                                "CST": "49",
+                                "qBCProd": "0.0000",
+                                "vAliqProd": "0.0000",
+                                "vCOFINS": "0.00"
+                            }
+                        }
+                    }
+                },
+                {
+                    "@nItem": "2",
+                    "prod": {
+                        "cProd": "129",
+                        "cEAN": "SEM GTIN",
+                        "xProd": "CABO P2 PARA P10 CELULAR MESA DE SOM CAIXA DE SOM 25 METRO",
+                        "NCM": "85044010",
+                        "CFOP": "5102",
+                        "uCom": "UNID",
+                        "qCom": "2.0000",
+                        "vUnCom": "218.0000000000",
+                        "vProd": "436.00",
+                        "cEANTrib": "SEM GTIN",
+                        "uTrib": "UNID",
+                        "qTrib": "2.0000",
+                        "vUnTrib": "218.0000000000",
+                        "indTot": "1"
+                    },
+                    "imposto": {
+                        "ICMS": {
+                            "ICMSSN102": {
+                                "orig": "0",
+                                "CSOSN": "400"
+                            }
+                        },
+                        "PIS": {
+                            "PISOutr": {
+                                "CST": "49",
+                                "qBCProd": "0.0000",
+                                "vAliqProd": "0.0000",
+                                "vPIS": "0.00"
+                            }
+                        },
+                        "COFINS": {
+                            "COFINSOutr": {
+                                "CST": "49",
+                                "qBCProd": "0.0000",
+                                "vAliqProd": "0.0000",
+                                "vCOFINS": "0.00"
+                            }
+                        }
+                    }
+                }
+            ],
+            "total": {
+                "ICMSTot": {
+                    "vBC": "0.00",
+                    "vICMS": "0.00",
+                    "vICMSDeson": "0.00",
+                    "vFCP": "0.00",
+                    "vBCST": "0.00",
+                    "vST": "0.00",
+                    "vFCPST": "0.00",
+                    "vFCPSTRet": "0.00",
+                    "vProd": "1238.00",
+                    "vFrete": "0.00",
+                    "vSeg": "0.00",
+                    "vDesc": "38.00",
+                    "vII": "0.00",
+                    "vIPI": "0.00",
+                    "vIPIDevol": "0.00",
+                    "vPIS": "0.00",
+                    "vCOFINS": "0.00",
+                    "vOutro": "0.00",
+                    "vNF": "1200.00"
+                }
+            },
+            "transp": {
+                "modFrete": "9"
+            },
+            "pag": {
+                "detPag": {
+                    "indPag": "0",
+                    "tPag": "17",
+                    "vPag": "1200.00"
+                },
+                "vTroco": "0.00"
+            },
+            "infRespTec": {
+                "CNPJ": "47506306000188",
+                "xContato": "Guara Dev",
+                "email": "admin@guaradev.com",
+                "fone": "5566999638922"
+            }
+        }
+    }
+}
