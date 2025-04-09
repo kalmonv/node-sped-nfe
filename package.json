@@ -1,10 +1,21 @@
 {
   "name": "node-sped-nfe",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "author": "Kalmon V. Tavares",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "keywords": [
+    "nota fiscal",
+    "xml",
+    "sefaz",
+    "nfe",
+    "sped",
+    "documento fiscal",
+    "danfe",
+    "nfce",
+    "pdf"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.js",

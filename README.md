@@ -9,6 +9,8 @@ Seja bem-vindo(a) à **Biblioteca de Emissão de NF-e** — sua parceira definit
 
 👉 [Grupo de Discussão no Google Groups](https://groups.google.com/g/node-sped-nfe)
 
+![npm](https://img.shields.io/npm/dw/seu-modulo-nfe)
+
 </div>
 
 ---
