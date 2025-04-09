@@ -139,6 +139,8 @@ NFe.tagProd([
         "indTot": 1
     }
 ]);
+
+//Setor o imposto de cada produto.
 [0, 1, 2, 3].map((value, index) => {
     NFe.tagProdICMSSN(index, { orig: "0", CSOSN: "400" })
     NFe.tagProdPIS(index, { CST: "49", qBCProd: "0.0000", vAliqProd: "0.0000", vPIS: "0.00" })
@@ -150,6 +152,9 @@ NFe.tagDetPag([{ indPag: 0, tPag: 17, vPag: "1200.00" }]);
 NFe.tagTroco("0.00");
 NFe.tagInfRespTec({ CNPJ: "47506306000188", xContato: "Guara Dev", email: "admin@guaradev.com", fone: "5566999638922" })
 fs.writeFileSync("nfe.xml", NFe.xml(), { encoding: "utf-8" });
+
+//NFe.xml() = retorna o XML gerado ate o momento.
+// myTools.xmlSign(..) = Assina o xml utlizando o certificado declarado em new Tools.
 myTools.xmlSign(NFe.xml()).then(async xmlSign => {
     fs.writeFileSync("nfe_sign.xml", xmlSign, { encoding: "utf-8" });
     myTools.sefazEnviaLote(xmlSign, { indSinc: 1 }).then(res => {
