@@ -5,6 +5,8 @@ declare class Tools {
         xmllint: string;
         cUF: string;
         tpAmb: number;
+        CSC: string;
+        CSCid: string;
     }, certificado?: {
         pfx: string;
         senha: string;
@@ -15,6 +17,6 @@ declare class Tools {
     xml2json(xml: string): Promise<object>;
     json2xml(obj: object): Promise<string>;
     getCertificado(): Promise<unknown>;
-    sefazStatus(): Promise<unknown>;
+    sefazStatus(): Promise<string>;
 }
 export { Tools };

@@ -1,16 +1,22 @@
 import { Make, Tools } from "../dist/index.js"
 import fs from "fs";
 
+
+// temp = {senha, CSC, CSCid}
+let temp = JSON.parse(fs.readFileSync('../certificado2.json', { encoding: "utf8" }))
+
 let myTools = new Tools({ //Configuração de habiente e sistema
-    mod: '55',
+    mod: '65',
     tpAmb: 2,
     cUF: '51',
+    CSC: temp.CSC,
+    CSCid: temp.CSCid,
 
     //Optativo: Leia sobre Requisitos.
     xmllint: `../libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`
 }, { //Certificado digital
-    pfx: '../certificado.pfx',
-    senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),
+    pfx: '../certificado2.pfx',
+    senha: temp.senha,
 });
 
 let NFe = new Make();
@@ -19,35 +25,35 @@ NFe.tagIde({
     cUF: "51",
     cNF: "00002023",
     natOp: "VENDA",
-    mod: "55",
+    mod: "65",
     serie: "0",
     nNF: "248",
     dhEmi: NFe.formatData(),
     tpNF: "1",
     idDest: "1",
     cMunFG: "5106257",
-    tpImp: "1",
+    tpImp: "4",
     tpEmis: "1",
     cDV: "1",
     tpAmb: "2",
     finNFe: "1",
-    indFinal: "0",
+    indFinal: "1",
     indPres: "1",
     indIntermed: "0",
     procEmi: "0",
     verProc: "4.13"
 });
 NFe.tagEmit({
-    CNPJ: "47506306000188",
-    xNome: "47.506.306 KALMON VALADAO TAVARES",
-    xFant: "GUARA DEV",
-    IE: "139551956",
+    CNPJ: "08512944000150",
+    xNome: "S CANDIDA DA SILVA",
+    xFant: "PONTO CERTO",
+    IE: "133299414",
     CRT: "1"
 });
 NFe.tagEnderEmit({
-    xLgr: "AV PARA",
-    nro: "138",
-    xBairro: "UNIAO",
+    xLgr: "AV. AMAZONAS ESQ COM AV GOIANIA",
+    nro: "567",
+    xBairro: "TONETTO",
     cMun: "5106257",
     xMun: "Nova Xavantina",
     UF: "MT",
@@ -57,21 +63,11 @@ NFe.tagEnderEmit({
     fone: "66981352912"
 });
 NFe.tagDest({
-    CPF: "04079907125",
-    xNome: "ADELMO CARLOS CIQUEIRA SILVA",
-    indIEDest: "2",
+    CPF: "06236007144",
+    xNome: "KALMON VALADAO TAVARES",
+    indIEDest: "9",
 });
-NFe.tagEnderDest({
-    xLgr: "RUA DAS SAMAMBAIAS",
-    nro: "144",
-    xBairro: "PARQUE ELDORADO",
-    cMun: "5107040",
-    xMun: "PRIMAVERA DO LESTE",
-    UF: "MT",
-    CEP: "78850000",
-    cPais: "1058",
-    xPais: "BRASIL"
-});
+
 NFe.tagProd([
     {
         cProd: "126",
@@ -151,12 +147,13 @@ NFe.tagTransp({ modFrete: 9 });
 NFe.tagDetPag([{ indPag: 0, tPag: 17, vPag: "1200.00" }]);
 NFe.tagTroco("0.00");
 NFe.tagInfRespTec({ CNPJ: "47506306000188", xContato: "Guara Dev", email: "admin@guaradev.com", fone: "5566999638922" })
-fs.writeFileSync("nfe.xml", NFe.xml(), { encoding: "utf-8" });
+fs.writeFileSync("testes/nfe.xml", NFe.xml(), { encoding: "utf-8" });
 
 //NFe.xml() = retorna o XML gerado ate o momento.
 // myTools.xmlSign(..) = Assina o xml utlizando o certificado declarado em new Tools.
 myTools.xmlSign(NFe.xml()).then(async xmlSign => {
-    fs.writeFileSync("nfe_sign.xml", xmlSign, { encoding: "utf-8" });
+    fs.writeFileSync("testes/nfe_sign.xml", xmlSign, { encoding: "utf-8" });
+    console.log("Verificar nfe_sign.xml")
     myTools.sefazEnviaLote(xmlSign, { indSinc: 1 }).then(res => {
         console.log(res)
     })

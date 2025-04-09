@@ -9,9 +9,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Tools_instances, _Tools_cert, _Tools_xmlTools, _Tools_pem, _Tools_config, _Tools_xmlValido, _Tools_certTools;
+var _Tools_instances, _Tools_cert, _Tools_xmlTools, _Tools_pem, _Tools_config, _Tools_gerarQRCodeNFCe, _Tools_xmlValido, _Tools_certTools;
 import { XMLParser, XMLBuilder } from "fast-xml-parser";
-import pem from "pem";
 import https from "https";
 import { spawnSync } from "child_process";
 import tmp from "tmp";
@@ -20,10 +19,11 @@ import { urlServicos } from "./eventos.js";
 import fs from "fs";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import pem from 'pem';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 class Tools {
-    constructor(config = { mod: "", xmllint: 'xmllint', cUF: '51', tpAmb: 2 }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', cUF: '51', tpAmb: 2, CSC: "", CSCid: "" }, certificado = { pfx: "", senha: "" }) {
         _Tools_instances.add(this);
         _Tools_cert.set(this, void 0);
         _Tools_xmlTools.set(this, {
@@ -83,7 +83,6 @@ class Tools {
                 },
             };
             let xmlLote = await this.json2xml(jsonXmlLote);
-            fs.writeFileSync("testes/nfe_guara_sign_lote.xml", xmlLote, { encoding: "utf8" });
             try {
                 const req = https.request(urlServicos[`${__classPrivateFieldGet(this, _Tools_config, "f").cUF}`][`mod_${__classPrivateFieldGet(this, _Tools_config, "f").mod}`].NFeAutorizacao[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")], {
                     ...{
@@ -165,6 +164,9 @@ class Tools {
                     "@xmlns": "http://www.w3.org/2000/09/xmldsig#"
                 }
             };
+            if (xml.NFe.infNFe.ide.mod == 65) {
+                xml.NFe.infNFeSupl.qrCode = __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_gerarQRCodeNFCe).call(this, xml.NFe, "2", __classPrivateFieldGet(this, _Tools_config, "f").CSCid, __classPrivateFieldGet(this, _Tools_config, "f").CSC);
+            }
             this.json2xml(xml).then(async (res) => {
                 __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, res);
                 resvol(res);
@@ -191,7 +193,6 @@ class Tools {
     //Consulta status sefaz
     async sefazStatus() {
         return new Promise(async (resvol, reject) => {
-            await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this);
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").cUF == "undefined")
                 throw "sefazStatus({...cUF}) -> não definido!";
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").tpAmb == "undefined")
@@ -221,7 +222,7 @@ class Tools {
                     attributeNamePrefix: "@"
                 });
                 let xml = tempBuild.build(xmlObj);
-                const req = https.request(urlServicos[`${__classPrivateFieldGet(this, _Tools_config, "f").cUF}`][`mod_${__classPrivateFieldGet(this, _Tools_config, "f").mod}`].NfeStatusServico[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")], {
+                const req = https.request(urlServicos[`${__classPrivateFieldGet(this, _Tools_config, "f").cUF}`][`mod_${__classPrivateFieldGet(this, _Tools_config, "f").mod}`].NFeStatusServico[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")], {
                     ...{
                         method: 'POST',
                         headers: {
@@ -230,7 +231,7 @@ class Tools {
                         },
                         rejectUnauthorized: false
                     },
-                    ...__classPrivateFieldGet(this, _Tools_pem, "f")
+                    ...await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this)
                 }, (res) => {
                     let data = '';
                     res.on('data', (chunk) => {
@@ -252,7 +253,18 @@ class Tools {
         });
     }
 }
-_Tools_cert = new WeakMap(), _Tools_xmlTools = new WeakMap(), _Tools_pem = new WeakMap(), _Tools_config = new WeakMap(), _Tools_instances = new WeakSet(), _Tools_xmlValido = 
+_Tools_cert = new WeakMap(), _Tools_xmlTools = new WeakMap(), _Tools_pem = new WeakMap(), _Tools_config = new WeakMap(), _Tools_instances = new WeakSet(), _Tools_gerarQRCodeNFCe = function _Tools_gerarQRCodeNFCe(NFe, versaoQRCode = "2", idCSC, CSC) {
+    let s = '|', concat, hash;
+    if (NFe.infNFe.ide.tpEmis == 1) {
+        concat = [NFe.infNFe['@Id'].replace("NFe", ""), versaoQRCode, NFe.infNFe.ide.tpAmb, Number(idCSC)].join(s);
+    }
+    else {
+        let hexDigestValue = Buffer.from(NFe.Signature.SignedInfo.Reference.DigestValue).toString('hex');
+        concat = [NFe.infNFe['@Id'].replace("NFe", ""), versaoQRCode, NFe.infNFe.ide.tpAmb, NFe.infNFe.ide.dhEmi, NFe.infNFe.total.ICMSTot.vNF, hexDigestValue, Number(idCSC)].join(s);
+    }
+    hash = crypto.createHash('sha1').update(concat + CSC).digest('hex');
+    return NFe.infNFeSupl.qrCode + '?p=' + concat + s + hash;
+}, _Tools_xmlValido = 
 //Validar XML da NFe, somente apos assinar
 async function _Tools_xmlValido(xml) {
     const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });

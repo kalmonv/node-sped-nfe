@@ -1,4 +1,7 @@
 declare const urlServicos: {
     [key: string]: any;
 };
-export { urlServicos };
+declare const qrCodeUrls: {
+    [key: string]: any;
+};
+export { urlServicos, qrCodeUrls };

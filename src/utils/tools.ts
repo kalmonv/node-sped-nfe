@@ -1,5 +1,4 @@
-import { XMLParser, XMLBuilder, XMLValidator } from "fast-xml-parser";
-import pem from "pem";
+import { XMLParser, XMLBuilder } from "fast-xml-parser";
 import https from "https";
 import { spawnSync, SpawnSyncReturns } from "child_process"
 import tmp from "tmp"
@@ -8,6 +7,9 @@ import { urlServicos } from "./eventos.js"
 import fs from "fs"
 import path from 'path';
 import { fileURLToPath } from 'url';
+import pem from 'pem';
+
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,9 +40,11 @@ class Tools {
         xmllint: string;
         cUF: string;
         tpAmb: number;
+        CSC: string;
+        CSCid: string;
     };
 
-    constructor(config = { mod: "", xmllint: 'xmllint', cUF: '51', tpAmb: 2 }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', cUF: '51', tpAmb: 2, CSC: "", CSCid: "" }, certificado = { pfx: "", senha: "" }) {
         //Configurar certificado
         this.#config = config;
         this.#cert = certificado;
@@ -88,7 +92,6 @@ class Tools {
                 },
             }
             let xmlLote = await this.json2xml(jsonXmlLote);
-            fs.writeFileSync("testes/nfe_guara_sign_lote.xml", xmlLote, { encoding: "utf8" });
             try {
                 const req = https.request(urlServicos[`${this.#config.cUF}`][`mod_${this.#config.mod}`].NFeAutorizacao[(this.#config.tpAmb == 1 ? "producao" : "homologacao")], {
                     ...{
@@ -175,6 +178,12 @@ class Tools {
                     "@xmlns": "http://www.w3.org/2000/09/xmldsig#"
                 }
             }
+
+
+            if (xml.NFe.infNFe.ide.mod == 65) {
+                xml.NFe.infNFeSupl.qrCode = this.#gerarQRCodeNFCe(xml.NFe, "2", this.#config.CSCid, this.#config.CSC)
+            }
+
             this.json2xml(xml).then(async res => {
                 this.#xmlValido(res);
                 resvol(res);
@@ -182,6 +191,20 @@ class Tools {
                 reject(err)
             })
         })
+    }
+
+    #gerarQRCodeNFCe(NFe: any, versaoQRCode: string = "2", idCSC: string, CSC: string) {
+        let s = '|',
+            concat,
+            hash;
+        if (NFe.infNFe.ide.tpEmis == 1) {
+            concat = [NFe.infNFe['@Id'].replace("NFe", ""), versaoQRCode, NFe.infNFe.ide.tpAmb, Number(idCSC)].join(s);
+        } else {
+            let hexDigestValue = Buffer.from(NFe.Signature.SignedInfo.Reference.DigestValue).toString('hex');
+            concat = [NFe.infNFe['@Id'].replace("NFe", ""), versaoQRCode, NFe.infNFe.ide.tpAmb, NFe.infNFe.ide.dhEmi, NFe.infNFe.total.ICMSTot.vNF, hexDigestValue, Number(idCSC)].join(s);
+        }
+        hash = crypto.createHash('sha1').update(concat + CSC).digest('hex');
+        return NFe.infNFeSupl.qrCode + '?p=' + concat + s + hash;
     }
 
     async xml2json(xml: string): Promise<object> {
@@ -203,9 +226,8 @@ class Tools {
     }
 
     //Consulta status sefaz
-    async sefazStatus() {
+    async sefazStatus(): Promise<string> {
         return new Promise(async (resvol, reject) => {
-            await this.#certTools();
 
             if (typeof this.#config.cUF == "undefined") throw "sefazStatus({...cUF}) -> não definido!";
             if (typeof this.#config.tpAmb == "undefined") throw "sefazStatus({...tpAmb}) -> não definido!";
@@ -236,7 +258,7 @@ class Tools {
                 });
                 let xml = tempBuild.build(xmlObj);
 
-                const req = https.request(urlServicos[`${this.#config.cUF}`][`mod_${this.#config.mod}`].NfeStatusServico[(this.#config.tpAmb == 1 ? "producao" : "homologacao")], {
+                const req = https.request(urlServicos[`${this.#config.cUF}`][`mod_${this.#config.mod}`].NFeStatusServico[(this.#config.tpAmb == 1 ? "producao" : "homologacao")], {
                     ...{
                         method: 'POST',
                         headers: {
@@ -245,7 +267,7 @@ class Tools {
                         },
                         rejectUnauthorized: false
                     },
-                    ...this.#pem
+                    ...await this.#certTools()
                 }, (res) => {
                     let data = '';
 
@@ -295,9 +317,6 @@ class Tools {
         return 1;
     }
 
-
-
-    //Extrair dados do certificado pem
     #certTools(): Promise<object> {
         return new Promise(async (resvol, reject) => {
             if (this.#pem.key != "") resvol(this.#pem);
