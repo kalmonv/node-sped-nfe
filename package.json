@@ -25,9 +25,10 @@
   },
   "scripts": {
     "build": "tsc > saida.txt",
-    "t:status": "node testes/status.js",
-    "t:nfe": "node testes/nfe.js",
-    "t:nfce": "node testes/nfce.js"
+    
+    "t:status": "node exemplos/status.js",
+    "t:nfe": "node exemplos/nfe.js",
+    "t:nfce": "node exemplos/nfce.js"
   },
   "devDependencies": {
     "@types/axios": "^0.9.36",

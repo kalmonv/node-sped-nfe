@@ -181,7 +181,7 @@ class Tools {
             }
 
             this.json2xml(xml).then(async res => {
-                this.#xmlValido(res);
+                this.#xmlValido(res, 'nfe_v4.00');
                 resvol(res);
             }).catch(err => {
                 reject(err)
@@ -229,19 +229,22 @@ class Tools {
             if (typeof this.#config.tpAmb == "undefined") throw "sefazStatus({...tpAmb}) -> não definido!";
             if (typeof this.#config.mod == "undefined") throw "sefazStatus({...mod}) -> não definido!";
 
+            //Separado para validar o corpo da consulta
+            let consStatServ = {
+                "@versao": "4.00",
+                "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                "tpAmb": this.#config.tpAmb,
+                "cUF": this.#config.cUF,
+                "xServ": "STATUS"
+            }
+
             let xmlObj = {
                 "soap:Envelope": {
                     "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
                     "@xmlns:nfe": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4",
                     "soap:Body": {
                         "nfe:nfeDadosMsg": {
-                            "consStatServ": {
-                                "@versao": "4.00",
-                                "@xmlns": "http://www.portalfiscal.inf.br/nfe",
-                                "tpAmb": this.#config.tpAmb,
-                                "cUF": this.#config.cUF,
-                                "xServ": "STATUS"
-                            }
+                            consStatServ
                         }
                     }
                 }
@@ -252,8 +255,10 @@ class Tools {
                     ignoreAttributes: false,
                     attributeNamePrefix: "@"
                 });
-                let xml = tempBuild.build(xmlObj);
 
+                //Validação
+                this.#xmlValido(tempBuild.build({ consStatServ }), 'consStatServ_v4.00');
+                let xml = tempBuild.build(xmlObj);
                 const req = https.request(urlServicos[`${this.#config.cUF}`][`mod_${this.#config.mod}`].NFeStatusServico[(this.#config.tpAmb == 1 ? "producao" : "homologacao")], {
                     ...{
                         method: 'POST',
@@ -290,11 +295,10 @@ class Tools {
 
 
     //Validar XML da NFe, somente apos assinar
-    async #xmlValido(xml: string) {
+    async #xmlValido(xml: string, xsd: string) {
         const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
         fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
-
-        const schemaPath = path.resolve(__dirname, '../../schemas/nfe_v4.00.xsd');
+        const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
         const verif: SpawnSyncReturns<string> = spawnSync(
             this.#config.xmllint,
             ['--noout', '--schema', schemaPath, xmlFile.name],

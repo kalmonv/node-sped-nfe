@@ -1,4 +1,4 @@
-import { Make, Tools } from "../dist/index.js"
+import { Tools } from "../dist/index.js"
 import fs from "fs";
 
 let myTools = new Tools({ //Configuração de habiente e sistema

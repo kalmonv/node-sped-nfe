@@ -165,7 +165,7 @@ class Tools {
                 xml.NFe.infNFeSupl.qrCode = __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_gerarQRCodeNFCe).call(this, xml.NFe, "2", __classPrivateFieldGet(this, _Tools_config, "f").CSCid, __classPrivateFieldGet(this, _Tools_config, "f").CSC);
             }
             this.json2xml(xml).then(async (res) => {
-                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, res);
+                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, res, 'nfe_v4.00');
                 resvol(res);
             }).catch(err => {
                 reject(err);
@@ -196,19 +196,20 @@ class Tools {
                 throw "sefazStatus({...tpAmb}) -> não definido!";
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").mod == "undefined")
                 throw "sefazStatus({...mod}) -> não definido!";
+            let consStatServ = {
+                "@versao": "4.00",
+                "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                "tpAmb": __classPrivateFieldGet(this, _Tools_config, "f").tpAmb,
+                "cUF": __classPrivateFieldGet(this, _Tools_config, "f").cUF,
+                "xServ": "STATUS"
+            };
             let xmlObj = {
                 "soap:Envelope": {
                     "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
                     "@xmlns:nfe": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4",
                     "soap:Body": {
                         "nfe:nfeDadosMsg": {
-                            "consStatServ": {
-                                "@versao": "4.00",
-                                "@xmlns": "http://www.portalfiscal.inf.br/nfe",
-                                "tpAmb": __classPrivateFieldGet(this, _Tools_config, "f").tpAmb,
-                                "cUF": __classPrivateFieldGet(this, _Tools_config, "f").cUF,
-                                "xServ": "STATUS"
-                            }
+                            consStatServ
                         }
                     }
                 }
@@ -218,6 +219,8 @@ class Tools {
                     ignoreAttributes: false,
                     attributeNamePrefix: "@"
                 });
+                fs.writeFileSync("testes/status.xml", tempBuild.build({ consStatServ }));
+                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, tempBuild.build({ consStatServ }), 'consStatServ_v4.00');
                 let xml = tempBuild.build(xmlObj);
                 const req = https.request(urlServicos[`${__classPrivateFieldGet(this, _Tools_config, "f").cUF}`][`mod_${__classPrivateFieldGet(this, _Tools_config, "f").mod}`].NFeStatusServico[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")], {
                     ...{
@@ -263,10 +266,10 @@ _Tools_cert = new WeakMap(), _Tools_xmlTools = new WeakMap(), _Tools_pem = new W
     return NFe.infNFeSupl.qrCode + '?p=' + concat + s + hash;
 }, _Tools_xmlValido = 
 //Validar XML da NFe, somente apos assinar
-async function _Tools_xmlValido(xml) {
+async function _Tools_xmlValido(xml, xsd) {
     const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
     fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
-    const schemaPath = path.resolve(__dirname, '../../schemas/nfe_v4.00.xsd');
+    const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
     const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', schemaPath, xmlFile.name], { encoding: 'utf8' });
     xmlFile.removeCallback();
     // Aqui, usamos o operador de encadeamento opcional (?.)
