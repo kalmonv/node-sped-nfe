@@ -1,6 +1,7 @@
 
 import { XMLParser, XMLBuilder, XMLValidator } from "fast-xml-parser";
-import { qrCodeUrls } from "./eventos.js"
+import { urlEventos } from "./eventos.js"
+import { cUF2UF } from "./extras.js"
 
 //Classe da nota fiscal
 class Make {
@@ -129,7 +130,7 @@ class Make {
     tagProd(obj: any) {
         //Abrir tag de imposto
         for (let cont = 0; cont < obj.length; cont++) {
-            
+
             if (obj[cont]['@nItem'] === undefined) {
                 obj[cont] = { '@nItem': cont + 1, prod: obj[cont], imposto: {} };
             } else {
@@ -138,7 +139,7 @@ class Make {
             }
 
             //Primeiro item + NFCe + Homologação
-            if(cont==0 && this.#NFe.infNFe.ide.mod == 65 && this.#NFe.infNFe.ide.tpAmb == 2 ) obj[cont].prod.xProd = "NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL";
+            if (cont == 0 && this.#NFe.infNFe.ide.mod == 65 && this.#NFe.infNFe.ide.tpAmb == 2) obj[cont].prod.xProd = "NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL";
 
             obj[cont].prod.qCom = (obj[cont].prod.qCom * 1).toFixed(4)
             obj[cont].prod.vUnCom = (obj[cont].prod.vUnCom * 1).toFixed(10)
@@ -640,9 +641,11 @@ class Make {
 
         //Adicionar QrCode
         if (this.#NFe.infNFe.ide.mod == 65) {
+            //Como ja temos cUF, usamo dados do extras para convere em UF e achar os dados de url!
+            let tempUF = urlEventos(cUF2UF[this.#NFe.infNFe.ide.cUF], this.#NFe.infNFe['@versao']);
             this.#NFe.infNFeSupl = {
-                qrCode: qrCodeUrls[this.#NFe.infNFe.ide.tpAmb==1 ? 'producao' : 'homologacao'][`${this.#NFe.infNFe.ide.cUF}`].urlQRCode,
-                urlChave: qrCodeUrls[this.#NFe.infNFe.ide.tpAmb==1 ? 'producao' : 'homologacao'][`${this.#NFe.infNFe.ide.cUF}`].urlChave
+                qrCode: tempUF.mod65[this.#NFe.infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].NFeConsultaQR,
+                urlChave: tempUF.mod65[this.#NFe.infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].urlChave
             }
         }
 
@@ -652,7 +655,7 @@ class Make {
         });
         return tempBuild.build({ NFe: this.#NFe });
     }
-    
+
     #calICMSTot(obj: any) {
         Object.keys(obj).map(key => {
             if (this.#ICMSTot[key] !== undefined) {

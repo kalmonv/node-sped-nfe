@@ -4,7 +4,8 @@ import fs from "fs";
 let myTools = new Tools({ //Configuração de habiente e sistema
     mod: '55',
     tpAmb: 2,
-    cUF: '51',
+    UF: 'MT',
+    versao: '4.00',
 
     //Optativo: Leia sobre Requisitos.
     xmllint: `../libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`
@@ -151,12 +152,12 @@ NFe.tagTransp({ modFrete: 9 });
 NFe.tagDetPag([{ indPag: 0, tPag: 17, vPag: "1200.00" }]);
 NFe.tagTroco("0.00");
 NFe.tagInfRespTec({ CNPJ: "47506306000188", xContato: "Guara Dev", email: "admin@guaradev.com", fone: "5566999638922" })
-fs.writeFileSync("nfe.xml", NFe.xml(), { encoding: "utf-8" });
+fs.writeFileSync("testes/nfe.xml", NFe.xml(), { encoding: "utf-8" });
 
 //NFe.xml() = retorna o XML gerado ate o momento.
 // myTools.xmlSign(..) = Assina o xml utlizando o certificado declarado em new Tools.
 myTools.xmlSign(NFe.xml()).then(async xmlSign => {
-    fs.writeFileSync("nfe_sign.xml", xmlSign, { encoding: "utf-8" });
+    fs.writeFileSync("testes/nfe_sign.xml", xmlSign, { encoding: "utf-8" });
     myTools.sefazEnviaLote(xmlSign, { indSinc: 1 }).then(res => {
         console.log(res)
     })

@@ -5,7 +5,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _Make_instances, _Make_NFe, _Make_ICMSTot, _Make_gerarChaveNFe, _Make_calcularDigitoVerificador, _Make_calICMSTot;
 import { XMLBuilder } from "fast-xml-parser";
-import { qrCodeUrls } from "./eventos.js";
+import { urlEventos } from "./eventos.js";
+import { cUF2UF } from "./extras.js";
 //Classe da nota fiscal
 class Make {
     constructor() {
@@ -516,9 +517,11 @@ class Make {
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe[`@Id`] = `NFe${__classPrivateFieldGet(this, _Make_instances, "m", _Make_gerarChaveNFe).call(this)}`;
         //Adicionar QrCode
         if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.mod == 65) {
+            //Como ja temos cUF, usamo dados do extras para convere em UF e achar os dados de url!
+            let tempUF = urlEventos(cUF2UF[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF], __classPrivateFieldGet(this, _Make_NFe, "f").infNFe['@versao']);
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFeSupl = {
-                qrCode: qrCodeUrls[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'][`${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF}`].urlQRCode,
-                urlChave: qrCodeUrls[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'][`${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF}`].urlChave
+                qrCode: tempUF.mod65[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].NFeConsultaQR,
+                urlChave: tempUF.mod65[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].urlChave
             };
         }
         let tempBuild = new XMLBuilder({

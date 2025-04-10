@@ -3,7 +3,7 @@ import https from "https";
 import { spawnSync, SpawnSyncReturns } from "child_process"
 import tmp from "tmp"
 import crypto from "crypto";
-import { urlServicos } from "./eventos.js"
+import { urlEventos } from "./eventos.js"
 import fs from "fs"
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -38,13 +38,14 @@ class Tools {
     #config: {
         mod: string;
         xmllint: string;
-        cUF: string;
+        UF: string;
         tpAmb: number;
         CSC: string;
         CSCid: string;
+        versao: string;
     };
 
-    constructor(config = { mod: "", xmllint: 'xmllint', cUF: '51', tpAmb: 2, CSC: "", CSCid: "" }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00" }, certificado = { pfx: "", senha: "" }) {
         //Configurar certificado
         this.#config = config;
         this.#cert = certificado;
@@ -89,7 +90,8 @@ class Tools {
             }
             let xmlLote = await this.json2xml(jsonXmlLote);
             try {
-                const req = https.request(urlServicos[`${this.#config.cUF}`][`mod_${this.#config.mod}`].NFeAutorizacao[(this.#config.tpAmb == 1 ? "producao" : "homologacao")], {
+                let tempUF = urlEventos(this.#config.UF, this.#config.versao);
+                const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeAutorizacao, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -181,7 +183,7 @@ class Tools {
             }
 
             this.json2xml(xml).then(async res => {
-                this.#xmlValido(res, 'nfe_v4.00');
+                this.#xmlValido(res, `nfe_${this.#config.versao}`);
                 resvol(res);
             }).catch(err => {
                 reject(err)
@@ -221,20 +223,91 @@ class Tools {
         })
     }
 
+    consultarNFe(chNFe: string): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+            if (!chNFe || chNFe.length !== 44) {
+                return reject("consultarNFe(chNFe) -> chave inválida!");
+            }
+
+            if (typeof this.#config.UF === "undefined") throw "consultarNFe({...UF}) -> não definido!";
+            if (typeof this.#config.tpAmb === "undefined") throw "consultarNFe({...tpAmb}) -> não definido!";
+            if (typeof this.#config.mod === "undefined") throw "consultarNFe({...mod}) -> não definido!";
+
+            let consSitNFe = {
+                "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                "@versao": "4.00",
+                "tpAmb": this.#config.tpAmb,
+                "xServ": "CONSULTAR",
+                "chNFe": chNFe
+            };
+
+            let xmlObj = {
+                "soap:Envelope": {
+                    "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
+                    "@xmlns:nfe": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeConsultaProtocolo4",
+                    "soap:Body": {
+                        "nfe:nfeDadosMsg": {
+                            "consSitNFe": consSitNFe
+                        }
+                    }
+                }
+            };
+
+            try {
+                const builder = new XMLBuilder({
+                    ignoreAttributes: false,
+                    attributeNamePrefix: "@"
+                });
+
+                // Validação do XML interno (opcional)
+                this.#xmlValido(builder.build({ consSitNFe }), `consSitNFe_v${this.#config.versao}`);
+
+                const xml = builder.build(xmlObj);
+
+                let tempUF = urlEventos(this.#config.UF, this.#config.versao);
+
+                const url = tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
+
+                const req = https.request(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/soap+xml; charset=utf-8',
+                        'Content-Length': xml.length,
+                    },
+                    rejectUnauthorized: false,
+                    ...await this.#certTools()
+                }, (res) => {
+                    let data = '';
+                    res.on('data', (chunk) => data += chunk);
+                    res.on('end', () => resolve(data));
+                });
+
+                req.on('error', (err) => reject(err));
+
+                req.write(xml);
+                req.end();
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
     //Consulta status sefaz
     async sefazStatus(): Promise<string> {
         return new Promise(async (resvol, reject) => {
 
-            if (typeof this.#config.cUF == "undefined") throw "sefazStatus({...cUF}) -> não definido!";
+            if (typeof this.#config.UF == "undefined") throw "sefazStatus({...UF}) -> não definido!";
             if (typeof this.#config.tpAmb == "undefined") throw "sefazStatus({...tpAmb}) -> não definido!";
             if (typeof this.#config.mod == "undefined") throw "sefazStatus({...mod}) -> não definido!";
+
+            let tempUF = urlEventos(this.#config.UF, this.#config.versao);
 
             //Separado para validar o corpo da consulta
             let consStatServ = {
                 "@versao": "4.00",
                 "@xmlns": "http://www.portalfiscal.inf.br/nfe",
                 "tpAmb": this.#config.tpAmb,
-                "cUF": this.#config.cUF,
+                "cUF": tempUF.cUF,
                 "xServ": "STATUS"
             }
 
@@ -257,9 +330,10 @@ class Tools {
                 });
 
                 //Validação
-                this.#xmlValido(tempBuild.build({ consStatServ }), 'consStatServ_v4.00');
+                this.#xmlValido(tempBuild.build({ consStatServ }), `consStatServ_v${this.#config.versao}`);
+                let tempUF = urlEventos(this.#config.UF, this.#config.versao);
                 let xml = tempBuild.build(xmlObj);
-                const req = https.request(urlServicos[`${this.#config.cUF}`][`mod_${this.#config.mod}`].NFeStatusServico[(this.#config.tpAmb == 1 ? "producao" : "homologacao")], {
+                const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeStatusServico, {
                     ...{
                         method: 'POST',
                         headers: {

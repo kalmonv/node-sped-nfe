@@ -2,8 +2,8 @@ import { Tools } from "../dist/index.js"
 import fs from "fs";
 
 let myTools = new Tools({ //Configuração de habiente e sistema
-    mod: '65',
-    tpAmb: 2,
+    mod: '55',
+    tpAmb: 1,
     UF: 'MT',
     versao: "4.00",
 
@@ -14,6 +14,6 @@ let myTools = new Tools({ //Configuração de habiente e sistema
     senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),
 });
 
-myTools.sefazStatus().then(res=>{
-    console.log(res)
+myTools.consultarNFe("CHAVE DA NFE").then(res => {
+    console.log(res);
 })

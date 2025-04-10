@@ -15,7 +15,7 @@ import https from "https";
 import { spawnSync } from "child_process";
 import tmp from "tmp";
 import crypto from "crypto";
-import { urlServicos } from "./eventos.js";
+import { urlEventos } from "./eventos.js";
 import fs from "fs";
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -23,7 +23,7 @@ import pem from 'pem';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 class Tools {
-    constructor(config = { mod: "", xmllint: 'xmllint', cUF: '51', tpAmb: 2, CSC: "", CSCid: "" }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00" }, certificado = { pfx: "", senha: "" }) {
         _Tools_instances.add(this);
         _Tools_cert.set(this, void 0);
         _Tools_xmlTools.set(this, {
@@ -81,7 +81,8 @@ class Tools {
             };
             let xmlLote = await this.json2xml(jsonXmlLote);
             try {
-                const req = https.request(urlServicos[`${__classPrivateFieldGet(this, _Tools_config, "f").cUF}`][`mod_${__classPrivateFieldGet(this, _Tools_config, "f").mod}`].NFeAutorizacao[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")], {
+                let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
+                const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeAutorizacao, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -187,20 +188,83 @@ class Tools {
             __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this).then(resvol).catch(reject);
         });
     }
+    consultarNFe(chNFe) {
+        return new Promise(async (resolve, reject) => {
+            if (!chNFe || chNFe.length !== 44) {
+                return reject("consultarNFe(chNFe) -> chave inválida!");
+            }
+            if (typeof __classPrivateFieldGet(this, _Tools_config, "f").UF === "undefined")
+                throw "consultarNFe({...UF}) -> não definido!";
+            if (typeof __classPrivateFieldGet(this, _Tools_config, "f").tpAmb === "undefined")
+                throw "consultarNFe({...tpAmb}) -> não definido!";
+            if (typeof __classPrivateFieldGet(this, _Tools_config, "f").mod === "undefined")
+                throw "consultarNFe({...mod}) -> não definido!";
+            let consSitNFe = {
+                "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                "@versao": "4.00",
+                "tpAmb": __classPrivateFieldGet(this, _Tools_config, "f").tpAmb,
+                "xServ": "CONSULTAR",
+                "chNFe": chNFe
+            };
+            let xmlObj = {
+                "soap:Envelope": {
+                    "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
+                    "@xmlns:nfe": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeConsultaProtocolo4",
+                    "soap:Body": {
+                        "nfe:nfeDadosMsg": {
+                            "consSitNFe": consSitNFe
+                        }
+                    }
+                }
+            };
+            try {
+                const builder = new XMLBuilder({
+                    ignoreAttributes: false,
+                    attributeNamePrefix: "@"
+                });
+                // Validação do XML interno (opcional)
+                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, builder.build({ consSitNFe }), 'consSitNFe_v4.00');
+                const xml = builder.build(xmlObj);
+                let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
+                const url = tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
+                const req = https.request(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/soap+xml; charset=utf-8',
+                        'Content-Length': xml.length,
+                    },
+                    rejectUnauthorized: false,
+                    ...await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this)
+                }, (res) => {
+                    let data = '';
+                    res.on('data', (chunk) => data += chunk);
+                    res.on('end', () => resolve(data));
+                });
+                req.on('error', (err) => reject(err));
+                req.write(xml);
+                req.end();
+            }
+            catch (err) {
+                reject(err);
+            }
+        });
+    }
     //Consulta status sefaz
     async sefazStatus() {
         return new Promise(async (resvol, reject) => {
-            if (typeof __classPrivateFieldGet(this, _Tools_config, "f").cUF == "undefined")
-                throw "sefazStatus({...cUF}) -> não definido!";
+            if (typeof __classPrivateFieldGet(this, _Tools_config, "f").UF == "undefined")
+                throw "sefazStatus({...UF}) -> não definido!";
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").tpAmb == "undefined")
                 throw "sefazStatus({...tpAmb}) -> não definido!";
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").mod == "undefined")
                 throw "sefazStatus({...mod}) -> não definido!";
+            let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
+            //Separado para validar o corpo da consulta
             let consStatServ = {
                 "@versao": "4.00",
                 "@xmlns": "http://www.portalfiscal.inf.br/nfe",
                 "tpAmb": __classPrivateFieldGet(this, _Tools_config, "f").tpAmb,
-                "cUF": __classPrivateFieldGet(this, _Tools_config, "f").cUF,
+                "cUF": tempUF.cUF,
                 "xServ": "STATUS"
             };
             let xmlObj = {
@@ -219,10 +283,11 @@ class Tools {
                     ignoreAttributes: false,
                     attributeNamePrefix: "@"
                 });
-                fs.writeFileSync("testes/status.xml", tempBuild.build({ consStatServ }));
+                //Validação
                 __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, tempBuild.build({ consStatServ }), 'consStatServ_v4.00');
+                let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
                 let xml = tempBuild.build(xmlObj);
-                const req = https.request(urlServicos[`${__classPrivateFieldGet(this, _Tools_config, "f").cUF}`][`mod_${__classPrivateFieldGet(this, _Tools_config, "f").mod}`].NFeStatusServico[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")], {
+                const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeStatusServico, {
                     ...{
                         method: 'POST',
                         headers: {

@@ -3,10 +3,11 @@ declare class Tools {
     constructor(config?: {
         mod: string;
         xmllint: string;
-        cUF: string;
+        UF: string;
         tpAmb: number;
         CSC: string;
         CSCid: string;
+        versao: string;
     }, certificado?: {
         pfx: string;
         senha: string;
@@ -16,6 +17,7 @@ declare class Tools {
     xml2json(xml: string): Promise<object>;
     json2xml(obj: object): Promise<string>;
     getCertificado(): Promise<unknown>;
+    consultarNFe(chNFe: string): Promise<string>;
     sefazStatus(): Promise<string>;
 }
 export { Tools };
