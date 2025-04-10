@@ -1,6 +1,6 @@
 {
   "name": "node-sped-nfe",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "Kalmon V. Tavares",
   "type": "module",
   "main": "dist/index.js",
@@ -29,8 +29,9 @@
     "t:status": "node exemplos/status.js",
     "t:nfe": "node exemplos/nfe.js",
     "t:nfce": "node exemplos/nfce.js",
+    "t:cons": "node exemplos/consulta.js",
 
-    "t:consult": "node testes/consulta.js"
+    "teste": "node testes/teste.js"
   },
   "devDependencies": {
     "@types/axios": "^0.9.36",

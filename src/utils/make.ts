@@ -63,23 +63,38 @@ class Make {
     }
 
     tagRefNFe(obj: any) {
-        throw "Não implementado!";
+        if (typeof this.#NFe.infNFe.ide.NFref == "undefined") {
+            this.#NFe.infNFe.ide.NFref = new Array();
+        }
+        this.#NFe.infNFe.ide.NFref.push({ refNFe: obj });
     }
 
     tagRefNF(obj: any) {
-        throw "Não implementado!";
+        if (typeof this.#NFe.infNFe.ide.NFref == "undefined") {
+            this.#NFe.infNFe.ide.NFref = new Array();
+        }
+        this.#NFe.infNFe.ide.NFref.push({ refNF: obj });
     }
 
     tagRefNFP(obj: any) {
-        throw "Não implementado!";
+        if (typeof this.#NFe.infNFe.ide.NFref == "undefined") {
+            this.#NFe.infNFe.ide.NFref = new Array();
+        }
+        this.#NFe.infNFe.ide.NFref.push({ refNFP: obj });
     }
 
     tagRefCTe(obj: any) {
-        throw "Não implementado!";
+        if (typeof this.#NFe.infNFe.ide.NFref == "undefined") {
+            this.#NFe.infNFe.ide.NFref = new Array();
+        }
+        this.#NFe.infNFe.ide.NFref.push({ refCTe: obj });
     }
 
     tagRefECF(obj: any) {
-        throw "Não implementado!";
+        if (typeof this.#NFe.infNFe.ide.NFref == "undefined") {
+            this.#NFe.infNFe.ide.NFref = new Array();
+        }
+        this.#NFe.infNFe.ide.NFref.push({ refECF: obj });
     }
 
     tagEmit(obj: any) {
@@ -594,9 +609,8 @@ class Make {
         throw "Ainda não configurado!";
     }
 
-
+    //Sistema gera a chave da nota fiscal
     #gerarChaveNFe() {
-
         const chaveSemDV =
             this.#NFe.infNFe.ide.cUF.padStart(2, '0') + // Código da UF (2 dígitos)
             this.#NFe.infNFe.ide.dhEmi.substring(2, 4) + this.#NFe.infNFe.ide.dhEmi.substring(5, 7) + // Ano e Mês da emissão (AAMM, 4 dígitos)
@@ -641,10 +655,10 @@ class Make {
 
         //Adicionar QrCode
         if (this.#NFe.infNFe.ide.mod == 65) {
-            //Como ja temos cUF, usamo dados do extras para convere em UF e achar os dados de url!
+            //Como ja temos cUF, vamos usar o extras.cUF2UF
             let tempUF = urlEventos(cUF2UF[this.#NFe.infNFe.ide.cUF], this.#NFe.infNFe['@versao']);
             this.#NFe.infNFeSupl = {
-                qrCode: tempUF.mod65[this.#NFe.infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].NFeConsultaQR,
+                qrCode: tempUF.mod65[this.#NFe.infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].NFeConsultaQR, //Este não e o valor final, vamos utilizar apenas para carregar os dados que vão ser utlizados no make
                 urlChave: tempUF.mod65[this.#NFe.infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].urlChave
             }
         }
@@ -656,6 +670,7 @@ class Make {
         return tempBuild.build({ NFe: this.#NFe });
     }
 
+    //Obtem os dados de importo e soma no total, utlizado sempre que for setado algum imposto.
     #calICMSTot(obj: any) {
         Object.keys(obj).map(key => {
             if (this.#ICMSTot[key] !== undefined) {

@@ -123,7 +123,7 @@ nfe.tagide(std);
 ```
 
 
-### 🔴 function tagrefNFe(std)
+### 🟢 function tagrefNFe(std)
 Node referente a NFe referenciada
 
 | Parâmetro | Tipo | Descrição |
@@ -137,7 +137,7 @@ std.refNFe = '35150271780456000160550010000253101000253101';
 nfe.tagrefNFe(std);
 ```
 
-### 🔴 function tagrefNF(std)
+### 🟢 function tagrefNF(std)
 Node referente a Nota Fiscal referenciada modelo 1 ou 2
 
 | Parâmetro | Tipo | Descrição |
@@ -156,7 +156,7 @@ std.nNF = 587878;
 nfe.tagrefNF(std);
 ```
 
-### 🔴 function tagrefNFP(std)
+### 🟢 function tagrefNFP(std)
 Node referente a Nota Fiscal referenciada de produtor rural
 
 | Parâmetro | Tipo | Descrição |
@@ -173,10 +173,11 @@ std.IE = 'ISENTO';
 std.mod = '04';
 std.serie = 0;
 std.nNF = 5578;
+std.refCTe = '35150271780456000160550010000253101000253101'
 
 nfe.tagrefNFP(std);
 ```
-### 🔴 function tagrefCTe(std)
+### 🟢 function tagrefCTe(std)
 Node referente aos CTe referenciados
 
 | Parâmetro | Tipo | Descrição |
@@ -189,7 +190,7 @@ std.refCTe = '35150268252816000146570010000016161002008472';
 nfe.tagrefCTe(std);
 ```
 
-### 🔴 function tagrefECF(std)
+### 🟢 function tagrefECF(std)
 Node referente aos ECF referenciados
 
 | Parâmetro | Tipo | Descrição |

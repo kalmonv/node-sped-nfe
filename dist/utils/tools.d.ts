@@ -16,7 +16,7 @@ declare class Tools {
     xmlSign(xmlJSON: string, data?: any): Promise<string>;
     xml2json(xml: string): Promise<object>;
     json2xml(obj: object): Promise<string>;
-    getCertificado(): Promise<unknown>;
+    getCertificado(): Promise<object>;
     consultarNFe(chNFe: string): Promise<string>;
     sefazStatus(): Promise<string>;
 }

@@ -166,7 +166,7 @@ class Tools {
                 xml.NFe.infNFeSupl.qrCode = __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_gerarQRCodeNFCe).call(this, xml.NFe, "2", __classPrivateFieldGet(this, _Tools_config, "f").CSCid, __classPrivateFieldGet(this, _Tools_config, "f").CSC);
             }
             this.json2xml(xml).then(async (res) => {
-                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, res, 'nfe_v4.00');
+                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, res, `nfe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`);
                 resvol(res);
             }).catch(err => {
                 reject(err);
@@ -183,11 +183,13 @@ class Tools {
             resvol(__classPrivateFieldGet(this, _Tools_xmlTools, "f").XMLBuilder.build(obj));
         });
     }
+    //Obter certificado 
     async getCertificado() {
         return new Promise(async (resvol, reject) => {
             __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this).then(resvol).catch(reject);
         });
     }
+    //Consulta NFe
     consultarNFe(chNFe) {
         return new Promise(async (resolve, reject) => {
             if (!chNFe || chNFe.length !== 44) {
@@ -223,7 +225,7 @@ class Tools {
                     attributeNamePrefix: "@"
                 });
                 // Validação do XML interno (opcional)
-                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, builder.build({ consSitNFe }), 'consSitNFe_v4.00');
+                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, builder.build({ consSitNFe }), `consSitNFe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`);
                 const xml = builder.build(xmlObj);
                 let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
                 const url = tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
@@ -284,7 +286,7 @@ class Tools {
                     attributeNamePrefix: "@"
                 });
                 //Validação
-                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, tempBuild.build({ consStatServ }), 'consStatServ_v4.00');
+                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, tempBuild.build({ consStatServ }), `consStatServ_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`);
                 let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
                 let xml = tempBuild.build(xmlObj);
                 const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeStatusServico, {

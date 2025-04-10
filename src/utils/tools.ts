@@ -183,7 +183,7 @@ class Tools {
             }
 
             this.json2xml(xml).then(async res => {
-                this.#xmlValido(res, `nfe_${this.#config.versao}`);
+                this.#xmlValido(res, `nfe_v${this.#config.versao}`);
                 resvol(res);
             }).catch(err => {
                 reject(err)
@@ -191,7 +191,8 @@ class Tools {
         })
     }
 
-    #gerarQRCodeNFCe(NFe: any, versaoQRCode: string = "2", idCSC: string, CSC: string) {
+    //Gerar QRCode da NFCe
+    #gerarQRCodeNFCe(NFe: any, versaoQRCode: string = "2", idCSC: string, CSC: string): string {
         let s = '|',
             concat,
             hash;
@@ -217,12 +218,14 @@ class Tools {
         })
     }
 
-    async getCertificado() {
+    //Obter certificado 
+    async getCertificado(): Promise<object> {
         return new Promise(async (resvol, reject) => {
             this.#certTools().then(resvol).catch(reject)
         })
     }
 
+    //Consulta NFe
     consultarNFe(chNFe: string): Promise<string> {
         return new Promise(async (resolve, reject) => {
             if (!chNFe || chNFe.length !== 44) {
