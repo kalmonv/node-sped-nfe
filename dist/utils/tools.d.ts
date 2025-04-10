@@ -11,7 +11,6 @@ declare class Tools {
         pfx: string;
         senha: string;
     });
-    teste(): Promise<object>;
     sefazEnviaLote(xml: string, data?: any): Promise<string>;
     xmlSign(xmlJSON: string, data?: any): Promise<string>;
     xml2json(xml: string): Promise<object>;

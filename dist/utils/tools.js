@@ -49,9 +49,6 @@ class Tools {
             parseTagValue: false, // Evita conversão automática de valores
         });
     }
-    async teste() {
-        return await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this);
-    }
     sefazEnviaLote(xml, data = { idLote: 1, indSinc: 0, compactar: false }) {
         return new Promise(async (resvol, reject) => {
             if (typeof data.idLote == "undefined")
@@ -187,7 +184,7 @@ class Tools {
     }
     async getCertificado() {
         return new Promise(async (resvol, reject) => {
-            await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this).then(resvol).catch(reject);
+            __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this).then(resvol).catch(reject);
         });
     }
     //Consulta status sefaz

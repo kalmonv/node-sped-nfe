@@ -59,10 +59,6 @@ class Tools {
         });
     }
 
-    async teste() {
-        return await this.#certTools()
-    }
-
     sefazEnviaLote(xml: string, data: any = { idLote: 1, indSinc: 0, compactar: false }): Promise<string> {
         return new Promise(async (resvol, reject) => {
             if (typeof data.idLote == "undefined") data.idLote = 1;
@@ -221,7 +217,7 @@ class Tools {
 
     async getCertificado() {
         return new Promise(async (resvol, reject) => {
-            await this.#certTools().then(resvol).catch(reject)
+            this.#certTools().then(resvol).catch(reject)
         })
     }
 
@@ -313,7 +309,6 @@ class Tools {
         } else if (!verif.stderr.includes(".xml validates")) {
             throw new Error(verif.stderr);
         }
-
         return 1;
     }
 
