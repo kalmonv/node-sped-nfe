@@ -53,6 +53,7 @@ class Tools {
         if (typeof config.versao == "undefined") throw "Tools({...,versao:?},{}): versao não definida!";
 
         if (typeof config.timeout == "undefined") config.timeout = 30;
+        if (typeof config.xmllint == "undefined") config.xmllint = 'xmllint';
 
         //Configurar certificado
         this.#config = config;
