@@ -75,13 +75,22 @@ class Make {
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref.push({ refNF: obj });
     }
     tagRefNFP(obj) {
-        throw "Não implementado!";
+        if (typeof __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref == "undefined") {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref = new Array();
+        }
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref.push({ refNFP: obj });
     }
     tagRefCTe(obj) {
-        throw "Não implementado!";
+        if (typeof __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref == "undefined") {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref = new Array();
+        }
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref.push({ refCTe: obj });
     }
     tagRefECF(obj) {
-        throw "Não implementado!";
+        if (typeof __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref == "undefined") {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref = new Array();
+        }
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref.push({ refECF: obj });
     }
     tagEmit(obj) {
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.emit = new Object();
@@ -117,10 +126,16 @@ class Make {
         });
     }
     tagRetirada(obj) {
-        throw "não implementado!";
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.retirada = {};
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.retirada[key] = obj[key];
+        });
     }
     tagAutXML(obj) {
-        throw "não implementado!";
+        if (typeof __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.autXML == "undefined") {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.autXML = new Array();
+        }
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.autXML.push(obj);
     }
     //tagprod
     tagProd(obj) {
@@ -151,8 +166,8 @@ class Make {
     tagCreditoPresumidoProd(obj) {
         throw "não implementado!";
     }
-    taginfAdProd(obj) {
-        throw "não implementado!";
+    taginfAdProd(index, obj) {
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].infAdProd = obj;
     }
     tagCEST(obj) {
         throw "não implementado!";

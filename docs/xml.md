@@ -83,7 +83,7 @@ nfe.taginfNFe(std);
 
 ```
 
-### 🟢 function tagide(std)
+### 🟢 function tagIde(std)
 Node de identificação da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -119,7 +119,7 @@ std.verProc = '3.10.31';
 std.dhCont = null;
 std.xJust = null;
 
-nfe.tagide(std);
+nfe.tagIde(std);
 ```
 
 
@@ -297,7 +297,7 @@ std.fone;
 nfe.tagenderDest(std);
 ```
 
-### 🔴 function tagretirada(std)
+### 🟢 function tagretirada(std)
 > NOTA: Ajustado para NT 2018.005
 Node indicativo de local de retirada diferente do endereço do emitente
 
@@ -357,7 +357,7 @@ std.email = 'contato@beltrano.com.br';
 nfe.tagentrega(std);
 ```
 
-### 🔴 function tagautXML(std)
+### 🟢 function tagautXML(std)
 Node de registro de pessoas autorizadas a acessar a NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -366,7 +366,7 @@ Node de registro de pessoas autorizadas a acessar a NFe
 ```javascript
 let std = new Object();
 std.CNPJ = '12345678901234'; //indicar um CNPJ ou CPF
-std.CPF = null;
+//std.CPF = null; //indicar um CNPJ ou CPF
 nfe.tagautXML(std);
 ```
 
@@ -378,7 +378,6 @@ Node de dados do produto/serviço
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
 std.cProd;
 std.cEAN;
 std.cBarra;
@@ -405,7 +404,7 @@ std.xPed;
 std.nItemPed;
 std.nFCI;
 
-nfe.tagprod(std);
+nfe.tagProd([std]);
 ```
 
 ### 🔴 function tagCreditoPresumidoProd(std): void
@@ -420,12 +419,12 @@ Node opcional com dados de Crédito Presumido, são permitidos até 4 registros 
 
 ```javascript
 let std = new \Object();
-std.item = 1;
+let indexProd = 1;
 std.cCredPresumido = '2222211234';
 std.pCredPresumido = '4';
 std.vCredPresumido = '4';
 
-$make.tagCreditoPresumidoProd(std);
+$make.tagCreditoPresumidoProd(indexProd ,std);
 ```
 
 ### 🔴 function taginfAdProd(std)
@@ -436,14 +435,14 @@ Node de informações adicionais do produto
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 
 std.infAdProd = 'informacao adicional do item';
 
-nfe.taginfAdProd(std);
+nfe.taginfAdProd(indexProd, std);
 ```
 
-### 🔴 function tagNVE(std)
+### 🔴 function tagNVE(std) !! Pode ser declarado no tagProd({...NCM, NVE:[]})
 Node com a Nomenclatura de Valor Aduaneiro e Estatística do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -451,13 +450,13 @@ Node com a Nomenclatura de Valor Aduaneiro e Estatística do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.NVE = 'AA0001';
 
-nfe.tagNVE(std);
+nfe.tagNVE(indexProd, std);
 ```
 
-### 🔴 function tagCEST(std)
+### 🔴 function tagCEST(std) !! Pode ser declarado no tagProd({...NCM, CEST, indEscala, CNPJFab})
 Node de detalhamento do Especificador da Substituição Tributária do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -465,15 +464,15 @@ Node de detalhamento do Especificador da Substituição Tributária do item da N
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.CEST = '0200100';
 std.indEscala = 'N'; //incluido no layout 4.00
 std.CNPJFab = '12345678901234'; //incluido no layout 4.00
 
-nfe.tagCEST(std);
+nfe.tagCEST(indexProd, std);
 ```
 
-### 🔴 function tagRECOPI(std)
+### 🔴 function tagRECOPI(std) !! Pode ser declarado no tagProd({...NCM, nRECOPI})
 Node com o número do RECOPI
 
 | Parâmetro | Tipo | Descrição |
@@ -481,13 +480,13 @@ Node com o número do RECOPI
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.nRECOPI = '12345678901234567890';
 
-nfe.tagRECOPI(std);
+nfe.tagRECOPI(indexProd, std);
 ```
 
-### 🔴 function tagDI(std)
+### 🟢 function tagDI(std)  !! Pode ser declarado no tagProd({..., DI:{...}})
 Node com informações da Declaração de Importação do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -495,7 +494,7 @@ Node com informações da Declaração de Importação do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.nDI;
 std.dDI;
 std.xLocDesemb;
@@ -509,10 +508,10 @@ std.CPF; //NT 2023.004 v1.00
 std.UFTerceiro;
 std.cExportador;
 
-nfe.tagDI(std);
+nfe.tagDI(indexProd, std);
 ```
 
-### 🔴 function tagadi(std)
+### 🟢 function tagadi(std) !! Pode ser declarado no tagProd({..., DI:{...,adi:{...}}})
 Node de Adições relativas as DI do item
 
 | Parâmetro | Tipo | Descrição |
@@ -520,7 +519,7 @@ Node de Adições relativas as DI do item
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.nDI; //número da DI
 std.nAdicao;
 std.nSeqAdic;
@@ -528,7 +527,7 @@ std.cFabricante;
 std.vDescDI;
 std.nDraw;
 
-nfe.tagadi(std);
+nfe.tagadi(indexProd, std);
 ```
 
 ### 🔴 function tagdetExport(std)
@@ -539,10 +538,10 @@ Node com informações de exportação para o item
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.nDraw = '82828';
 
-nfe.tagdetExport(std);
+nfe.tagdetExport(indexProd, std);
 ```
 
 ### 🔴 function tagdetExportInd(std)
@@ -554,12 +553,12 @@ nfe.tagdetExport(std) pois pertence a essa tag
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.nRE = '123456789012';
 std.chNFe = '53170924915365000295550550000001951000001952';
 std.qExport = 1234.123;
 
-nfe.tagdetExportInd(std);
+nfe.tagdetExportInd(indexProd, std);
 ```
 ### 🔴 function tagRastro(std)
 Node com os dados de rastreabilidade do item da NFe
@@ -571,14 +570,14 @@ Node com os dados de rastreabilidade do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.nLote = '11111';
 std.qLote = 200;
 std.dFab = '2018-01-01';
 std.dVal = '2020-01-01';
 std.cAgreg = '1234';
 
-nfe.tagRastro(std);
+nfe.tagRastro(indexProd, std);
 ```
 
 ### 🔴 function tagveicProd(std)
@@ -589,7 +588,7 @@ Node com o detalhamento de Veículos novos do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.tpOp;
 std.chassi;
 std.cCor;
@@ -615,7 +614,7 @@ std.cCorDENATRAN;
 std.lota;
 std.tpRest;
 
-nfe.tagveicProd(std);
+nfe.tagveicProd(indexProd, std);
 ```
 
 ### 🔴 function tagmed(std)
@@ -627,12 +626,12 @@ Node com o detalhamento de Medicamentos e de matérias-primas farmacêuticas
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.cProdANVISA = '1234567890123'; //incluido no layout 4.00
 std.xMotivoIsencao = 'RDC 238';
 std.vPMC = 102.22;
 
-nfe.tagmed(std);
+nfe.tagmed(indexProd, std);
 ```
 
 ### 🔴 function tagarma(std)
@@ -643,14 +642,14 @@ Node com informações e detalhamento de Armamento do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.nAR; //Indicativo de número da arma
 std.tpArma;
 std.nSerie;
 std.nCano;
 std.descr;
 
-nfe.tagarma(std);
+nfe.tagarma(indexProd, std);
 ```
 
 ### 🔴 function tagcomb(std)
@@ -661,7 +660,7 @@ Node das informações específicas para combustíveis líquidos e lubrificantes
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.cProdANP;
 
 std.pMixGN; //removido no layout 4.00
@@ -679,7 +678,7 @@ std.qBCProd;
 std.vAliqProd;
 std.vCIDE;
 
-nfe.tagcomb(std);
+nfe.tagcomb(indexProd, std);
 ```
 
 ### 🔴 function tagencerrante(std)
@@ -691,7 +690,7 @@ Referente ao item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.nBico;
 std.nBomba;
 std.nTanque;
@@ -700,7 +699,7 @@ std.vEncFin;
 std.pBio; //NT 2022.001 v1.10
 
 
-nfe.tagencerrante(std);
+nfe.tagencerrante(indexProd, std);
 ```
 
 ### 🔴 function tagorigComb(std)
@@ -711,12 +710,12 @@ Parte do grupo encerrante, podem haver de 0 até 30 tags desse tipo
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.indImport= 0; //NT 2023.001 v1.00
 std.cUFOrig = 35; //NT 2023.001 v1.00
 std.Orig = 100; //NT 2023.001 v1.00
 
-nfe.tagOrigComb(std);
+nfe.tagOrigComb(indexProd, std);
 ```
 
 
@@ -728,10 +727,10 @@ Node inicial dos Tributos incidentes no Produto ou Serviço do item da NFe
 | std | stcClass | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.vTotTrib = 1000.00;
 
-nfe.tagimposto(std);
+nfe.tagimposto(indexProd, std);
 ```
 
 ### 🔴 function tagICMS(std)
@@ -743,7 +742,7 @@ Node com informações do ICMS do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.orig;
 std.CST;
 std.modBC;
@@ -793,7 +792,7 @@ std.vICMSMonoRet; //NT 2023.001-v1.10
 std.vICMSMonoDif; //NT 2023.001-v1.10
 std.cBenefRBC; //NT 2019.001 v1.61
 std.indDeduzDeson; //NT 2023.004 v1.00
-nfe.tagICMS(std);
+nfe.tagICMS(indexProd, std);
 ```
 
 ### 🔴 function tagICMSPart(std)
@@ -804,7 +803,7 @@ Node com informações da partilha do ICMS entre a UF de origem e UF de destino 
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.orig = 0;
 std.CST = '90';
 std.modBC = 0;
@@ -821,7 +820,7 @@ std.vICMSST = 140.00;
 std.pBCOp = 10.00;
 std.UFST = 'RJ';
 
-nfe.tagICMSPart(std);
+nfe.tagICMSPart(indexProd, std);
 ```
 
 ### 🔴 function tagICMSST(std)
@@ -833,7 +832,7 @@ Node Repasse de ICMS ST retido anteriormente em operações interestaduais com r
 | std | stcClass | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.orig = 0;
 std.CST = '60';
 std.vBCSTRet = 1000.00;
@@ -850,7 +849,7 @@ std.vBCEfet = null;
 std.pICMSEfet = null;
 std.vICMSEfet = null;
 
-nfe.tagICMSST(std);
+nfe.tagICMSST(indexProd, std);
 ```
 
 ### 🟢 function tagProdICMSSN(std)
@@ -862,7 +861,7 @@ Node referente Tributação ICMS pelo Simples Nacional do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.orig = 0;
 std.CSOSN = '101';
 std.pCredSN = 2.00;
@@ -893,7 +892,7 @@ std.pICMSEfet = null;
 std.vICMSEfet = null;
 std.vICMSSubstituto = null;
 
-nfe.tagICMSSN(std);
+nfe.tagICMSSN(indexProd, std);
 ```
 
 ### 🔴 function tagICMSUFDest(std)
@@ -904,7 +903,7 @@ Node de informação do ICMS Interestadual do item na NFe
 | std | stcClass | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.vBCUFDest = 100.00;
 std.vBCFCPUFDest = 100.00;
 std.pFCPUFDest = 1.00;
@@ -915,7 +914,7 @@ std.vFCPUFDest = 1.00;
 std.vICMSUFDest = 14.44;
 std.vICMSUFRemet = 3.56;
 
-nfe.tagICMSUFDest(std);
+nfe.tagICMSUFDest(indexProd, std);
 ```
 
 ### 🔴 function tagIPI(std)
@@ -928,7 +927,7 @@ Node referente ao IPI do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.clEnq = null;
 std.CNPJProd = null;
 std.cSelo = null;
@@ -941,7 +940,7 @@ std.pIPI = 15.00;
 std.qUnid = null;
 std.vUnid = null;
 
-nfe.tagIPI(std);
+nfe.tagIPI(indexProd, std);
 ```
 
 ### 🔴 function tagII(std)
@@ -952,13 +951,13 @@ Node Imposto de Importação do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.vBC = 1000.00;
 std.vDespAdu = 100.00;
 std.vII = 220.00;
 std.vIOF = null;
 
-nfe.tagII(std);
+nfe.tagII(indexProd, std);
 ```
 
 ### 🟢 function tagProdPIS(std)
@@ -969,7 +968,7 @@ Node PIS do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.CST = '07';
 std.vBC = null;
 std.pPIS = null;
@@ -977,7 +976,7 @@ std.vPIS = null;
 std.qBCProd = null;
 std.vAliqProd = null;
 
-nfe.tagPIS(std);
+nfe.tagPIS(indexProd, std);
 ```
 
 ### 🔴 function tagPISST(std)
@@ -988,7 +987,7 @@ Node PIS Substituição Tributária do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.vPIS =  16.00;
 std.vBC = 1000.00
 std.pPIS = 1.60;
@@ -997,7 +996,7 @@ std.vAliqProd = null;
 std.indSomaPISST = 0; //0=Valor do PISST não compõe o valor total da NF-e
                         //1=Valor do PISST compõe o valor total da NF-e
 
-nfe.tagPISST(std);
+nfe.tagPISST(indexProd, std);
 ```
 
 ### 🟢 function tagProdCOFINS(std)
@@ -1008,7 +1007,7 @@ Node COFINS do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.CST = '07';
 std.vBC = null;
 std.pCOFINS = null;
@@ -1016,7 +1015,7 @@ std.vCOFINS = null;
 std.qBCProd = null;
 std.vAliqProd = null;
 
-nfe.tagCOFINS(std);
+nfe.tagCOFINS(indexProd, std);
 ```
 
 ### 🔴 function tagCOFINSST(std)
@@ -1027,7 +1026,7 @@ Node COFINS Substituição Tributária do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.vCOFINS = 289.30;
 std.vBC = 2893.00;
 std.pCOFINS = 10.00;
@@ -1036,7 +1035,7 @@ std.vAliqProd = null;
 std.indSomaCOFINSST = 0; //0=Valor do COFINS ST não compõe o valor total da NF-e
                            //1=Valor do COFINS ST compõe o valor total da NF-e
 
-nfe.tagCOFINSST(std);
+nfe.tagCOFINSST(indexProd, std);
 ```
 
 ### 🔴 function tagISSQN(std)
@@ -1047,7 +1046,7 @@ Node ISSQN do item da NFe
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.vBC = 1000.00;
 std.vAliq = 5.00;
 std.vISSQN = 50.00;
@@ -1065,7 +1064,7 @@ std.cPais = '1058';
 std.nProcesso = null;
 std.indIncentivo = 2;
 
-nfe.tagISSQN(std);
+nfe.tagISSQN(indexProd, std);
 ```
 
 ### 🔴 function tagimpostoDevol(std)
@@ -1078,11 +1077,11 @@ Node referente a informação do Imposto devolvido
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //item da NFe
+let indexProd = 1; //item da NFe
 std.pDevol = 2.00;
 std.vIPIDevol = 123.36;
 
-nfe.tagimpostoDevol(std);
+nfe.tagimpostoDevol(indexProd, std);
 ```
 
 ### 🟢 function tagICMSTot(std)
@@ -1300,7 +1299,7 @@ Node com as informações dos volumes transportados
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //indicativo do numero do volume
+let indexProd = 1; //indicativo do numero do volume
 std.qVol = 2;
 std.esp = 'caixa';
 std.marca = 'OLX';
@@ -1308,7 +1307,7 @@ std.nVol = '11111';
 std.pesoL = 10.50;
 std.pesoB = 11.00;
 
-nfe.tagvol(std);
+nfe.tagvol(indexProd, std);
 ```
 
 ### 🔴 function taglacres(std)
@@ -1319,10 +1318,10 @@ Node com a identificação dos lacres, referentes ao volume
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
 let std = new Object();
-std.item = 1; //indicativo do numero do volume
+let indexProd = 1; //indicativo do numero do volume
 std.nLacre = 'ZZEX425365';
 
-nfe.taglacres(std);
+nfe.taglacres(indexProd, std);
 ```
 
 ### 🔴 function tagfat(std)

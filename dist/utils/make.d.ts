@@ -16,7 +16,7 @@ declare class Make {
     tagAutXML(obj: any): void;
     tagProd(obj: any): void;
     tagCreditoPresumidoProd(obj: any): void;
-    taginfAdProd(obj: any): void;
+    taginfAdProd(index: any, obj: any): void;
     tagCEST(obj: any): void;
     tagRECOPI(obj: any): void;
     tagAdi(obj: any): void;

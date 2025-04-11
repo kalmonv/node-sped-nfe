@@ -134,11 +134,17 @@ class Make {
     }
 
     tagRetirada(obj: any) {
-        throw "não implementado!";
+        this.#NFe.infNFe.retirada = {};
+        Object.keys(obj).forEach(key => {
+            this.#NFe.infNFe.retirada[key] = obj[key];
+        });
     }
 
     tagAutXML(obj: any) {
-        throw "não implementado!";
+        if (typeof this.#NFe.infNFe.autXML == "undefined") {
+            this.#NFe.infNFe.autXML = new Array();
+        }
+        this.#NFe.infNFe.autXML.push(obj);
     }
 
     //tagprod
@@ -174,8 +180,10 @@ class Make {
         throw "não implementado!";
     }
 
-    taginfAdProd(obj: any) {
-        throw "não implementado!";
+    taginfAdProd(index: any, obj: any) {
+        Object.keys(obj).forEach(key => {
+            this.#NFe.infNFe.det[index][key] = obj[key];
+        });
     }
 
     tagCEST(obj: any) {
@@ -186,8 +194,26 @@ class Make {
         throw "não implementado!";
     }
 
-    tagAdi(obj: any) {
-        throw "não implementado!";
+    tagDI(index: any, obj: any) {
+        if (this.#NFe.infNFe.det[index].DI === undefined) this.#NFe.infNFe.det[index].DI = {};
+        Object.keys(obj).forEach(key => {
+            this.#NFe.infNFe.det[index].DI[key] = obj[key];
+        });
+
+        //Adicionar ao imposto global
+        this.#calICMSTot(obj);
+    }
+
+    tagAdi(index: any, obj: any) {
+        if (this.#NFe.infNFe.det[index].DI === undefined) this.#NFe.infNFe.det[index].DI = {};
+        if (this.#NFe.infNFe.det[index].DI.adi === undefined) this.#NFe.infNFe.det[index].DI.adi = {};
+
+        Object.keys(obj).forEach(key => {
+            this.#NFe.infNFe.det[index].DI.adi[key] = obj[key];
+        });
+
+        //Adicionar ao imposto global
+        this.#calICMSTot(obj);
     }
 
     tagDetExport(obj: any) {
