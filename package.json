@@ -51,5 +51,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/kalmonv/node-sped-nfe.git"
-  }
+  },
+  "license": "MIT"
 }
