@@ -46,6 +46,8 @@ class Tools {
             throw "Tools({...,versao:?},{}): versao não definida!";
         if (typeof config.timeout == "undefined")
             config.timeout = 30;
+        if (typeof config.xmllint == "undefined")
+            config.xmllint = 'xmllint';
         //Configurar certificado
         __classPrivateFieldSet(this, _Tools_config, config, "f");
         __classPrivateFieldSet(this, _Tools_cert, certificado, "f");
@@ -110,6 +112,13 @@ class Tools {
                     res.on('end', () => {
                         resvol(data);
                     });
+                });
+                req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
+                    reject({
+                        name: 'TimeoutError',
+                        message: 'The operation was aborted due to timeout'
+                    });
+                    req.destroy(); // cancela a requisição
                 });
                 req.on('error', (erro) => {
                     reject(erro);
@@ -252,6 +261,13 @@ class Tools {
                     res.on('data', (chunk) => data += chunk);
                     res.on('end', () => resolve(data));
                 });
+                req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
+                    reject({
+                        name: 'TimeoutError',
+                        message: 'The operation was aborted due to timeout'
+                    });
+                    req.destroy(); // cancela a requisição
+                });
                 req.on('error', (err) => reject(err));
                 req.write(xml);
                 req.end();
@@ -320,8 +336,8 @@ class Tools {
                 });
                 req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
                     reject({
-                        name: 'AbortError',
-                        message: 'The operation was aborted'
+                        name: 'TimeoutError',
+                        message: 'The operation was aborted due to timeout'
                     });
                     req.destroy(); // cancela a requisição
                 });
