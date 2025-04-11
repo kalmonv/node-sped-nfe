@@ -55,4 +55,208 @@ const cUF2UF = {
     "GO": "52",
     "DF": "53"
 };
+//Função auxliar de imposto
+const impEstrutura = (imposto) => {
+    const gStruct = {
+        ICMS: {
+            ICMS_ICMSSN: {
+                "@label": "Tributação",
+                "@type": "select",
+                "@obrig": true,
+                "@values": [
+                    { "102": "Tributação Normal" },
+                    { "103": "Simples Nacional" }
+                ],
+                "@next": {
+                    CST: {
+                        "@label": "Situação Tributaria",
+                        "@type": "select",
+                        "@obrig": true,
+                        "@values": [
+                            { "00": "00 - Tributada integralmente" },
+                            { "10": "10 - Tributada com cobrança do ICMS por ST" },
+                            { "10v2": "10 - Tributada com cobrança do ICMS por ST(com partilha do ICMS entre UF de origem e a UF de destino ou a UFdefinida na legislação)" },
+                            { "20": "20 - Com redução de base de cálculo" },
+                            { "30": "30 - Isenta ou não tributada e com cobrança do ICMS por ST" },
+                            { "40": "40 - Isenta" },
+                            { "41": "41 - Não tributada" },
+                            { "41v2": "41 - Não tributada (ICMSST devido para UF de destino, nas operações interestaduais de produtos que tiveram retenção de ICMS na UF do rementente)" },
+                            { "50": "50 - Suspensão" },
+                            { "51": "51 - Diferimento" },
+                            { "60": "60 - Cobrado anteriormente por ST" },
+                            { "60v2": "60 - Cobrado anteriormente por ST" },
+                            { "70": "70 - Com redução de base de cálculo e cobrança do ICMS por ST" },
+                            { "90": "90 - Outros (Com partilha do ICMS entre a UF de origem e a UF de destino ou a UF definida na legistação)" },
+                            { "90v2": "90 - Outros" },
+                        ],
+                    },
+                    orig: {
+                        "@label": "Origem",
+                        "@type": "select",
+                        "@obrig": true,
+                        "@values": [
+                            { "0": "Nacional, exceto as indicadas nos códigos 3, 4, 5 e 8" },
+                            { "1": "Estrangeira - Importação direta, exceto a indicada no código 6" },
+                            { "2": "Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7" },
+                            { "3": "Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%" },
+                            { "4": "Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam as legislações citadas nos Ajustes" },
+                            { "5": "Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40% " },
+                            { "6": "Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural" },
+                            { "7": "Estrangeira - Adquirida no mercado interno, sem similar nacional, constante lista CAMEX e gás natural" }
+                        ],
+                    },
+                    "@next": {
+                        "@CST_00": {
+                            modBC: {
+                                "@label": "Modalidade de determinação da base de calculo ICMS",
+                                "@type": "select",
+                                "@obrig": true,
+                                "@values": [
+                                    { "0": "0-Margem Valor Agregado (%)" },
+                                    { "1": "1-Pauta (Valor)" },
+                                    { "2": "2-Preço Tabelado Máx" },
+                                    { "3": "3-Valor da operação" }
+                                ],
+                            },
+                            vBC: {
+                                "@label": "Base de calculo ICMS",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            pICMS: {
+                                "@label": "Líquota do ICMS",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            vICMS: {
+                                "@label": "Valor ICMS",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            pFCP: {
+                                "@label": "% Relativo ao FCP ST",
+                                "@type": "input",
+                                "@obrig": false,
+                            },
+                            vFCP: {
+                                "@label": "Valor ICMS FCP ST",
+                                "@type": "input",
+                                "@obrig": false,
+                            }
+                        },
+                        "@CST_10": {
+                            modBC: {
+                                "@label": "Modalidade de determinação da base de calculo ICMS",
+                                "@type": "select",
+                                "@obrig": true,
+                                "@values": [
+                                    { "0": "0-Margem Valor Agregado (%)" },
+                                    { "1": "1-Pauta (Valor)" },
+                                    { "2": "2-Preço Tabelado Máx" },
+                                    { "3": "3-Valor da operação" }
+                                ],
+                            },
+                            vBC: {
+                                "@label": "Base de calculo ICMS",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            pICMS: {
+                                "@label": "Líquota do ICMS",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            vICMS: {
+                                "@label": "Valor ICMS",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            modBCST: {
+                                "@label": "Modalidade de determinação da BC do ICMS ST",
+                                "@type": "select",
+                                "@obrig": true,
+                                "@values": [
+                                    { "0": "Preço tabelado ou máximo sugerido" },
+                                    { "1": "Lista Negativa (valor)" },
+                                    { "2": "Lista Positiva (valor)" },
+                                    { "3": "Lista Neutra (valor)" },
+                                    { "4": "Margem Valor Agregado (%)" },
+                                    { "5": "Pauta (valor)" },
+                                    { "6": "Valor da Operação (NT 2019.001)" }
+                                ],
+                            },
+                            pMVAST: {
+                                "@label": "% Margem de valor adic. ICMS ST",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            pRedBCST: {
+                                "@label": "% Redução de BC ICMS ST",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            vBCST: {
+                                "@label": "BC ICMS ST",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            pICMSST: {
+                                "@label": "Alíquota de ICMS ST",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            vICMSST: {
+                                "@label": "ICMS ST",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            vBCFCPST: {
+                                "@label": "BC ICMS FCP ST",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            pFCPST: {
+                                "@label": "% Relativo ao FCP ST",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            vFCPST: {
+                                "@label": "Valor ICMS FCP ST",
+                                "@type": "input",
+                                "@obrig": true,
+                            },
+                            vBCFCP: {
+                                "@label": "BC ICMS FCP",
+                                "@type": "input",
+                                "@obrig": false,
+                            },
+                            pFCP: {
+                                "@label": "% Relativo ao FCP",
+                                "@type": "input",
+                                "@obrig": false,
+                            },
+                            vFCP: {
+                                "@label": "Valor ICMS FCP",
+                                "@type": "input",
+                                "@obrig": false,
+                            },
+                        }
+                    }
+                }
+            },
+        },
+        II: {},
+        ICMSint: {},
+        IPI: {},
+        IPIDev: {},
+        ISSQN: {},
+        COFINS: {},
+        PIS: {}
+    };
+    //Configurar valores
+    let configStruct = async (el, struc) => {
+        return el;
+    };
+    imposto = configStruct(imposto, gStruct);
+};
 export { cUF2UF, UF2cUF };

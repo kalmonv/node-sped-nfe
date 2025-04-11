@@ -19,7 +19,8 @@ declare class Make {
     taginfAdProd(index: any, obj: any): void;
     tagCEST(obj: any): void;
     tagRECOPI(obj: any): void;
-    tagAdi(obj: any): void;
+    tagDI(index: any, obj: any): void;
+    tagAdi(index: any, obj: any): void;
     tagDetExport(obj: any): void;
     tagDetExportInd(obj: any): void;
     tagRastro(obj: any): void;

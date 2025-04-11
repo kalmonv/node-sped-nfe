@@ -6,6 +6,7 @@ let myTools = new Tools({ //Configuração de habiente e sistema
     tpAmb: 2,
     UF: 'MT',
     versao: "4.00",
+    timeout: 1,
 
     //Optativo: Leia sobre Requisitos.
     xmllint: `../libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`
@@ -14,6 +15,8 @@ let myTools = new Tools({ //Configuração de habiente e sistema
     senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),
 });
 
-myTools.sefazStatus().then(res=>{
+myTools.sefazStatus().then(res => {
     console.log(res)
+}).catch(err=>{
+    console.log(err)
 })

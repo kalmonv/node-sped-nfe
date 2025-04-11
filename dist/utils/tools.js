@@ -23,7 +23,7 @@ import pem from 'pem';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 class Tools {
-    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00" }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30 }, certificado = { pfx: "", senha: "" }) {
         _Tools_instances.add(this);
         _Tools_cert.set(this, void 0);
         _Tools_xmlTools.set(this, {
@@ -36,6 +36,16 @@ class Tools {
             ca: [] // Uma lista de certificados da cadeia (se houver), ou null
         });
         _Tools_config.set(this, void 0);
+        if (typeof config != "object")
+            throw "Tools({config},{}): Config deve ser um objecto!";
+        if (typeof config.UF == "undefined")
+            throw "Tools({...,UF:?},{}): UF não definida!";
+        if (typeof config.tpAmb == "undefined")
+            throw "Tools({...,tpAmb:?},{}): tpAmb não definida!";
+        if (typeof config.versao == "undefined")
+            throw "Tools({...,versao:?},{}): versao não definida!";
+        if (typeof config.timeout == "undefined")
+            config.timeout = 30;
         //Configurar certificado
         __classPrivateFieldSet(this, _Tools_config, config, "f");
         __classPrivateFieldSet(this, _Tools_cert, certificado, "f");
@@ -307,6 +317,13 @@ class Tools {
                     res.on('end', () => {
                         resvol(data);
                     });
+                });
+                req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
+                    reject({
+                        name: 'AbortError',
+                        message: 'The operation was aborted'
+                    });
+                    req.destroy(); // cancela a requisição
                 });
                 req.on('error', (erro) => {
                     reject(erro);

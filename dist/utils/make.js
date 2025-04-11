@@ -167,7 +167,9 @@ class Make {
         throw "não implementado!";
     }
     taginfAdProd(index, obj) {
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].infAdProd = obj;
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index][key] = obj[key];
+        });
     }
     tagCEST(obj) {
         throw "não implementado!";
@@ -175,8 +177,25 @@ class Make {
     tagRECOPI(obj) {
         throw "não implementado!";
     }
-    tagAdi(obj) {
-        throw "não implementado!";
+    tagDI(index, obj) {
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].DI === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].DI = {};
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].DI[key] = obj[key];
+        });
+        //Adicionar ao imposto global
+        __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
+    }
+    tagAdi(index, obj) {
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].DI === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].DI = {};
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].DI.adi === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].DI.adi = {};
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].DI.adi[key] = obj[key];
+        });
+        //Adicionar ao imposto global
+        __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
     }
     tagDetExport(obj) {
         throw "não implementado!";

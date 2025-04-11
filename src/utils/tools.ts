@@ -43,9 +43,17 @@ class Tools {
         CSC: string;
         CSCid: string;
         versao: string;
+        timeout: number;
     };
 
-    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00" }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30 }, certificado = { pfx: "", senha: "" }) {
+        if (typeof config != "object") throw "Tools({config},{}): Config deve ser um objecto!";
+        if (typeof config.UF == "undefined") throw "Tools({...,UF:?},{}): UF não definida!";
+        if (typeof config.tpAmb == "undefined") throw "Tools({...,tpAmb:?},{}): tpAmb não definida!";
+        if (typeof config.versao == "undefined") throw "Tools({...,versao:?},{}): versao não definida!";
+
+        if (typeof config.timeout == "undefined") config.timeout = 30;
+
         //Configurar certificado
         this.#config = config;
         this.#cert = certificado;
@@ -113,6 +121,13 @@ class Tools {
                     });
                 });
 
+                req.setTimeout(this.#config.timeout * 1000, () => {
+                    reject({
+                        name: 'TimeoutError',
+                        message: 'The operation was aborted due to timeout'
+                    });
+                    req.destroy(); // cancela a requisição
+                });
                 req.on('error', (erro) => {
                     reject(erro);
                 });
@@ -285,8 +300,14 @@ class Tools {
                     res.on('end', () => resolve(data));
                 });
 
+                req.setTimeout(this.#config.timeout * 1000, () => {
+                    reject({
+                        name: 'TimeoutError',
+                        message: 'The operation was aborted due to timeout'
+                    });
+                    req.destroy(); // cancela a requisição
+                });
                 req.on('error', (err) => reject(err));
-
                 req.write(xml);
                 req.end();
             } catch (err) {
@@ -358,6 +379,13 @@ class Tools {
                     });
                 });
 
+                req.setTimeout(this.#config.timeout * 1000, () => {
+                    reject({
+                        name: 'TimeoutError',
+                        message: 'The operation was aborted due to timeout'
+                    });
+                    req.destroy(); // cancela a requisição
+                });
                 req.on('error', (erro) => {
                     reject(erro);
                 });
