@@ -37,5 +37,7 @@ Seja bem-vindo(a) à **Biblioteca de Emissão de NF-e** — sua parceira definit
 ## 📌 Informações
 Toda a documentação completa com guias, exemplos, status SEFAZ e muito mais está disponível aqui:
 <div align="center">
-[🧾 **Documentação oficial no GitHub**](https://github.com/kalmonv/node-sped-nfe/tree/main/docs)
+<a href="https://github.com/kalmonv/node-sped-nfe/tree/main/docs">
+  🧾 <strong>Documentação oficial no GitHub</strong>
+</a>
 </div>
