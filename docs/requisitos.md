@@ -1,0 +1,26 @@
+# Requisitos do Projeto
+
+Este projeto foi desenvolvido e testado com os seguintes requisitos. Certifique-se de instalá-los corretamente para garantir o funcionamento adequado.
+
+## 1. Node.js
+
+- **Versão testada**: `v22.1.4`  
+- É altamente recomendável utilizar a mesma versão para evitar incompatibilidades.
+
+### 1.1 Links para Download
+
+- [Node.js para Windows](https://nodejs.org/dist/v22.1.4/node-v22.1.4-x64.msi)
+- [Node.js para Linux](https://nodejs.org/dist/v22.1.4/node-v22.1.4-linux-x64.tar.xz)
+
+---
+
+## 2. xmllint (libxml) 2.9.3
+
+- Utilizado para validação de arquivos XML, essencial no processo de manipulação de NF-e/NFC-e.
+
+### 2.1 Links para Download
+
+- [libxml2 for Windows (includes xmllint)](http://xmlsoft.org/sources/win32/)
+- Para Linux, você pode instalar via terminal:
+  ```bash
+  sudo apt install libxml2-utils

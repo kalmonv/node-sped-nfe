@@ -13,25 +13,36 @@ Antes de começar, verifique se seu ambiente está preparado:
 - ✅ **xmllint / libxml**  
   Utilizado para validação e assinatura de XML.  
   📚 Guia de instalação e uso:  
-  👉 [Assinar XML com xmllint](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/xmllint.md)
+  👉 [Assinar XML com xmllint](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/requisitos.md)
+
+---
+## 📌 Considerações
+
+O sistema atualmente segue o layout da **NF-e versão 4.00**, conforme os padrões da SEFAZ.
+
+Está sendo desenvolvido com estrutura flexível para facilitar futuras adaptações a novas versões da NF-e.
+
+🔗 **Leitura obrigatória**:  
+Para uma integração correta, consulte sempre o **Manual de Integração do Contribuinte**, disponível em:  
+[https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=ndIjl+iEFdE=](https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=ndIjl+iEFdE=)
+
+> ⚠️ Manter-se atualizado com esse manual é essencial para garantir conformidade fiscal.
 
 ---
 
-## 🧭 Passo a passo
+### 1. 🧾 Criar o XML da NF-e ou NFC-e 
+   📚 Guia de instalação e uso:  
+   [Documentação](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/xml.md)
+- 📂 **NF-e**: [Ver exemplo completo](https://github.com/kalmonv/node-sped-nfe/blob/main/exemplos/nfe.js)  
+- 📂 **NFC-e**: [Ver exemplo completo](https://github.com/kalmonv/node-sped-nfe/blob/main/exemplos/nfce.js)
 
-Siga os passos abaixo na ordem para garantir uma emissão completa e válida:
+---
 
-1. 🧾 **Criação do XML da NF-e**  
-   Gere corretamente seu XML com base nas regras da SEFAZ.  
-   👉 [Documentação](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/xml.md)
+### 2. 🧾 Consulta status da sefaz
 
-2. ✍️ **Assinar o XML**  
-   Assine digitalmente o XML com seu certificado A1.  
-   👉 [Como assinar](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/assinar_xml.md)
+- 📂 **NF-e/NFC-e**: [Ver exemplo completo](https://github.com/kalmonv/node-sped-nfe/blob/main/exemplos/status.js)  
 
-3. 📡 **Enviar para a SEFAZ**  
-   Transmita o XML assinado para a SEFAZ e obtenha o protocolo.  
-   👉 [Envio e retorno](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/sefaz.md)
+---
 
 4. 📬 **Entendendo as respostas da SEFAZ**  
    Interprete corretamente os códigos e status da resposta da SEFAZ.  
