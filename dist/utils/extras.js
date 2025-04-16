@@ -255,7 +255,20 @@ const impEstrutura = (imposto) => {
     };
     //Configurar valores
     let configStruct = async (el, struc) => {
-        return el;
+        Object.keys(struc).forEach(key => {
+            if (typeof el[key] == "undefined") { //Não foi definido pelo usuario!
+                if (struc[key]["@obrig"]) { //Obrigatorio?
+                    return struc; //Retonar estrutura
+                }
+            }
+        });
+        Object.keys(struc).forEach(key => {
+            if (typeof el[key]["@next"][`${key}_${el[key].value}`] != "undefined") { //Não foi definido pelo usuario!
+            }
+        });
+        if (el["@next"]) {
+        }
+        return configStruct(imposto, gStruct);
     };
     imposto = configStruct(imposto, gStruct);
 };
