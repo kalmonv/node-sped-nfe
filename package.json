@@ -1,6 +1,6 @@
 {
   "name": "node-sped-nfe",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Kalmon V. Tavares",
   "type": "module",
   "main": "dist/index.js",
@@ -25,12 +25,10 @@
   },
   "scripts": {
     "build": "tsc > saida.txt",
-    
     "t:status": "node exemplos/status.js",
     "t:nfe": "node exemplos/nfe.js",
     "t:nfce": "node exemplos/nfce.js",
     "t:cons": "node exemplos/consulta.js",
-
     "teste": "node testes/teste.js"
   },
   "devDependencies": {

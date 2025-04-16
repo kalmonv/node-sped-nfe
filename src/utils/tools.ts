@@ -44,16 +44,19 @@ class Tools {
         CSCid: string;
         versao: string;
         timeout: number;
+        openssl: string;
     };
 
-    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30 }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: "" }, certificado = { pfx: "", senha: "" }) {
         if (typeof config != "object") throw "Tools({config},{}): Config deve ser um objecto!";
         if (typeof config.UF == "undefined") throw "Tools({...,UF:?},{}): UF não definida!";
         if (typeof config.tpAmb == "undefined") throw "Tools({...,tpAmb:?},{}): tpAmb não definida!";
         if (typeof config.versao == "undefined") throw "Tools({...,versao:?},{}): versao não definida!";
 
+        //Default do sistema
         if (typeof config.timeout == "undefined") config.timeout = 30;
         if (typeof config.xmllint == "undefined") config.xmllint = 'xmllint';
+        if (typeof config.openssl == "undefined") config.openssl = 'openssl';
 
         //Configurar certificado
         this.#config = config;
@@ -403,13 +406,17 @@ class Tools {
     //Validar XML da NFe, somente apos assinar
     async #xmlValido(xml: string, xsd: string) {
         const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
+
         fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
         const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
+
         const verif: SpawnSyncReturns<string> = spawnSync(
             this.#config.xmllint,
             ['--noout', '--schema', schemaPath, xmlFile.name],
             { encoding: 'utf8' }
         );
+
+        fs.writeFileSync("xmlvalid.json", JSON.stringify(verif))
 
         xmlFile.removeCallback();
 
@@ -425,6 +432,10 @@ class Tools {
     #certTools(): Promise<object> {
         return new Promise(async (resvol, reject) => {
             if (this.#pem.key != "") resvol(this.#pem);
+
+            pem.config({
+                pathOpenSSL: this.#config.openssl
+            })
             pem.readPkcs12(this.#cert.pfx, { p12Password: this.#cert.senha }, (err, myPem) => {
                 if (err) return reject(err); // <-- importante!
                 this.#pem = myPem;

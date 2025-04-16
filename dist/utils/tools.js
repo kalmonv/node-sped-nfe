@@ -23,7 +23,7 @@ import pem from 'pem';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 class Tools {
-    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30 }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: "" }, certificado = { pfx: "", senha: "" }) {
         _Tools_instances.add(this);
         _Tools_cert.set(this, void 0);
         _Tools_xmlTools.set(this, {
@@ -44,10 +44,13 @@ class Tools {
             throw "Tools({...,tpAmb:?},{}): tpAmb não definida!";
         if (typeof config.versao == "undefined")
             throw "Tools({...,versao:?},{}): versao não definida!";
+        //Default do sistema
         if (typeof config.timeout == "undefined")
             config.timeout = 30;
         if (typeof config.xmllint == "undefined")
             config.xmllint = 'xmllint';
+        if (typeof config.openssl == "undefined")
+            config.openssl = 'openssl';
         //Configurar certificado
         __classPrivateFieldSet(this, _Tools_config, config, "f");
         __classPrivateFieldSet(this, _Tools_cert, certificado, "f");
@@ -371,6 +374,7 @@ async function _Tools_xmlValido(xml, xsd) {
     fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
     const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
     const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', schemaPath, xmlFile.name], { encoding: 'utf8' });
+    fs.writeFileSync("xmlvalid.json", JSON.stringify(verif));
     xmlFile.removeCallback();
     // Aqui, usamos o operador de encadeamento opcional (?.)
     if (verif.error) {
@@ -384,6 +388,9 @@ async function _Tools_xmlValido(xml, xsd) {
     return new Promise(async (resvol, reject) => {
         if (__classPrivateFieldGet(this, _Tools_pem, "f").key != "")
             resvol(__classPrivateFieldGet(this, _Tools_pem, "f"));
+        pem.config({
+            pathOpenSSL: __classPrivateFieldGet(this, _Tools_config, "f").openssl
+        });
         pem.readPkcs12(__classPrivateFieldGet(this, _Tools_cert, "f").pfx, { p12Password: __classPrivateFieldGet(this, _Tools_cert, "f").senha }, (err, myPem) => {
             if (err)
                 return reject(err); // <-- importante!

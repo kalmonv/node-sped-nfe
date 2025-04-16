@@ -12,7 +12,8 @@ let myTools = new Tools({ //Configuração de habiente e sistema
     CSCid: temp.CSCid,
 
     //Optativo: Leia sobre Requisitos.
-    xmllint: `../libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`
+    xmllint: `../libs/libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`,
+    openssl: `../libs/openssl-3.5.0.win86/bin/openssl.exe`
 }, { //Certificado digital
     pfx: '../certificado2.pfx',
     senha: temp.senha,

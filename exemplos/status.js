@@ -3,13 +3,14 @@ import fs from "fs";
 
 let myTools = new Tools({ //Configuração de habiente e sistema
     mod: '65',
-    tpAmb: 2,
+    tpAmb: 1,
     UF: 'MT',
     versao: "4.00",
 
 
     //Optativo: Leia sobre Requisitos.
-    xmllint: `../libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`
+    xmllint: `../libs/libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`,
+    openssl: `../libs/openssl-3.5.0.win86/bin/openssl.exe`
 }, { //Certificado digital
     pfx: '../certificado.pfx',
     senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),
