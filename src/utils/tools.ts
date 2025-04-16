@@ -416,8 +416,6 @@ class Tools {
             { encoding: 'utf8' }
         );
 
-        fs.writeFileSync("xmlvalid.json", JSON.stringify(verif))
-
         xmlFile.removeCallback();
 
         // Aqui, usamos o operador de encadeamento opcional (?.)

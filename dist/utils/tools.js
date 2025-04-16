@@ -374,7 +374,6 @@ async function _Tools_xmlValido(xml, xsd) {
     fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
     const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
     const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', schemaPath, xmlFile.name], { encoding: 'utf8' });
-    fs.writeFileSync("xmlvalid.json", JSON.stringify(verif));
     xmlFile.removeCallback();
     // Aqui, usamos o operador de encadeamento opcional (?.)
     if (verif.error) {

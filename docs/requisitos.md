@@ -14,7 +14,7 @@ Este projeto foi desenvolvido e testado com os seguintes requisitos. Certifique-
 
 ### 2.1 Links para Download
 
-- Windows [libxml2](http://xmlsoft.org/sources/win32/) + [OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)
+- Windows [Libxml2+OpenSSL](https://raw.githubusercontent.com/kalmonv/node-sped-nfe/refs/heads/main/docs/windows%20libs.zip) ou individual [libxml2](http://xmlsoft.org/sources/win32/) + [OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)
 - Para Linux, você pode instalar via terminal:
   ```bash
   sudo apt install libxml2-utils openssl

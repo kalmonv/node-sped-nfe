@@ -10,10 +10,12 @@ Abaixo você encontrará todos os passos necessários para emitir suas Notas Fis
 Antes de começar, verifique se seu ambiente está preparado:
 
 - ✅ **Node.js** `v22.14.0` (versão testada e recomendada)
-- ✅ **xmllint / libxml**  
-  Utilizado para validação e assinatura de XML.  
+- ✅ **xmllint / libxml**
+   Utilizado para validação e assinatura de XML.  
+- ✅ **OpenSSL**  
+
   📚 Guia de instalação e uso:  
-  👉 [Validar XML com xmllint](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/requisitos.md)
+  👉 [Requisitos](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/requisitos.md)
 
 ---
 ## 📌 Considerações
