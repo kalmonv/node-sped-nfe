@@ -11,9 +11,12 @@ const config = {
   UF: 'SP', // Obrigatorio
   tpAmb: 2, //1-Produçao, 2-Homologação
   versao: '4.00', //Obrigatorio
-  xmllint: '/usr/bin/xmllint.exe', //Optativo, caso sistema não tenha declarado nas variaveis.
+  
   mod: '55', //Obrigatorio, 65 ou 55
-  timeout: 60  //Optativo - Tempo limite de requisição
+  timeout: 60,  //Optativo - Tempo limite de requisição
+
+  xmllint: '/usr/bin/xmllint.exe', //Optativo, caso sistema não tenha declarado nas variaveis.
+  openssl: '/usr/bin/openssl.exe', //Optativo, caso sistema não tenha declarado nas variaveis.
 };
 const certificado = {
   pfx: fs.readFileSync('./certs/empresa.pfx'),  //Obrigatorio, caminho para o arquivo .pfx
