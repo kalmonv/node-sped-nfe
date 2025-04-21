@@ -15,12 +15,14 @@ let myTools = new Tools({ //Configuração de habiente e sistema
     xmllint: `../libs/libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`,
     openssl: `../libs/openssl-3.5.0.win86/bin/openssl.exe`
 }, { //Certificado digital
-    pfx: '../certificado2.pfx',
+    pfx: '../certificado2.pfx', //path, Buffer
     senha: temp.senha,
 });
 
 let NFe = new Make();
 NFe.tagInfNFe({ Id: null, versao: '4.00' });
+
+//Informações da NFCe
 NFe.tagIde({
     cUF: "51",
     cNF: "00002023",
@@ -43,6 +45,8 @@ NFe.tagIde({
     procEmi: "0",
     verProc: "4.13"
 });
+
+//Informações do emitente
 NFe.tagEmit({
     CNPJ: "47506306000188",
     xNome: "47.506.306 KALMON VALADAO TAVARES",
@@ -50,6 +54,8 @@ NFe.tagEmit({
     IE: "139551956",
     CRT: "1"
 });
+
+//Endereço do emitenten
 NFe.tagEnderEmit({
     xLgr: "AV. Para",
     nro: "138",
@@ -62,11 +68,15 @@ NFe.tagEnderEmit({
     xPais: "BRASIL",
     fone: "66981352912"
 });
+
+//Destinatario
 NFe.tagDest({
     CPF: "00000000000",
     xNome: "JOAO PAULO DA SILVA",
     indIEDest: "9",
 });
+
+//Produtos
 NFe.tagProd([
     {
         cProd: "126",
@@ -135,17 +145,29 @@ NFe.tagProd([
     }
 ]);
 
-//Setor o imposto de cada produto.
+//Imposto de cada produto.
 [0, 1, 2, 3].map((value, index) => {
     NFe.tagProdICMSSN(index, { orig: "0", CSOSN: "400" })
     NFe.tagProdPIS(index, { CST: "49", qBCProd: "0.0000", vAliqProd: "0.0000", vPIS: "0.00" })
     NFe.tagProdCOFINS(index, { CST: "49", qBCProd: "0.0000", vAliqProd: "0.0000", vCOFINS: "0.00" })
 });
+
+//Calcular ICMSTot
 NFe.tagICMSTot();
+
+//Transporte
 NFe.tagTransp({ modFrete: 9 });
+
+//Informações sobre pagamento
 NFe.tagDetPag([{ indPag: 0, tPag: 17, vPag: "1200.00" }]);
+
+//Troco
 NFe.tagTroco("0.00");
+
+//Informações sobre tecnico
 NFe.tagInfRespTec({ CNPJ: "47506306000188", xContato: "Guara Dev", email: "admin@guaradev.com", fone: "5566999638922" })
+
+
 fs.writeFileSync("testes/nfe.xml", NFe.xml(), { encoding: "utf-8" });
 
 //NFe.xml() = retorna o XML gerado ate o momento.
