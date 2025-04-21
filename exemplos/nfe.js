@@ -59,8 +59,8 @@ NFe.tagEnderEmit({
     fone: "66981352912"
 });
 NFe.tagDest({
-    CPF: "04079907125",
-    xNome: "ADELMO CARLOS CIQUEIRA SILVA",
+    CPF: "00000000000",
+    xNome: "JOAO PAULO DA SILVA",
     indIEDest: "2",
 });
 NFe.tagEnderDest({
