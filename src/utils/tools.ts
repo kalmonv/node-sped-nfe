@@ -8,7 +8,7 @@ import fs from "fs"
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pem from 'pem';
-import { cUF2UF } from "./extras.js"
+import { cUF2UF, json2xml, xml2json } from "./extras.js"
 
 
 
@@ -20,13 +20,6 @@ class Tools {
         pfx: string;
         senha: string;
     };
-    #xmlTools: {
-        XMLBuilder: XMLBuilder;
-        XMLParser: XMLParser;
-    } = {
-            XMLBuilder: {} as XMLBuilder,
-            XMLParser: {} as XMLParser
-        };
     #pem: {
         key: string;
         cert: string;
@@ -62,15 +55,6 @@ class Tools {
         //Configurar certificado
         this.#config = config;
         this.#cert = certificado;
-        this.#xmlTools.XMLBuilder = new XMLBuilder({
-            ignoreAttributes: false,
-            attributeNamePrefix: "@",
-        });
-        this.#xmlTools.XMLParser = new XMLParser({
-            ignoreAttributes: false,
-            attributeNamePrefix: "@",
-            parseTagValue: false,       // Evita conversão automática de valores
-        });
     }
 
     sefazEnviaLote(xml: string, data: any = { idLote: 1, indSinc: 0, compactar: false }): Promise<string> {
@@ -203,7 +187,7 @@ class Tools {
             }
 
             this.json2xml(xml).then(async res => {
-                this.#xmlValido(res, `nfe_v${this.#config.versao}`);
+                await this.#xmlValido(res, `nfe_v${this.#config.versao}`).catch(reject);;
                 resvol(res);
             }).catch(err => {
                 reject(err)
@@ -228,13 +212,13 @@ class Tools {
 
     async xml2json(xml: string): Promise<object> {
         return new Promise((resvol, reject) => {
-            resvol(this.#xmlTools.XMLParser.parse(xml))
+            xml2json(xml).then(resvol).catch(reject)
         })
     }
 
     async json2xml(obj: object): Promise<string> {
         return new Promise((resvol, reject) => {
-            resvol(this.#xmlTools.XMLBuilder.build(obj))
+            json2xml(obj).then(resvol).catch(reject)
         })
     }
 
@@ -284,12 +268,11 @@ class Tools {
                 });
 
                 // Validação do XML interno (opcional)
-                this.#xmlValido(builder.build({ consSitNFe }), `consSitNFe_v${this.#config.versao}`);
+                await this.#xmlValido(builder.build({ consSitNFe }), `consSitNFe_v${this.#config.versao}`).catch(reject);;
 
                 const xml = builder.build(xmlObj);
 
                 let tempUF = urlEventos(UF, this.#config.versao);
-                console.log(tempUF)
 
                 const url = tempUF[`mod${mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
 
@@ -361,7 +344,7 @@ class Tools {
                 });
 
                 //Validação
-                this.#xmlValido(tempBuild.build({ consStatServ }), `consStatServ_v${this.#config.versao}`);
+                await this.#xmlValido(tempBuild.build({ consStatServ }), `consStatServ_v${this.#config.versao}`).catch(reject);
                 let tempUF = urlEventos(this.#config.UF, this.#config.versao);
                 let xml = tempBuild.build(xmlObj);
                 const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeStatusServico, {
@@ -405,29 +388,39 @@ class Tools {
         })
     }
 
+    async validarNFe(xml: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.#xmlValido(xml, `nfe_v${this.#config.versao}`).then(resolve).catch(reject);
+        })
+    }
+
 
     //Validar XML da NFe, somente apos assinar
     async #xmlValido(xml: string, xsd: string) {
-        const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
+        return new Promise((resolve, reject) => {
+            const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
 
-        fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
-        const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
+            fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
+            const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
 
-        const verif: SpawnSyncReturns<string> = spawnSync(
-            this.#config.xmllint,
-            ['--noout', '--schema', schemaPath, xmlFile.name],
-            { encoding: 'utf8' }
-        );
+            const verif: SpawnSyncReturns<string> = spawnSync(
+                this.#config.xmllint,
+                ['--noout', '--schema', schemaPath, xmlFile.name],
+                { encoding: 'utf8' }
+            );
 
-        xmlFile.removeCallback();
+            xmlFile.removeCallback();
 
-        // Aqui, usamos o operador de encadeamento opcional (?.)
-        if (verif.error) {
-            throw new Error("Biblioteca xmllint não encontrada!");
-        } else if (!verif.stderr.includes(".xml validates")) {
-            throw new Error(verif.stderr);
-        }
-        return 1;
+            // Aqui, usamos o operador de encadeamento opcional (?.)
+            if (verif.error) {
+                return reject("Biblioteca xmllint não encontrada!")
+            } else if (!verif.stderr.includes(".xml validates")) {
+                return reject(verif.stderr)
+            }else{
+                resolve(true);
+            }
+            
+        })
     }
 
     #certTools(): Promise<object> {

@@ -9,7 +9,7 @@ let myTools = new Tools({ //Configuração de habiente e sistema
 
     //Optativo: Leia sobre Requisitos.
     xmllint: `../libs/libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`,
-    openssl: `../libs/openssl-3.5.0.win86/bin/openssl.exe`
+    //openssl: `../libs/openssl-3.5.0.win86/bin/openssl.exe`
 }, { //Certificado digital
     pfx: '../certificado.pfx',
     senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),

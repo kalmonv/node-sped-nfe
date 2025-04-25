@@ -21,5 +21,6 @@ declare class Tools {
     getCertificado(): Promise<object>;
     consultarNFe(chNFe: string): Promise<string>;
     sefazStatus(): Promise<string>;
+    validarNFe(xml: string): Promise<any>;
 }
 export { Tools };

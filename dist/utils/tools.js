@@ -9,8 +9,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Tools_instances, _Tools_cert, _Tools_xmlTools, _Tools_pem, _Tools_config, _Tools_gerarQRCodeNFCe, _Tools_xmlValido, _Tools_certTools;
-import { XMLParser, XMLBuilder } from "fast-xml-parser";
+var _Tools_instances, _Tools_cert, _Tools_pem, _Tools_config, _Tools_gerarQRCodeNFCe, _Tools_xmlValido, _Tools_certTools;
+import { XMLBuilder } from "fast-xml-parser";
 import https from "https";
 import { spawnSync } from "child_process";
 import tmp from "tmp";
@@ -20,17 +20,13 @@ import fs from "fs";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pem from 'pem';
-import { cUF2UF } from "./extras.js";
+import { cUF2UF, json2xml, xml2json } from "./extras.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 class Tools {
     constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: null }, certificado = { pfx: "", senha: "" }) {
         _Tools_instances.add(this);
         _Tools_cert.set(this, void 0);
-        _Tools_xmlTools.set(this, {
-            XMLBuilder: {},
-            XMLParser: {}
-        });
         _Tools_pem.set(this, {
             key: "", // A chave privada extraída do PKCS#12, em formato PEM
             cert: "", // O certificado extraído, em formato PEM
@@ -55,15 +51,6 @@ class Tools {
         //Configurar certificado
         __classPrivateFieldSet(this, _Tools_config, config, "f");
         __classPrivateFieldSet(this, _Tools_cert, certificado, "f");
-        __classPrivateFieldGet(this, _Tools_xmlTools, "f").XMLBuilder = new XMLBuilder({
-            ignoreAttributes: false,
-            attributeNamePrefix: "@",
-        });
-        __classPrivateFieldGet(this, _Tools_xmlTools, "f").XMLParser = new XMLParser({
-            ignoreAttributes: false,
-            attributeNamePrefix: "@",
-            parseTagValue: false, // Evita conversão automática de valores
-        });
     }
     sefazEnviaLote(xml, data = { idLote: 1, indSinc: 0, compactar: false }) {
         return new Promise(async (resvol, reject) => {
@@ -189,7 +176,8 @@ class Tools {
                 xml.NFe.infNFeSupl.qrCode = __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_gerarQRCodeNFCe).call(this, xml.NFe, "2", __classPrivateFieldGet(this, _Tools_config, "f").CSCid, __classPrivateFieldGet(this, _Tools_config, "f").CSC);
             }
             this.json2xml(xml).then(async (res) => {
-                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, res, `nfe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`);
+                await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, res, `nfe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`).catch(reject);
+                ;
                 resvol(res);
             }).catch(err => {
                 reject(err);
@@ -198,12 +186,12 @@ class Tools {
     }
     async xml2json(xml) {
         return new Promise((resvol, reject) => {
-            resvol(__classPrivateFieldGet(this, _Tools_xmlTools, "f").XMLParser.parse(xml));
+            xml2json(xml).then(resvol).catch(reject);
         });
     }
     async json2xml(obj) {
         return new Promise((resvol, reject) => {
-            resvol(__classPrivateFieldGet(this, _Tools_xmlTools, "f").XMLBuilder.build(obj));
+            json2xml(obj).then(resvol).catch(reject);
         });
     }
     //Obter certificado 
@@ -247,10 +235,10 @@ class Tools {
                     attributeNamePrefix: "@"
                 });
                 // Validação do XML interno (opcional)
-                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, builder.build({ consSitNFe }), `consSitNFe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`);
+                await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, builder.build({ consSitNFe }), `consSitNFe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`).catch(reject);
+                ;
                 const xml = builder.build(xmlObj);
                 let tempUF = urlEventos(UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
-                console.log(tempUF);
                 const url = tempUF[`mod${mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
                 const req = https.request(url, {
                     method: 'POST',
@@ -316,7 +304,7 @@ class Tools {
                     attributeNamePrefix: "@"
                 });
                 //Validação
-                __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, tempBuild.build({ consStatServ }), `consStatServ_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`);
+                await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, tempBuild.build({ consStatServ }), `consStatServ_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`).catch(reject);
                 let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
                 let xml = tempBuild.build(xmlObj);
                 const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeStatusServico, {
@@ -356,8 +344,13 @@ class Tools {
             }
         });
     }
+    async validarNFe(xml) {
+        return new Promise((resolve, reject) => {
+            __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, xml, `nfe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`).then(resolve).catch(reject);
+        });
+    }
 }
-_Tools_cert = new WeakMap(), _Tools_xmlTools = new WeakMap(), _Tools_pem = new WeakMap(), _Tools_config = new WeakMap(), _Tools_instances = new WeakSet(), _Tools_gerarQRCodeNFCe = function _Tools_gerarQRCodeNFCe(NFe, versaoQRCode = "2", idCSC, CSC) {
+_Tools_cert = new WeakMap(), _Tools_pem = new WeakMap(), _Tools_config = new WeakMap(), _Tools_instances = new WeakSet(), _Tools_gerarQRCodeNFCe = function _Tools_gerarQRCodeNFCe(NFe, versaoQRCode = "2", idCSC, CSC) {
     let s = '|', concat, hash;
     if (NFe.infNFe.ide.tpEmis == 1) {
         concat = [NFe.infNFe['@Id'].replace("NFe", ""), versaoQRCode, NFe.infNFe.ide.tpAmb, Number(idCSC)].join(s);
@@ -371,19 +364,23 @@ _Tools_cert = new WeakMap(), _Tools_xmlTools = new WeakMap(), _Tools_pem = new W
 }, _Tools_xmlValido = 
 //Validar XML da NFe, somente apos assinar
 async function _Tools_xmlValido(xml, xsd) {
-    const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
-    fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
-    const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
-    const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', schemaPath, xmlFile.name], { encoding: 'utf8' });
-    xmlFile.removeCallback();
-    // Aqui, usamos o operador de encadeamento opcional (?.)
-    if (verif.error) {
-        throw new Error("Biblioteca xmllint não encontrada!");
-    }
-    else if (!verif.stderr.includes(".xml validates")) {
-        throw new Error(verif.stderr);
-    }
-    return 1;
+    return new Promise((resolve, reject) => {
+        const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
+        fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
+        const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
+        const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', schemaPath, xmlFile.name], { encoding: 'utf8' });
+        xmlFile.removeCallback();
+        // Aqui, usamos o operador de encadeamento opcional (?.)
+        if (verif.error) {
+            return reject("Biblioteca xmllint não encontrada!");
+        }
+        else if (!verif.stderr.includes(".xml validates")) {
+            return reject(verif.stderr);
+        }
+        else {
+            resolve(true);
+        }
+    });
 }, _Tools_certTools = function _Tools_certTools() {
     return new Promise(async (resvol, reject) => {
         if (__classPrivateFieldGet(this, _Tools_pem, "f").key != "")
