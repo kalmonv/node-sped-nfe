@@ -572,14 +572,14 @@ class Make {
     }
 }
 _Make_NFe = new WeakMap(), _Make_ICMSTot = new WeakMap(), _Make_instances = new WeakSet(), _Make_gerarChaveNFe = function _Make_gerarChaveNFe() {
-    const chaveSemDV = __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF.padStart(2, '0') + // Código da UF (2 dígitos)
+    const chaveSemDV = `${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF}`.padStart(2, '0') + // Código da UF (2 dígitos)
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.dhEmi.substring(2, 4) + __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.dhEmi.substring(5, 7) + // Ano e Mês da emissão (AAMM, 4 dígitos)
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.emit.CNPJ.padStart(14, '0') + // CNPJ do emitente (14 dígitos)
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.mod.padStart(2, '0') + // Modelo da NF (2 dígitos)
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.serie.padStart(3, '0') + // Série da NF (3 dígitos)
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.nNF.padStart(9, '0') + // Número da NF (9 dígitos)
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpEmis.padStart(1, '0') + // Tipo de Emissão (1 dígito)
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cNF.padStart(8, '0'); // Código Numérico da NF (8 dígitos)
+        `${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.emit.CNPJ}`.padStart(14, '0') + // CNPJ do emitente (14 dígitos)
+        `${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.mod}`.padStart(2, '0') + // Modelo da NF (2 dígitos)
+        `${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.serie}`.padStart(3, '0') + // Série da NF (3 dígitos)
+        `${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.nNF}`.padStart(9, '0') + // Número da NF (9 dígitos)
+        `${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpEmis}`.padStart(1, '0') + // Tipo de Emissão (1 dígito)
+        `${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cNF}`.padStart(8, '0'); // Código Numérico da NF (8 dígitos)
     __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cDV = __classPrivateFieldGet(this, _Make_instances, "m", _Make_calcularDigitoVerificador).call(this, chaveSemDV);
     return `${chaveSemDV}${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cDV}`;
 }, _Make_calcularDigitoVerificador = function _Make_calcularDigitoVerificador(key) {
@@ -604,7 +604,7 @@ _Make_NFe = new WeakMap(), _Make_ICMSTot = new WeakMap(), _Make_instances = new 
 }, _Make_calICMSTot = function _Make_calICMSTot(obj) {
     Object.keys(obj).map(key => {
         if (__classPrivateFieldGet(this, _Make_ICMSTot, "f")[key] !== undefined) {
-            __classPrivateFieldGet(this, _Make_ICMSTot, "f")[key] += 1 * (obj[key]);
+            __classPrivateFieldGet(this, _Make_ICMSTot, "f")[key] += (obj[key]) * 1;
         }
     });
 };

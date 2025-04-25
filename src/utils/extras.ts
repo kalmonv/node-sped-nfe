@@ -1,3 +1,5 @@
+import { XMLParser, XMLBuilder } from "fast-xml-parser";
+
 const cUF2UF: any = {
     "11": "RO",
     "12": "AC",
@@ -273,21 +275,21 @@ const impEstrutura = (imposto: any) => {
 
     //Configurar valores
     let configStruct = async (el: any, struc: any) => {
-        Object.keys(struc).forEach(key=>{
-            if(typeof el[key] == "undefined"){ //Não foi definido pelo usuario!
-                if(struc[key]["@obrig"]){ //Obrigatorio?
+        Object.keys(struc).forEach(key => {
+            if (typeof el[key] == "undefined") { //Não foi definido pelo usuario!
+                if (struc[key]["@obrig"]) { //Obrigatorio?
                     return struc; //Retonar estrutura
                 }
             }
         })
 
-        Object.keys(struc).forEach(key=>{
-            if(typeof el[key]["@next"][`${key}_${el[key].value}`] != "undefined"){ //Não foi definido pelo usuario!
-                
+        Object.keys(struc).forEach(key => {
+            if (typeof el[key]["@next"][`${key}_${el[key].value}`] != "undefined") { //Não foi definido pelo usuario!
+
             }
         })
 
-        if(el["@next"]){
+        if (el["@next"]) {
 
         }
         return configStruct(imposto, gStruct);
@@ -295,4 +297,26 @@ const impEstrutura = (imposto: any) => {
 
     imposto = configStruct(imposto, gStruct)
 }
-export { cUF2UF, UF2cUF }
+
+const xml2json = (xml: string): Promise<object> => {
+    return new Promise((resvol, reject) => {
+        let XMLPar = new XMLParser({
+            ignoreAttributes: false,
+            attributeNamePrefix: "@",
+            parseTagValue: false,       // Evita conversão automática de valores
+        });
+        resvol(XMLPar.parse(xml))
+    })
+}
+
+const json2xml = (obj: object): Promise<string> => {
+    return new Promise((resvol, reject) => {
+        let XMLBuil = new XMLBuilder({
+            ignoreAttributes: false,
+            attributeNamePrefix: "@",
+        });
+        resvol(XMLBuil.build(obj))
+    })
+}
+
+export { cUF2UF, UF2cUF, json2xml, xml2json }

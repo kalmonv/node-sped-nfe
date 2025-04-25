@@ -638,14 +638,14 @@ class Make {
     //Sistema gera a chave da nota fiscal
     #gerarChaveNFe() {
         const chaveSemDV =
-            this.#NFe.infNFe.ide.cUF.padStart(2, '0') + // Código da UF (2 dígitos)
+            `${this.#NFe.infNFe.ide.cUF}`.padStart(2, '0') + // Código da UF (2 dígitos)
             this.#NFe.infNFe.ide.dhEmi.substring(2, 4) + this.#NFe.infNFe.ide.dhEmi.substring(5, 7) + // Ano e Mês da emissão (AAMM, 4 dígitos)
-            this.#NFe.infNFe.emit.CNPJ.padStart(14, '0') + // CNPJ do emitente (14 dígitos)
-            this.#NFe.infNFe.ide.mod.padStart(2, '0') + // Modelo da NF (2 dígitos)
-            this.#NFe.infNFe.ide.serie.padStart(3, '0') + // Série da NF (3 dígitos)
-            this.#NFe.infNFe.ide.nNF.padStart(9, '0') + // Número da NF (9 dígitos)
-            this.#NFe.infNFe.ide.tpEmis.padStart(1, '0') + // Tipo de Emissão (1 dígito)
-            this.#NFe.infNFe.ide.cNF.padStart(8, '0'); // Código Numérico da NF (8 dígitos)
+            `${this.#NFe.infNFe.emit.CNPJ}`.padStart(14, '0') + // CNPJ do emitente (14 dígitos)
+            `${this.#NFe.infNFe.ide.mod}`.padStart(2, '0') + // Modelo da NF (2 dígitos)
+            `${this.#NFe.infNFe.ide.serie}`.padStart(3, '0') + // Série da NF (3 dígitos)
+            `${this.#NFe.infNFe.ide.nNF}`.padStart(9, '0') + // Número da NF (9 dígitos)
+            `${this.#NFe.infNFe.ide.tpEmis}`.padStart(1, '0') + // Tipo de Emissão (1 dígito)
+            `${this.#NFe.infNFe.ide.cNF}`.padStart(8, '0'); // Código Numérico da NF (8 dígitos)
         this.#NFe.infNFe.ide.cDV = this.#calcularDigitoVerificador(chaveSemDV)
         return `${chaveSemDV}${this.#NFe.infNFe.ide.cDV}`;
 
@@ -700,7 +700,7 @@ class Make {
     #calICMSTot(obj: any) {
         Object.keys(obj).map(key => {
             if (this.#ICMSTot[key] !== undefined) {
-                this.#ICMSTot[key] += 1 * (obj[key]);
+                this.#ICMSTot[key] += (obj[key])*1;
             }
         });
 

@@ -20,10 +20,11 @@ import fs from "fs";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pem from 'pem';
+import { cUF2UF } from "./extras.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 class Tools {
-    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: "" }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: null }, certificado = { pfx: "", senha: "" }) {
         _Tools_instances.add(this);
         _Tools_cert.set(this, void 0);
         _Tools_xmlTools.set(this, {
@@ -50,7 +51,7 @@ class Tools {
         if (typeof config.xmllint == "undefined")
             config.xmllint = 'xmllint';
         if (typeof config.openssl == "undefined")
-            config.openssl = 'openssl';
+            config.openssl = null;
         //Configurar certificado
         __classPrivateFieldSet(this, _Tools_config, config, "f");
         __classPrivateFieldSet(this, _Tools_cert, certificado, "f");
@@ -217,12 +218,11 @@ class Tools {
             if (!chNFe || chNFe.length !== 44) {
                 return reject("consultarNFe(chNFe) -> chave inválida!");
             }
-            if (typeof __classPrivateFieldGet(this, _Tools_config, "f").UF === "undefined")
-                throw "consultarNFe({...UF}) -> não definido!";
+            let cUF = `${chNFe}`.substring(0, 2);
+            let UF = cUF2UF[cUF];
+            let mod = `${chNFe}`.substring(20, 22);
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").tpAmb === "undefined")
                 throw "consultarNFe({...tpAmb}) -> não definido!";
-            if (typeof __classPrivateFieldGet(this, _Tools_config, "f").mod === "undefined")
-                throw "consultarNFe({...mod}) -> não definido!";
             let consSitNFe = {
                 "@xmlns": "http://www.portalfiscal.inf.br/nfe",
                 "@versao": "4.00",
@@ -249,8 +249,9 @@ class Tools {
                 // Validação do XML interno (opcional)
                 __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, builder.build({ consSitNFe }), `consSitNFe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`);
                 const xml = builder.build(xmlObj);
-                let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
-                const url = tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
+                let tempUF = urlEventos(UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
+                console.log(tempUF);
+                const url = tempUF[`mod${mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
                 const req = https.request(url, {
                     method: 'POST',
                     headers: {
@@ -387,9 +388,11 @@ async function _Tools_xmlValido(xml, xsd) {
     return new Promise(async (resvol, reject) => {
         if (__classPrivateFieldGet(this, _Tools_pem, "f").key != "")
             resvol(__classPrivateFieldGet(this, _Tools_pem, "f"));
-        pem.config({
-            pathOpenSSL: __classPrivateFieldGet(this, _Tools_config, "f").openssl
-        });
+        if (__classPrivateFieldGet(this, _Tools_config, "f").openssl != null) {
+            pem.config({
+                pathOpenSSL: __classPrivateFieldGet(this, _Tools_config, "f").openssl
+            });
+        }
         pem.readPkcs12(__classPrivateFieldGet(this, _Tools_cert, "f").pfx, { p12Password: __classPrivateFieldGet(this, _Tools_cert, "f").senha }, (err, myPem) => {
             if (err)
                 return reject(err); // <-- importante!

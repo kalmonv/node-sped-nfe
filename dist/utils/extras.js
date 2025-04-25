@@ -1,3 +1,4 @@
+import { XMLParser, XMLBuilder } from "fast-xml-parser";
 const cUF2UF = {
     "11": "RO",
     "12": "AC",
@@ -272,4 +273,23 @@ const impEstrutura = (imposto) => {
     };
     imposto = configStruct(imposto, gStruct);
 };
-export { cUF2UF, UF2cUF };
+const xml2json = (xml) => {
+    return new Promise((resvol, reject) => {
+        let XMLPar = new XMLParser({
+            ignoreAttributes: false,
+            attributeNamePrefix: "@",
+            parseTagValue: false, // Evita conversão automática de valores
+        });
+        resvol(XMLPar.parse(xml));
+    });
+};
+const json2xml = (obj) => {
+    return new Promise((resvol, reject) => {
+        let XMLBuil = new XMLBuilder({
+            ignoreAttributes: false,
+            attributeNamePrefix: "@",
+        });
+        resvol(XMLBuil.build(obj));
+    });
+};
+export { cUF2UF, UF2cUF, json2xml, xml2json };

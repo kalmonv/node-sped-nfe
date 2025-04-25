@@ -8,6 +8,7 @@ import fs from "fs"
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pem from 'pem';
+import { cUF2UF } from "./extras.js"
 
 
 
@@ -44,10 +45,10 @@ class Tools {
         CSCid: string;
         versao: string;
         timeout: number;
-        openssl: string;
+        openssl: any;
     };
 
-    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: "" }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: null }, certificado = { pfx: "", senha: "" }) {
         if (typeof config != "object") throw "Tools({config},{}): Config deve ser um objecto!";
         if (typeof config.UF == "undefined") throw "Tools({...,UF:?},{}): UF não definida!";
         if (typeof config.tpAmb == "undefined") throw "Tools({...,tpAmb:?},{}): tpAmb não definida!";
@@ -56,7 +57,7 @@ class Tools {
         //Default do sistema
         if (typeof config.timeout == "undefined") config.timeout = 30;
         if (typeof config.xmllint == "undefined") config.xmllint = 'xmllint';
-        if (typeof config.openssl == "undefined") config.openssl = 'openssl';
+        if (typeof config.openssl == "undefined") config.openssl = null;
 
         //Configurar certificado
         this.#config = config;
@@ -250,10 +251,11 @@ class Tools {
             if (!chNFe || chNFe.length !== 44) {
                 return reject("consultarNFe(chNFe) -> chave inválida!");
             }
+            let cUF = `${chNFe}`.substring(0, 2);
+            let UF = cUF2UF[cUF];
+            let mod = `${chNFe}`.substring(20, 22);
 
-            if (typeof this.#config.UF === "undefined") throw "consultarNFe({...UF}) -> não definido!";
             if (typeof this.#config.tpAmb === "undefined") throw "consultarNFe({...tpAmb}) -> não definido!";
-            if (typeof this.#config.mod === "undefined") throw "consultarNFe({...mod}) -> não definido!";
 
             let consSitNFe = {
                 "@xmlns": "http://www.portalfiscal.inf.br/nfe",
@@ -286,9 +288,10 @@ class Tools {
 
                 const xml = builder.build(xmlObj);
 
-                let tempUF = urlEventos(this.#config.UF, this.#config.versao);
+                let tempUF = urlEventos(UF, this.#config.versao);
+                console.log(tempUF)
 
-                const url = tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
+                const url = tempUF[`mod${mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
 
                 const req = https.request(url, {
                     method: 'POST',
@@ -430,10 +433,11 @@ class Tools {
     #certTools(): Promise<object> {
         return new Promise(async (resvol, reject) => {
             if (this.#pem.key != "") resvol(this.#pem);
-
-            pem.config({
-                pathOpenSSL: this.#config.openssl
-            })
+            if (this.#config.openssl != null) {
+                pem.config({
+                    pathOpenSSL: this.#config.openssl
+                })
+            }
             pem.readPkcs12(this.#cert.pfx, { p12Password: this.#cert.senha }, (err, myPem) => {
                 if (err) return reject(err); // <-- importante!
                 this.#pem = myPem;

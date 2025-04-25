@@ -8,8 +8,8 @@ let myTools = new Tools({ //Configuração de habiente e sistema
     versao: '4.00',
 
     //Optativo: Leia sobre Requisitos.
-    xmllint: `../libs/libxml2-2.9.3-win32-x86_64/bin/xmllint`,
-    openssl: `../libs/openssl-3.5.0.win86/bin/openssl`
+    xmllint: `../libs/libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`,
+    //openssl: `../libs/openssl-3.5.0.win86/bin/openssl.exe`
 }, { //Certificado digital
     pfx: '../certificado.pfx', //path, Buffer
     senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),
@@ -145,8 +145,8 @@ NFe.tagProd([
 //Setor o imposto de cada produto.
 [0, 1, 2, 3].map((value, index) => {
     NFe.tagProdICMSSN(index, { orig: "0", CSOSN: "400" })
-    NFe.tagProdPIS(index, { CST: "49", qBCProd: "0.0000", vAliqProd: "0.0000", vPIS: "0.00" })
-    NFe.tagProdCOFINS(index, { CST: "49", qBCProd: "0.0000", vAliqProd: "0.0000", vCOFINS: "0.00" })
+    NFe.tagProdPIS(index, { CST: "49", qBCProd: 0, vAliqProd: 0, vPIS: 0 })
+    NFe.tagProdCOFINS(index, { CST: "49", qBCProd: 0, vAliqProd: 0, vCOFINS: 0 })
 });
 NFe.tagICMSTot();
 NFe.tagTransp({ modFrete: 9 });

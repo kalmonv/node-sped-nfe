@@ -9,7 +9,7 @@ declare class Tools {
         CSCid: string;
         versao: string;
         timeout: number;
-        openssl: string;
+        openssl: null;
     }, certificado?: {
         pfx: string;
         senha: string;
