@@ -8,7 +8,9 @@ import fs from "fs"
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pem from 'pem';
-import { cUF2UF, json2xml, xml2json } from "./extras.js"
+import { cUF2UF, json2xml, xml2json, formatData } from "./extras.js"
+import { SignedXml } from 'xml-crypto';
+
 
 
 
@@ -39,9 +41,11 @@ class Tools {
         versao: string;
         timeout: number;
         openssl: any;
+        CPF: any;
+        CNPJ: any;
     };
 
-    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: null }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: null, CPF: "", CNPJ: "" }, certificado = { pfx: "", senha: "" }) {
         if (typeof config != "object") throw "Tools({config},{}): Config deve ser um objecto!";
         if (typeof config.UF == "undefined") throw "Tools({...,UF:?},{}): UF não definida!";
         if (typeof config.tpAmb == "undefined") throw "Tools({...,tpAmb:?},{}): tpAmb não definida!";
@@ -131,67 +135,64 @@ class Tools {
     async xmlSign(xmlJSON: string, data: any = { tag: "infNFe" }): Promise<string> {
         return new Promise(async (resvol, reject) => {
             if (data.tag === undefined) data.tag = "infNFe";
+            var xml = await this.xml2json(xmlJSON) as any;
+            
+            if (data.tag == "infNFe") {
+                if (xml.NFe.infNFe.ide.mod == 65) {
+                    xml.NFe.infNFeSupl.qrCode = this.#gerarQRCodeNFCe(xml.NFe, "2", this.#config.CSCid, this.#config.CSC)
+                }
+                xml.NFe = {
+                    ...xml.NFe,
+                    ... await xml2json(await this.#getSignature(xmlJSON, data.tag))
+                };
+            } else if (data.tag == "infEvento") {
+                xml.envEvento.evento = {
+                    ...xml.envEvento.evento,
+                    ... (await xml2json(await this.#getSignature(xmlJSON, data.tag)))
+                };
+            }
+            resvol(await json2xml(xml));
+        })
+    }
 
-            //Obter a tag que ira ser assinada
-            let xml = await this.xml2json(xmlJSON) as any;
+    //Responsavel por gerar assinatura
+    async #getSignature(xmlJSON: string, tag: string): Promise<string> {
+        return new Promise(async (resvol, reject) => {
             let tempPem = await this.#certTools() as any;
+            const sig = new SignedXml({
+                privateKey: tempPem.key,
+                canonicalizationAlgorithm: 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315',
+                signatureAlgorithm: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1',
+                publicCert: tempPem.pem,
+                getKeyInfoContent: (args?: { key: string, prefix: string }) => {
+                    const cert = tempPem.cert
+                        .toString()
+                        .replace('-----BEGIN CERTIFICATE-----', '')
+                        .replace('-----END CERTIFICATE-----', '')
+                        .replace(/\r?\n|\r/g, '');
 
-            const sign = crypto.createSign('RSA-SHA1'); // Correção: Alterado para RSA-SHA1
-            let signedInfo = {
-                "SignedInfo": {
-                    "@xmlns": "http://www.w3.org/2000/09/xmldsig#",
-                    "CanonicalizationMethod": {
-                        "@Algorithm": "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
-                    },
-                    "SignatureMethod": {
-                        "@Algorithm": "http://www.w3.org/2000/09/xmldsig#rsa-sha1" // Mantém SHA1
-                    },
-                    "Reference": {
-                        "@URI": `#${xml.NFe.infNFe['@Id']}`,
-                        "Transforms": {
-                            "Transform": [
-                                {
-                                    "@Algorithm": "http://www.w3.org/2000/09/xmldsig#enveloped-signature"
-                                },
-                                {
-                                    "@Algorithm": "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
-                                },
-                            ]
-                        },
-                        "DigestMethod": {
-                            "@Algorithm": "http://www.w3.org/2000/09/xmldsig#sha1" // Mantém SHA1
-                        },
-                        "DigestValue": crypto.createHash('sha1').update(await this.json2xml({ infNFe: xml.NFe.infNFe }), 'utf8') // Mantém Hash SHA1
-                            .digest('base64')
-
-                    }
+                    return `<X509Data><X509Certificate>${cert}</X509Certificate></X509Data>`;
                 }
-            }
-            sign.update(await this.json2xml(signedInfo), 'utf8');
-            xml.NFe.Signature = {
-                ...signedInfo,
-                ...{
-                    "SignatureValue": sign.sign(tempPem.key, 'base64'),
-                    "KeyInfo": {
-                        "X509Data": {
-                            "X509Certificate": tempPem.cert.replace(/-----BEGIN CERTIFICATE-----/g, '').replace(/-----END CERTIFICATE-----/g, '').replace(/\r\n/g, '')
-                        }
-                    },
-                    "@xmlns": "http://www.w3.org/2000/09/xmldsig#"
+            });
+
+            sig.addReference({
+                xpath: `//*[local-name(.)='${tag}']`,
+                transforms: [
+                    'http://www.w3.org/2000/09/xmldsig#enveloped-signature',
+                    'http://www.w3.org/TR/2001/REC-xml-c14n-20010315'
+                ],
+                digestAlgorithm: 'http://www.w3.org/2000/09/xmldsig#sha1'
+            });
+
+
+            sig.computeSignature(xmlJSON, {
+                location: {
+                    reference: `//*[local-name()='${tag}']`,
+                    action: 'after' // <- insere DENTRO da tag <evento>
                 }
-            }
+            });
 
-
-            if (xml.NFe.infNFe.ide.mod == 65) {
-                xml.NFe.infNFeSupl.qrCode = this.#gerarQRCodeNFCe(xml.NFe, "2", this.#config.CSCid, this.#config.CSC)
-            }
-
-            this.json2xml(xml).then(async res => {
-                await this.#xmlValido(res, `nfe_v${this.#config.versao}`).catch(reject);;
-                resvol(res);
-            }).catch(err => {
-                reject(err)
-            })
+            return resvol(sig.getSignatureXml())
         })
     }
 
@@ -306,6 +307,154 @@ class Tools {
         });
     }
 
+    async sefazEvento({ chNFe = "", tpEvento = "", nProt = "", justificativa = "", textoCorrecao = "", sequencial = 1 }): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (!chNFe) throw "sefazEvento({chNFe}) -> não definido!";
+                if (!tpEvento) throw "sefazEvento({tpEvento}) -> não definido!";
+                if (!this.#config.CNPJ && !this.#config.CPF) throw "new Tools({CNPJ|CPF}) -> não definido!";
+
+                const geradorLote = function () {
+                    const agora = new Date();
+
+                    const ano = agora.getFullYear().toString().slice(2); // Só os 2 últimos dígitos do ano
+                    const mes = String(agora.getMonth() + 1).padStart(2, '0');
+                    const dia = String(agora.getDate()).padStart(2, '0');
+                    const hora = String(agora.getHours()).padStart(2, '0');
+                    const minuto = String(agora.getMinutes()).padStart(2, '0');
+                    const segundo = String(agora.getSeconds()).padStart(2, '0');
+
+                    // Junta tudo
+                    let idLote = `${ano}${mes}${dia}${hora}${minuto}${segundo}`;
+
+                    // Se ainda tiver menos de 15 dígitos, adiciona um número aleatório no final
+                    while (idLote.length < 15) {
+                        idLote += Math.floor(Math.random() * 10); // Adiciona dígitos aleatórios
+                    }
+
+                    return idLote;
+                }
+
+                const tempUF = urlEventos(`AN`, this.#config.versao);
+
+                let detEvento: any = {
+                    "@versao": "1.00",
+                    "descEvento": this.#descEvento(`${tpEvento}`)
+                };
+
+                // Adicionar campos específicos por tipo de evento
+                if (tpEvento === "110111") { // Cancelamento
+                    if (!nProt) throw "sefazEvento({nProt}) obrigatório para Cancelamento!";
+                    if (!justificativa) throw "sefazEvento({justificativa}) obrigatório para Cancelamento!";
+                    detEvento["nProt"] = nProt;
+                    detEvento["xJust"] = justificativa;
+                } else if (tpEvento === "110110") { // Carta de Correção
+                    if (!textoCorrecao) throw "sefazEvento({textoCorrecao}) obrigatório para Carta de Correção!";
+                    detEvento["xCorrecao"] = textoCorrecao;
+                    detEvento["xCondUso"] = "A carta de correção é disciplinada pelo § 1º-A do art. 7º do Convênio S/N, de 15 de dezembro de 1970...";
+                } else if (tpEvento === "210240") { // Operação não realizada
+                    if (!justificativa) throw "sefazEvento({justificativa}) obrigatório para Operação não realizada!";
+                    detEvento["xJust"] = justificativa;
+                }
+                // Ciência (210210), Confirmação (210200), Desconhecimento (210220) não precisam de campos extras
+
+                const evento = {
+                    "envEvento": {
+                        "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                        "@versao": "1.00",
+                        "idLote": "250429141621528",
+                        "evento": {
+                            "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                            "@versao": "1.00",
+                            "infEvento": {
+                                "@Id": `ID${tpEvento}${chNFe}${sequencial.toString().padStart(2, '0')}`,
+                                "cOrgao": "91",
+                                "tpAmb": this.#config.tpAmb,
+                                "CNPJ": this.#config.CNPJ,
+                                "chNFe": chNFe,
+                                "dhEvento": "2025-04-29T14:16:21-03:00",
+                                "tpEvento": tpEvento,
+                                "nSeqEvento": sequencial,
+                                "verEvento": "1.00",
+                                "detEvento": detEvento
+                            }
+                        }
+                    }
+                };
+
+                let xmlSing = await json2xml(evento);
+                xmlSing = await this.xmlSign(xmlSing, { tag: "infEvento" }); //Assinado
+
+                fs.writeFileSync("testes/xmlEvento.xml", xmlSing, "utf8")
+
+                await this.#xmlValido(xmlSing, `envEvento_v1.00`).catch(reject); //Validar corpo
+                xmlSing = await json2xml({
+                    "soap:Envelope": {
+                        "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
+                        "@xmlns:nfe": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeRecepcaoEvento4",
+                        "soap:Body": {
+                            "nfe:nfeDadosMsg": await xml2json(xmlSing)
+                        }
+                    }
+                });
+
+
+                try {
+                    const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
+                        ...{
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/soap+xml; charset=utf-8',
+                                'Content-Length': xmlSing.length,
+                            },
+                            rejectUnauthorized: false
+                        },
+                        ...this.#pem
+                    }, (res) => {
+                        let data = '';
+
+                        res.on('data', (chunk) => {
+                            data += chunk;
+                        });
+
+                        res.on('end', () => {
+                            resolve(data);
+                        });
+                    });
+
+                    req.setTimeout(this.#config.timeout * 1000, () => {
+                        reject({
+                            name: 'TimeoutError',
+                            message: 'The operation was aborted due to timeout'
+                        });
+                        req.destroy(); // cancela a requisição
+                    });
+                    req.on('error', (erro) => {
+                        reject(erro);
+                    });
+                    req.write(xmlSing);
+                    req.end();
+                } catch (erro) {
+                    reject(erro);
+                }
+            } catch (erro) {
+                reject(erro);
+            }
+        });
+    }
+
+    #descEvento(tpEvento: string): string {
+        const eventos: Record<string, string> = {
+            "110110": "Carta de Correcao",
+            "110111": "Cancelamento",
+            "210200": "Confirmacao da Operacao",
+            "210210": "Ciencia da Operacao",
+            "210220": "Desconhecimento da Operacao",
+            "210240": "Operacao nao Realizada"
+        };
+        return eventos[tpEvento] || "Evento";
+    }
+
     //Consulta status sefaz
     async sefazStatus(): Promise<string> {
         return new Promise(async (resvol, reject) => {
@@ -401,7 +550,7 @@ class Tools {
             const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
 
             fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
-            const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
+            const schemaPath = path.resolve(__dirname, `../../schemas/PL_010_V1/${xsd}.xsd`);
 
             const verif: SpawnSyncReturns<string> = spawnSync(
                 this.#config.xmllint,
@@ -415,11 +564,13 @@ class Tools {
             if (verif.error) {
                 return reject("Biblioteca xmllint não encontrada!")
             } else if (!verif.stderr.includes(".xml validates")) {
-                return reject(verif.stderr)
-            }else{
+                return reject(verif.stderr.replace(/\/tmp\/[^:\s]+\.xml/g, '') // Remove os caminhos /tmp/*.xml
+                    .replace(/\s{2,}/g, ' ')             // Ajusta múltiplos espaços para um só
+                    .trim())                           // Remove espaços no começo e fim)
+            } else {
                 resolve(true);
             }
-            
+
         })
     }
 

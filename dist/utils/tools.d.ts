@@ -10,6 +10,8 @@ declare class Tools {
         versao: string;
         timeout: number;
         openssl: null;
+        CPF: string;
+        CNPJ: string;
     }, certificado?: {
         pfx: string;
         senha: string;
@@ -20,6 +22,14 @@ declare class Tools {
     json2xml(obj: object): Promise<string>;
     getCertificado(): Promise<object>;
     consultarNFe(chNFe: string): Promise<string>;
+    sefazEvento({ chNFe, tpEvento, nProt, justificativa, textoCorrecao, sequencial }: {
+        chNFe?: string | undefined;
+        tpEvento?: string | undefined;
+        nProt?: string | undefined;
+        justificativa?: string | undefined;
+        textoCorrecao?: string | undefined;
+        sequencial?: number | undefined;
+    }): Promise<string>;
     sefazStatus(): Promise<string>;
     validarNFe(xml: string): Promise<any>;
 }

@@ -292,4 +292,15 @@ const json2xml = (obj) => {
         resvol(XMLBuil.build(obj));
     });
 };
-export { cUF2UF, UF2cUF, json2xml, xml2json };
+const formatData = (dataUsr = new Date()) => {
+    const ano = dataUsr.getFullYear();
+    const mes = String(dataUsr.getMonth() + 1).padStart(2, '0'); // Adiciona 1 porque os meses começam do 0
+    const dia = String(dataUsr.getDate()).padStart(2, '0');
+    const horas = String(dataUsr.getHours()).padStart(2, '0');
+    const minutos = String(dataUsr.getMinutes()).padStart(2, '0');
+    const segundos = String(dataUsr.getSeconds()).padStart(2, '0');
+    const fusoHorario = -dataUsr.getTimezoneOffset() / 60; // Obtém o fuso horário em horas
+    const formatoISO = `${ano}-${mes}-${dia}T${horas}:${minutos}:${segundos}${fusoHorario >= 0 ? '+' : '-'}${String(Math.abs(fusoHorario)).padStart(2, '0')}:00`;
+    return formatoISO;
+};
+export { cUF2UF, UF2cUF, json2xml, xml2json, formatData };

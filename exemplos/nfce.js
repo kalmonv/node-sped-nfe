@@ -7,7 +7,8 @@ let temp = JSON.parse(fs.readFileSync('../certificado2.json', { encoding: "utf8"
 let myTools = new Tools({ //Configuração de habiente e sistema
     mod: '65',
     tpAmb: 2,
-    cUF: '51',
+    UF: 'MT',
+    versao: '4.00',
     CSC: temp.CSC,
     CSCid: temp.CSCid,
 
@@ -29,7 +30,7 @@ NFe.tagIde({
     natOp: "VENDA",
     mod: "65",
     serie: "0",
-    nNF: "248",
+    nNF: "251",
     dhEmi: NFe.formatData(),
     tpNF: "1",
     idDest: "1",
@@ -48,31 +49,31 @@ NFe.tagIde({
 
 //Informações do emitente
 NFe.tagEmit({
-    CNPJ: "47506306000188",
-    xNome: "47.506.306 KALMON VALADAO TAVARES",
-    xFant: "GUARA DEV",
-    IE: "139551956",
+    CNPJ: "0000000000000",
+    xNome: "NOME",
+    xFant: "NOME FANTASIA",
+    IE: "00000000",
     CRT: "1"
 });
 
 //Endereço do emitenten
 NFe.tagEnderEmit({
-    xLgr: "AV. Para",
-    nro: "138",
-    xBairro: "Uniao",
-    cMun: "5106257",
-    xMun: "Nova Xavantina",
-    UF: "MT",
-    CEP: "78690000",
+    xLgr: "Av. Nodejs",
+    nro: "22",
+    xBairro: "Githubsom",
+    cMun: "00000",
+    xMun: "Nova Commite",
+    UF: "SP",
+    CEP: "0000000",
     cPais: "1058",
     xPais: "BRASIL",
-    fone: "66981352912"
+    fone: "1140028922"
 });
 
-//Destinatario
+//Destinatario - optativo para NFCe
 NFe.tagDest({
-    CPF: "00000000000",
-    xNome: "JOAO PAULO DA SILVA",
+    CPF: "000000000000",
+    xNome: "COMPRADOR",
     indIEDest: "9",
 });
 
@@ -165,15 +166,15 @@ NFe.tagDetPag([{ indPag: 0, tPag: 17, vPag: "1200.00" }]);
 NFe.tagTroco("0.00");
 
 //Informações sobre tecnico
-NFe.tagInfRespTec({ CNPJ: "47506306000188", xContato: "Guara Dev", email: "admin@guaradev.com", fone: "5566999638922" })
+NFe.tagInfRespTec({ CNPJ: "000000000000", xContato: "PP Programador Perfeito", email: "pp@email.com", fone: "551140028922" })
 
 
-fs.writeFileSync("testes/nfe.xml", NFe.xml(), { encoding: "utf-8" });
+fs.writeFileSync("exemplos/nfe.xml", NFe.xml(), { encoding: "utf-8" });
 
 //NFe.xml() = retorna o XML gerado ate o momento.
 // myTools.xmlSign(..) = Assina o xml utlizando o certificado declarado em new Tools.
 myTools.xmlSign(NFe.xml()).then(async xmlSign => {
-    fs.writeFileSync("testes/nfe_sign.xml", xmlSign, { encoding: "utf-8" });
+    fs.writeFileSync("exemplos/nfe_sign.xml", xmlSign, { encoding: "utf-8" });
     myTools.sefazEnviaLote(xmlSign, { indSinc: 1 }).then(res => {
         console.log(res)
     })

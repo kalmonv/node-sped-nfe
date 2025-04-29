@@ -32,7 +32,6 @@
     "teste": "node testes/teste.js"
   },
   "devDependencies": {
-    "@types/axios": "^0.9.36",
     "@types/node": "^22.14.0",
     "@types/node-forge": "^1.3.11",
     "@types/pem": "^1.14.4",
@@ -41,10 +40,13 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@xmldom/xmldom": "^0.9.8",
     "crypto": "^1.0.1",
     "fast-xml-parser": "^4.5.1",
     "pem": "^1.14.8",
-    "tmp": "^0.2.3"
+    "tmp": "^0.2.3",
+    "xml-crypto": "^6.1.2",
+    "xmldom": "^0.6.0"
   },
   "repository": {
     "type": "git",

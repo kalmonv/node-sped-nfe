@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Tools_instances, _Tools_cert, _Tools_pem, _Tools_config, _Tools_gerarQRCodeNFCe, _Tools_xmlValido, _Tools_certTools;
+var _Tools_instances, _Tools_cert, _Tools_pem, _Tools_config, _Tools_getSignature, _Tools_gerarQRCodeNFCe, _Tools_descEvento, _Tools_xmlValido, _Tools_certTools;
 import { XMLBuilder } from "fast-xml-parser";
 import https from "https";
 import { spawnSync } from "child_process";
@@ -21,10 +21,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import pem from 'pem';
 import { cUF2UF, json2xml, xml2json } from "./extras.js";
+import { SignedXml } from 'xml-crypto';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 class Tools {
-    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: null }, certificado = { pfx: "", senha: "" }) {
+    constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: null, CPF: "", CNPJ: "" }, certificado = { pfx: "", senha: "" }) {
         _Tools_instances.add(this);
         _Tools_cert.set(this, void 0);
         _Tools_pem.set(this, {
@@ -126,62 +127,23 @@ class Tools {
         return new Promise(async (resvol, reject) => {
             if (data.tag === undefined)
                 data.tag = "infNFe";
-            //Obter a tag que ira ser assinada
-            let xml = await this.xml2json(xmlJSON);
-            let tempPem = await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this);
-            const sign = crypto.createSign('RSA-SHA1'); // Correção: Alterado para RSA-SHA1
-            let signedInfo = {
-                "SignedInfo": {
-                    "@xmlns": "http://www.w3.org/2000/09/xmldsig#",
-                    "CanonicalizationMethod": {
-                        "@Algorithm": "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
-                    },
-                    "SignatureMethod": {
-                        "@Algorithm": "http://www.w3.org/2000/09/xmldsig#rsa-sha1" // Mantém SHA1
-                    },
-                    "Reference": {
-                        "@URI": `#${xml.NFe.infNFe['@Id']}`,
-                        "Transforms": {
-                            "Transform": [
-                                {
-                                    "@Algorithm": "http://www.w3.org/2000/09/xmldsig#enveloped-signature"
-                                },
-                                {
-                                    "@Algorithm": "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
-                                },
-                            ]
-                        },
-                        "DigestMethod": {
-                            "@Algorithm": "http://www.w3.org/2000/09/xmldsig#sha1" // Mantém SHA1
-                        },
-                        "DigestValue": crypto.createHash('sha1').update(await this.json2xml({ infNFe: xml.NFe.infNFe }), 'utf8') // Mantém Hash SHA1
-                            .digest('base64')
-                    }
+            var xml = await this.xml2json(xmlJSON);
+            if (data.tag == "infNFe") {
+                if (xml.NFe.infNFe.ide.mod == 65) {
+                    xml.NFe.infNFeSupl.qrCode = __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_gerarQRCodeNFCe).call(this, xml.NFe, "2", __classPrivateFieldGet(this, _Tools_config, "f").CSCid, __classPrivateFieldGet(this, _Tools_config, "f").CSC);
                 }
-            };
-            sign.update(await this.json2xml(signedInfo), 'utf8');
-            xml.NFe.Signature = {
-                ...signedInfo,
-                ...{
-                    "SignatureValue": sign.sign(tempPem.key, 'base64'),
-                    "KeyInfo": {
-                        "X509Data": {
-                            "X509Certificate": tempPem.cert.replace(/-----BEGIN CERTIFICATE-----/g, '').replace(/-----END CERTIFICATE-----/g, '').replace(/\r\n/g, '')
-                        }
-                    },
-                    "@xmlns": "http://www.w3.org/2000/09/xmldsig#"
-                }
-            };
-            if (xml.NFe.infNFe.ide.mod == 65) {
-                xml.NFe.infNFeSupl.qrCode = __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_gerarQRCodeNFCe).call(this, xml.NFe, "2", __classPrivateFieldGet(this, _Tools_config, "f").CSCid, __classPrivateFieldGet(this, _Tools_config, "f").CSC);
+                xml.NFe = {
+                    ...xml.NFe,
+                    ...await xml2json(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_getSignature).call(this, xmlJSON, data.tag))
+                };
             }
-            this.json2xml(xml).then(async (res) => {
-                await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, res, `nfe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`).catch(reject);
-                ;
-                resvol(res);
-            }).catch(err => {
-                reject(err);
-            });
+            else if (data.tag == "infEvento") {
+                xml.envEvento.evento = {
+                    ...xml.envEvento.evento,
+                    ...(await xml2json(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_getSignature).call(this, xmlJSON, data.tag)))
+                };
+            }
+            resvol(await json2xml(xml));
         });
     }
     async xml2json(xml) {
@@ -269,6 +231,135 @@ class Tools {
             }
         });
     }
+    async sefazEvento({ chNFe = "", tpEvento = "", nProt = "", justificativa = "", textoCorrecao = "", sequencial = 1 }) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (!chNFe)
+                    throw "sefazEvento({chNFe}) -> não definido!";
+                if (!tpEvento)
+                    throw "sefazEvento({tpEvento}) -> não definido!";
+                if (!__classPrivateFieldGet(this, _Tools_config, "f").CNPJ && !__classPrivateFieldGet(this, _Tools_config, "f").CPF)
+                    throw "new Tools({CNPJ|CPF}) -> não definido!";
+                const geradorLote = function () {
+                    const agora = new Date();
+                    const ano = agora.getFullYear().toString().slice(2); // Só os 2 últimos dígitos do ano
+                    const mes = String(agora.getMonth() + 1).padStart(2, '0');
+                    const dia = String(agora.getDate()).padStart(2, '0');
+                    const hora = String(agora.getHours()).padStart(2, '0');
+                    const minuto = String(agora.getMinutes()).padStart(2, '0');
+                    const segundo = String(agora.getSeconds()).padStart(2, '0');
+                    // Junta tudo
+                    let idLote = `${ano}${mes}${dia}${hora}${minuto}${segundo}`;
+                    // Se ainda tiver menos de 15 dígitos, adiciona um número aleatório no final
+                    while (idLote.length < 15) {
+                        idLote += Math.floor(Math.random() * 10); // Adiciona dígitos aleatórios
+                    }
+                    return idLote;
+                };
+                const tempUF = urlEventos(`AN`, __classPrivateFieldGet(this, _Tools_config, "f").versao);
+                let detEvento = {
+                    "@versao": "1.00",
+                    "descEvento": __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_descEvento).call(this, `${tpEvento}`)
+                };
+                // Adicionar campos específicos por tipo de evento
+                if (tpEvento === "110111") { // Cancelamento
+                    if (!nProt)
+                        throw "sefazEvento({nProt}) obrigatório para Cancelamento!";
+                    if (!justificativa)
+                        throw "sefazEvento({justificativa}) obrigatório para Cancelamento!";
+                    detEvento["nProt"] = nProt;
+                    detEvento["xJust"] = justificativa;
+                }
+                else if (tpEvento === "110110") { // Carta de Correção
+                    if (!textoCorrecao)
+                        throw "sefazEvento({textoCorrecao}) obrigatório para Carta de Correção!";
+                    detEvento["xCorrecao"] = textoCorrecao;
+                    detEvento["xCondUso"] = "A carta de correção é disciplinada pelo § 1º-A do art. 7º do Convênio S/N, de 15 de dezembro de 1970...";
+                }
+                else if (tpEvento === "210240") { // Operação não realizada
+                    if (!justificativa)
+                        throw "sefazEvento({justificativa}) obrigatório para Operação não realizada!";
+                    detEvento["xJust"] = justificativa;
+                }
+                // Ciência (210210), Confirmação (210200), Desconhecimento (210220) não precisam de campos extras
+                const evento = {
+                    "envEvento": {
+                        "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                        "@versao": "1.00",
+                        "idLote": "250429141621528",
+                        "evento": {
+                            "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                            "@versao": "1.00",
+                            "infEvento": {
+                                "@Id": `ID${tpEvento}${chNFe}${sequencial.toString().padStart(2, '0')}`,
+                                "cOrgao": "91",
+                                "tpAmb": __classPrivateFieldGet(this, _Tools_config, "f").tpAmb,
+                                "CNPJ": __classPrivateFieldGet(this, _Tools_config, "f").CNPJ,
+                                "chNFe": chNFe,
+                                "dhEvento": "2025-04-29T14:16:21-03:00",
+                                "tpEvento": tpEvento,
+                                "nSeqEvento": sequencial,
+                                "verEvento": "1.00",
+                                "detEvento": detEvento
+                            }
+                        }
+                    }
+                };
+                let xmlSing = await json2xml(evento);
+                xmlSing = await this.xmlSign(xmlSing, { tag: "infEvento" }); //Assinado
+                fs.writeFileSync("testes/xmlEvento.xml", xmlSing, "utf8");
+                await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, xmlSing, `envEvento_v1.00`).catch(reject); //Validar corpo
+                xmlSing = await json2xml({
+                    "soap:Envelope": {
+                        "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
+                        "@xmlns:nfe": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeRecepcaoEvento4",
+                        "soap:Body": {
+                            "nfe:nfeDadosMsg": await xml2json(xmlSing)
+                        }
+                    }
+                });
+                try {
+                    const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
+                        ...{
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/soap+xml; charset=utf-8',
+                                'Content-Length': xmlSing.length,
+                            },
+                            rejectUnauthorized: false
+                        },
+                        ...__classPrivateFieldGet(this, _Tools_pem, "f")
+                    }, (res) => {
+                        let data = '';
+                        res.on('data', (chunk) => {
+                            data += chunk;
+                        });
+                        res.on('end', () => {
+                            resolve(data);
+                        });
+                    });
+                    req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
+                        reject({
+                            name: 'TimeoutError',
+                            message: 'The operation was aborted due to timeout'
+                        });
+                        req.destroy(); // cancela a requisição
+                    });
+                    req.on('error', (erro) => {
+                        reject(erro);
+                    });
+                    req.write(xmlSing);
+                    req.end();
+                }
+                catch (erro) {
+                    reject(erro);
+                }
+            }
+            catch (erro) {
+                reject(erro);
+            }
+        });
+    }
     //Consulta status sefaz
     async sefazStatus() {
         return new Promise(async (resvol, reject) => {
@@ -350,7 +441,42 @@ class Tools {
         });
     }
 }
-_Tools_cert = new WeakMap(), _Tools_pem = new WeakMap(), _Tools_config = new WeakMap(), _Tools_instances = new WeakSet(), _Tools_gerarQRCodeNFCe = function _Tools_gerarQRCodeNFCe(NFe, versaoQRCode = "2", idCSC, CSC) {
+_Tools_cert = new WeakMap(), _Tools_pem = new WeakMap(), _Tools_config = new WeakMap(), _Tools_instances = new WeakSet(), _Tools_getSignature = 
+//Responsavel por gerar assinatura
+async function _Tools_getSignature(xmlJSON, tag) {
+    return new Promise(async (resvol, reject) => {
+        let tempPem = await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this);
+        const sig = new SignedXml({
+            privateKey: tempPem.key,
+            canonicalizationAlgorithm: 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315',
+            signatureAlgorithm: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1',
+            publicCert: tempPem.pem,
+            getKeyInfoContent: (args) => {
+                const cert = tempPem.cert
+                    .toString()
+                    .replace('-----BEGIN CERTIFICATE-----', '')
+                    .replace('-----END CERTIFICATE-----', '')
+                    .replace(/\r?\n|\r/g, '');
+                return `<X509Data><X509Certificate>${cert}</X509Certificate></X509Data>`;
+            }
+        });
+        sig.addReference({
+            xpath: `//*[local-name(.)='${tag}']`,
+            transforms: [
+                'http://www.w3.org/2000/09/xmldsig#enveloped-signature',
+                'http://www.w3.org/TR/2001/REC-xml-c14n-20010315'
+            ],
+            digestAlgorithm: 'http://www.w3.org/2000/09/xmldsig#sha1'
+        });
+        sig.computeSignature(xmlJSON, {
+            location: {
+                reference: `//*[local-name()='${tag}']`,
+                action: 'after' // <- insere DENTRO da tag <evento>
+            }
+        });
+        return resvol(sig.getSignatureXml());
+    });
+}, _Tools_gerarQRCodeNFCe = function _Tools_gerarQRCodeNFCe(NFe, versaoQRCode = "2", idCSC, CSC) {
     let s = '|', concat, hash;
     if (NFe.infNFe.ide.tpEmis == 1) {
         concat = [NFe.infNFe['@Id'].replace("NFe", ""), versaoQRCode, NFe.infNFe.ide.tpAmb, Number(idCSC)].join(s);
@@ -361,13 +487,23 @@ _Tools_cert = new WeakMap(), _Tools_pem = new WeakMap(), _Tools_config = new Wea
     }
     hash = crypto.createHash('sha1').update(concat + CSC).digest('hex');
     return NFe.infNFeSupl.qrCode + '?p=' + concat + s + hash;
+}, _Tools_descEvento = function _Tools_descEvento(tpEvento) {
+    const eventos = {
+        "110110": "Carta de Correcao",
+        "110111": "Cancelamento",
+        "210200": "Confirmacao da Operacao",
+        "210210": "Ciencia da Operacao",
+        "210220": "Desconhecimento da Operacao",
+        "210240": "Operacao nao Realizada"
+    };
+    return eventos[tpEvento] || "Evento";
 }, _Tools_xmlValido = 
 //Validar XML da NFe, somente apos assinar
 async function _Tools_xmlValido(xml, xsd) {
     return new Promise((resolve, reject) => {
         const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
         fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
-        const schemaPath = path.resolve(__dirname, `../../schemas/${xsd}.xsd`);
+        const schemaPath = path.resolve(__dirname, `../../schemas/PL_010_V1/${xsd}.xsd`);
         const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', schemaPath, xmlFile.name], { encoding: 'utf8' });
         xmlFile.removeCallback();
         // Aqui, usamos o operador de encadeamento opcional (?.)
@@ -375,7 +511,9 @@ async function _Tools_xmlValido(xml, xsd) {
             return reject("Biblioteca xmllint não encontrada!");
         }
         else if (!verif.stderr.includes(".xml validates")) {
-            return reject(verif.stderr);
+            return reject(verif.stderr.replace(/\/tmp\/[^:\s]+\.xml/g, '') // Remove os caminhos /tmp/*.xml
+                .replace(/\s{2,}/g, ' ') // Ajusta múltiplos espaços para um só
+                .trim()); // Remove espaços no começo e fim)
         }
         else {
             resolve(true);

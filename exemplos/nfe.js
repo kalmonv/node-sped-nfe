@@ -47,30 +47,31 @@ NFe.tagEmit({
     CRT: "1"
 });
 NFe.tagEnderEmit({
-    xLgr: "AV PARA",
-    nro: "138",
-    xBairro: "UNIAO",
-    cMun: "5106257",
-    xMun: "Nova Xavantina",
-    UF: "MT",
-    CEP: "78690000",
+    xLgr: "Av. Nodejs",
+    nro: "22",
+    xBairro: "Githubsom",
+    cMun: "00000",
+    xMun: "Nova Commite",
+    UF: "SP",
+    CEP: "0000000",
     cPais: "1058",
     xPais: "BRASIL",
-    fone: "66981352912"
+    fone: "1140028922"
 });
 NFe.tagDest({
-    CPF: "00000000000",
-    xNome: "JOAO PAULO DA SILVA",
-    indIEDest: "2",
+    CPF: "000000000000",
+    xNome: "COMPRADOR",
+    indIEDest: "9",
 });
+
 NFe.tagEnderDest({
-    xLgr: "RUA DAS SAMAMBAIAS",
-    nro: "144",
-    xBairro: "PARQUE ELDORADO",
-    cMun: "5107040",
-    xMun: "PRIMAVERA DO LESTE",
-    UF: "MT",
-    CEP: "78850000",
+    xLgr: "Rua JAVA",
+    nro: "666",
+    xBairro: "Buggs",
+    cMun: "000000",
+    xMun: "Novos Aposentados",
+    UF: "SP",
+    CEP: "00000000",
     cPais: "1058",
     xPais: "BRASIL"
 });
@@ -152,13 +153,13 @@ NFe.tagICMSTot();
 NFe.tagTransp({ modFrete: 9 });
 NFe.tagDetPag([{ indPag: 0, tPag: 17, vPag: "1200.00" }]);
 NFe.tagTroco("0.00");
-NFe.tagInfRespTec({ CNPJ: "47506306000188", xContato: "Guara Dev", email: "admin@guaradev.com", fone: "5566999638922" })
-fs.writeFileSync("testes/nfe.xml", NFe.xml(), { encoding: "utf-8" });
+NFe.tagInfRespTec({ CNPJ: "000000000000", xContato: "PP Programador Perfeito", email: "pp@email.com", fone: "551140028922" })
+fs.writeFileSync("exemplos/nfe.xml", NFe.xml(), { encoding: "utf-8" });
 
 //NFe.xml() = retorna o XML gerado ate o momento.
 // myTools.xmlSign(..) = Assina o xml utlizando o certificado declarado em new Tools.
 myTools.xmlSign(NFe.xml()).then(async xmlSign => {
-    fs.writeFileSync("testes/nfe_sign.xml", xmlSign, { encoding: "utf-8" });
+    fs.writeFileSync("exemplos/nfe_sign.xml", xmlSign, { encoding: "utf-8" });
     myTools.sefazEnviaLote(xmlSign, { indSinc: 1 }).then(res => {
         console.log(res)
     })

@@ -15,6 +15,8 @@ const config = {
   mod: '55', //Obrigatorio, 65 ou 55
   timeout: 60,  //Optativo - Tempo limite de requisição
 
+  CNPJ|CPF: '00000000', //Optativo, uso somente no manifesto
+
   xmllint: '/usr/bin/xmllint.exe', //Optativo, caso sistema não tenha declarado nas variaveis.
   openssl: '/usr/bin/openssl.exe', //Optativo, caso sistema não tenha declarado nas variaveis.
 };
@@ -105,4 +107,36 @@ const xmlStatus = await tools.consultarNFe("CHAVE DA NFE");
 O método `sefazStatus` realiza a **consulta ao servidor da SEFAZ** utilizando a UF de inicializaçao.
 ```ts
 const xmlStatus = await tools.sefazStatus();
+```
+
+## 📥 Método `async sefazEvento({ chNFe, tpEvento, nProt , justificativa, textoCorrecao, sequencial }): Promise<string>`
+O método `sefazEvento` realiza a **Manifesto de uma NFe**.
+```ts
+let myTools = new Tools({ //Configuração de habiente e sistema
+    mod: '55',
+    tpAmb: "1",
+    UF: 'MT',
+    versao: '4.00',
+    CNPJ: "47506306000188", // CNPJ/CPF DO TOMADOR
+}, { //Certificado digital
+    pfx: '../certificado.pfx',
+    senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),
+});
+
+// 1. Manifestação - Confirmação
+myTools.sefazEvento({ chNFe: "351701...", tpEvento: "210200" }).then(res => {
+    console.log(res) //Xml da sefaz
+}).catch(err=>{
+    console.error(err)
+});
+
+//EXEMPLOS ADICIONAIS
+// 2. Cancelamento
+//await myTools.sefazEvento({ chNFe: "351701...", tpEvento: "110111", nProt: "135230000000000", justificativa: "Cancelamento por erro na emissão." });
+
+// 3. Carta de Correção
+//await myTools.sefazEvento({ chNFe: "351701...", tpEvento: "110110", textoCorrecao: "Corrigir a descrição do produto." });
+
+// 4. Operação Não Realizada
+//await myTools.sefazEvento({ chNFe: "351701...", tpEvento: "210240", justificativa: "Entrega não realizada por recusa do destinatário." });
 ```

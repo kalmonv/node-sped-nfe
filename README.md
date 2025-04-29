@@ -41,3 +41,15 @@ Toda a documentação completa com guias, exemplos, status SEFAZ e muito mais es
   🧾 <strong>Documentação oficial no GitHub</strong>
 </a>
 </div>
+
+## ✅ Funcionalidades Implementadas
+| Funcionalidade                         | Status |
+|-----------------------------------------|--------|
+| Emissão de NF-e modelo 55               | ✅     |
+| Emissão de NFC-e modelo 65              | ✅     |
+| Consulta Status do Serviço SEFAZ       | ✅     |
+| Consulta Situação de NF-e/NFC-e         | ✅     |
+| Manifestação de Destinatário - Ciência da Operação (210210) | ✅ |
+| Manifestação de Destinatário - Confirmação da Operação (210200) | ✅ |
+| Manifestação de Destinatário - Desconhecimento da Operação (210220) | ✅ |
+| Manifestação de Destinatário - Operação Não Realizada (210240) | ✅ |
