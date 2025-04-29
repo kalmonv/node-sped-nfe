@@ -43,7 +43,6 @@ Toda a documentação completa com guias, exemplos, status SEFAZ e muito mais es
 </div>
 
 ## ✅ Funcionalidades Implementadas
-<div align="center">
 | Funcionalidade                         | Status |
 |-----------------------------------------|--------|
 | Emissão de NF-e modelo 55               | ✅     |
@@ -54,4 +53,3 @@ Toda a documentação completa com guias, exemplos, status SEFAZ e muito mais es
 | Manifestação de Destinatário - Confirmação da Operação (210200) | ✅ |
 | Manifestação de Destinatário - Desconhecimento da Operação (210220) | ✅ |
 | Manifestação de Destinatário - Operação Não Realizada (210240) | ✅ |
-</div>
