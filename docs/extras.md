@@ -1,8 +1,4 @@
-# FUNÇOES EXTRAS QUE IRAM AJUDAR
-O XML é estruturado em uma ordem específica, sendo indispensável que se observe a sequência de chamadas das funções mencionadas abaixo, bem como a ordem de seus atributos. Por exemplo:
-
-
-# Métodos
+# FUNÇOES EXTRAS
 
 ### 🟢 json2xml(object) <Promise>
 Converte um JSON para XML.
