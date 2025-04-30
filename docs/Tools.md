@@ -21,7 +21,7 @@ const config = {
   openssl: '/usr/bin/openssl.exe', //Optativo, caso sistema não tenha declarado nas variaveis.
 };
 const certificado = {
-  pfx: fs.readFileSync('./certs/empresa.pfx'),  //Obrigatorio, caminho para o arquivo .pfx
+  pfx: fs.readFileSync('./certs/empresa.pfx'),  // (Buffer | String path) Obrigatorio, caminho para o arquivo .pfx
   senha: 'minhasenha123'                        //Obrigatorio, senha do certificado digital
 };
 const tools = new Tools(config, certificado);

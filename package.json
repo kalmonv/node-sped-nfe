@@ -1,6 +1,6 @@
 {
   "name": "node-sped-nfe",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "author": "Kalmon V. Tavares",
   "type": "module",
   "main": "dist/index.js",

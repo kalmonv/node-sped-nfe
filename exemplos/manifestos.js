@@ -11,7 +11,7 @@ let myTools = new Tools({ //Configuração de habiente e sistema
     //Optativo: Leia sobre Requisitos.
     xmllint: `../libs/libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`
 }, { //Certificado digital
-    pfx: '../certificado.pfx',
+    pfx: '../certificado.pfx', // Buffer | String
     senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),
 });
 

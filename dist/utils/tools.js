@@ -307,7 +307,6 @@ class Tools {
                 };
                 let xmlSing = await json2xml(evento);
                 xmlSing = await this.xmlSign(xmlSing, { tag: "infEvento" }); //Assinado
-                fs.writeFileSync("testes/xmlEvento.xml", xmlSing, "utf8");
                 await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, xmlSing, `envEvento_v1.00`).catch(reject); //Validar corpo
                 xmlSing = await json2xml({
                     "soap:Envelope": {
@@ -431,8 +430,6 @@ class Tools {
                 });
                 req.write(xmlSing);
                 req.end();
-                // Opcional: salvar a requisição para análise
-                fs.writeFileSync("testes/consultaDistribuicao.xml", xmlSing, "utf8");
             }
             catch (erro) {
                 reject(erro);
