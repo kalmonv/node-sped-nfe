@@ -441,11 +441,13 @@ class Tools {
         });
     }
 
-    async sefazDistDFe({ ultNSU = "000000000000000" }: { ultNSU?: string }): Promise<string> {
+    async sefazDistDFe({ ultNSU = undefined, chNFe = undefined }: { ultNSU?: string, chNFe?: string }): Promise<string> {
         return new Promise(async (resolve, reject) => {
             try {
+                if (!chNFe && !ultNSU) throw "sefazDistDFe({chNFe|ultNSU})";
                 if (!this.#config.CNPJ) throw "CNPJ não definido!";
                 if (this.#config.CNPJ.length !== 14) throw "CNPJ inválido!";
+
 
                 // Gera o XML da consulta
                 // Prepara o SOAP
@@ -456,9 +458,15 @@ class Tools {
                         "tpAmb": 1, // 1 = produção, 2 = homologação
                         "cUFAutor": UF2cUF[this.#config.UF], // "AN" - Ambiente Nacional
                         "CNPJ": this.#config.CNPJ,
-                        "distNSU": {
-                            "ultNSU": `${ultNSU}`.padStart(15, '0')
-                        }
+                        ...(typeof ultNSU != "undefined" ?
+                            { "distNSU": { "ultNSU": `${ultNSU}`.padStart(15, '0') } } :
+                            {}
+                        ),
+                        ...(typeof chNFe != "undefined" ?
+                            { "consChNFe": { "chNFe": chNFe } } :
+                            {}
+                        )
+
                     }
                 });
 
@@ -481,8 +489,6 @@ class Tools {
                         }
                     }
                 });
-
-
 
                 // HTTPS Request
                 const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {

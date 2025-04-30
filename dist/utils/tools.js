@@ -359,9 +359,11 @@ class Tools {
             }
         });
     }
-    async sefazDistDFe({ ultNSU = "000000000000000" }) {
+    async sefazDistDFe({ ultNSU = undefined, chNFe = undefined }) {
         return new Promise(async (resolve, reject) => {
             try {
+                if (!chNFe && !ultNSU)
+                    throw "sefazDistDFe({chNFe|ultNSU})";
                 if (!__classPrivateFieldGet(this, _Tools_config, "f").CNPJ)
                     throw "CNPJ não definido!";
                 if (__classPrivateFieldGet(this, _Tools_config, "f").CNPJ.length !== 14)
@@ -375,9 +377,12 @@ class Tools {
                         "tpAmb": 1, // 1 = produção, 2 = homologação
                         "cUFAutor": UF2cUF[__classPrivateFieldGet(this, _Tools_config, "f").UF], // "AN" - Ambiente Nacional
                         "CNPJ": __classPrivateFieldGet(this, _Tools_config, "f").CNPJ,
-                        "distNSU": {
-                            "ultNSU": `${ultNSU}`.padStart(15, '0')
-                        }
+                        ...(typeof ultNSU != "undefined" ?
+                            { "distNSU": { "ultNSU": `${ultNSU}`.padStart(15, '0') } } :
+                            {}),
+                        ...(typeof chNFe != "undefined" ?
+                            { "consChNFe": { "chNFe": chNFe } } :
+                            {})
                     }
                 });
                 await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, xmlSing, `distDFeInt_v1.01`).catch(reject); //Validar corpo
@@ -398,6 +403,7 @@ class Tools {
                         }
                     }
                 });
+                fs.writeFileSync("testes/distNFe.xml", xmlSing, "utf8");
                 // HTTPS Request
                 const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
                     ...{
