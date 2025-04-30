@@ -403,7 +403,6 @@ class Tools {
                         }
                     }
                 });
-                fs.writeFileSync("testes/distNFe.xml", xmlSing, "utf8");
                 // HTTPS Request
                 const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
                     ...{
