@@ -413,7 +413,6 @@ class Tools {
                 }, (res) => {
                     let data = '';
                     res.on('data', (chunk) => {
-                        console.log(chunk);
                         data += chunk;
                     });
                     res.on('end', () => {
