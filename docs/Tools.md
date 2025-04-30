@@ -112,19 +112,8 @@ const xmlStatus = await tools.sefazStatus();
 ## 📥 Método `async sefazEvento({ chNFe, tpEvento, nProt , justificativa, textoCorrecao, sequencial }): Promise<string>`
 O método `sefazEvento` realiza a **Manifesto de uma NFe**.
 ```ts
-let myTools = new Tools({ //Configuração de habiente e sistema
-    mod: '55',
-    tpAmb: "1",
-    UF: 'MT',
-    versao: '4.00',
-    CNPJ: "47506306000188", // CNPJ/CPF DO TOMADOR
-}, { //Certificado digital
-    pfx: '../certificado.pfx',
-    senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),
-});
-
 // 1. Manifestação - Confirmação
-myTools.sefazEvento({ chNFe: "351701...", tpEvento: "210200" }).then(res => {
+tools.sefazEvento({ chNFe: "351701...", tpEvento: "210200" }).then(res => {
     console.log(res) //Xml da sefaz
 }).catch(err=>{
     console.error(err)
