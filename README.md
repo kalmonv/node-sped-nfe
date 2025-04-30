@@ -50,6 +50,7 @@ Toda a documentação completa com guias, exemplos, status SEFAZ e muito mais es
 | Consulta Status do Serviço SEFAZ       | ✅     |
 | Consulta Situação de NF-e/NFC-e         | ✅     |
 | Consulta NF-e/NFC-e emitidas contra (DistNFe)  | ✅     |
+| Download NF-e/NFC-e emitidas contra (DistNFe)  | ✅     |
 | Cancelamento de NFe/NFCe emitida (110111) | ✅ |
 | Carta correção de NFe/NFCe emitida (110110) | ✅ |
 | Manifestação de Destinatário - Ciência da Operação (210210) | ✅ |
