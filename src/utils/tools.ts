@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import pem from 'pem';
 import { cUF2UF, json2xml, xml2json, formatData, UF2cUF } from "./extras.js"
 import { SignedXml } from 'xml-crypto';
+import { json } from "stream/consumers";
 
 
 
@@ -62,7 +63,7 @@ class Tools {
     }
 
     sefazEnviaLote(xml: string, data: any = { idLote: 1, indSinc: 0, compactar: false }): Promise<string> {
-        return new Promise(async (resvol, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (typeof data.idLote == "undefined") data.idLote = 1;
             if (typeof data.indSinc == "undefined") data.indSinc = 0;
             if (typeof data.compactar == "undefined") data.compactar = false;
@@ -110,7 +111,9 @@ class Tools {
                     });
 
                     res.on('end', () => {
-                        resvol(data);
+                        xml2json(data).then((jRes: any) => {
+                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject)
+                        })
                     });
                 });
 
@@ -288,7 +291,11 @@ class Tools {
                 }, (res) => {
                     let data = '';
                     res.on('data', (chunk) => data += chunk);
-                    res.on('end', () => resolve(data));
+                    res.on('end', () => {
+                        xml2json(data).then((jRes: any) => {
+                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject)
+                        })
+                    });
                 });
 
                 req.setTimeout(this.#config.timeout * 1000, () => {
@@ -416,7 +423,9 @@ class Tools {
                         });
 
                         res.on('end', () => {
-                            resolve(data);
+                            xml2json(data).then((jRes: any) => {
+                                json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject)
+                            })
                         });
                     });
 
@@ -509,7 +518,9 @@ class Tools {
                     });
 
                     res.on('end', () => {
-                        resolve(data);
+                        xml2json(data).then((jRes: any) => {
+                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject)
+                        })
                     });
                 });
 
@@ -545,7 +556,7 @@ class Tools {
 
     //Consulta status sefaz
     async sefazStatus(): Promise<string> {
-        return new Promise(async (resvol, reject) => {
+        return new Promise(async (resolve, reject) => {
 
             if (typeof this.#config.UF == "undefined") throw "sefazStatus({...UF}) -> não definido!";
             if (typeof this.#config.tpAmb == "undefined") throw "sefazStatus({...tpAmb}) -> não definido!";
@@ -602,7 +613,9 @@ class Tools {
                     });
 
                     res.on('end', () => {
-                        resvol(data);
+                        xml2json(data).then((jRes: any) => {
+                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject)
+                        })
                     });
                 });
 

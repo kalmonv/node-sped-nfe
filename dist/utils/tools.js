@@ -54,7 +54,7 @@ class Tools {
         __classPrivateFieldSet(this, _Tools_cert, certificado, "f");
     }
     sefazEnviaLote(xml, data = { idLote: 1, indSinc: 0, compactar: false }) {
-        return new Promise(async (resvol, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (typeof data.idLote == "undefined")
                 data.idLote = 1;
             if (typeof data.indSinc == "undefined")
@@ -102,7 +102,9 @@ class Tools {
                         data += chunk;
                     });
                     res.on('end', () => {
-                        resvol(data);
+                        xml2json(data).then((jRes) => {
+                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject);
+                        });
                     });
                 });
                 req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
@@ -213,7 +215,11 @@ class Tools {
                 }, (res) => {
                     let data = '';
                     res.on('data', (chunk) => data += chunk);
-                    res.on('end', () => resolve(data));
+                    res.on('end', () => {
+                        xml2json(data).then((jRes) => {
+                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject);
+                        });
+                    });
                 });
                 req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
                     reject({
@@ -334,7 +340,9 @@ class Tools {
                             data += chunk;
                         });
                         res.on('end', () => {
-                            resolve(data);
+                            xml2json(data).then((jRes) => {
+                                json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject);
+                            });
                         });
                     });
                     req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
@@ -420,7 +428,9 @@ class Tools {
                         data += chunk;
                     });
                     res.on('end', () => {
-                        resolve(data);
+                        xml2json(data).then((jRes) => {
+                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject);
+                        });
                     });
                 });
                 req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
@@ -443,7 +453,7 @@ class Tools {
     }
     //Consulta status sefaz
     async sefazStatus() {
-        return new Promise(async (resvol, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").UF == "undefined")
                 throw "sefazStatus({...UF}) -> não definido!";
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").tpAmb == "undefined")
@@ -495,7 +505,9 @@ class Tools {
                         data += chunk;
                     });
                     res.on('end', () => {
-                        resvol(data);
+                        xml2json(data).then((jRes) => {
+                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject);
+                        });
                     });
                 });
                 req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
