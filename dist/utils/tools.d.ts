@@ -30,6 +30,9 @@ declare class Tools {
         textoCorrecao?: string | undefined;
         sequencial?: number | undefined;
     }): Promise<string>;
+    sefazDistDFe({ ultNSU }: {
+        ultNSU?: string;
+    }): Promise<string>;
     sefazStatus(): Promise<string>;
     validarNFe(xml: string): Promise<any>;
 }

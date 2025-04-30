@@ -20,7 +20,7 @@ import fs from "fs";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pem from 'pem';
-import { cUF2UF, json2xml, xml2json } from "./extras.js";
+import { cUF2UF, json2xml, xml2json, UF2cUF } from "./extras.js";
 import { SignedXml } from 'xml-crypto';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -95,7 +95,7 @@ class Tools {
                         },
                         rejectUnauthorized: false
                     },
-                    ...__classPrivateFieldGet(this, _Tools_pem, "f")
+                    ...await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this)
                 }, (res) => {
                     let data = '';
                     res.on('data', (chunk) => {
@@ -326,9 +326,9 @@ class Tools {
                                 'Content-Type': 'application/soap+xml; charset=utf-8',
                                 'Content-Length': xmlSing.length,
                             },
-                            rejectUnauthorized: false
+                            rejectUnauthorized: false,
                         },
-                        ...__classPrivateFieldGet(this, _Tools_pem, "f")
+                        ...await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this)
                     }, (res) => {
                         let data = '';
                         res.on('data', (chunk) => {
@@ -354,6 +354,86 @@ class Tools {
                 catch (erro) {
                     reject(erro);
                 }
+            }
+            catch (erro) {
+                reject(erro);
+            }
+        });
+    }
+    async sefazDistDFe({ ultNSU = "000000000000000" }) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (!__classPrivateFieldGet(this, _Tools_config, "f").CNPJ)
+                    throw "CNPJ não definido!";
+                if (__classPrivateFieldGet(this, _Tools_config, "f").CNPJ.length !== 14)
+                    throw "CNPJ inválido!";
+                // Gera o XML da consulta
+                // Prepara o SOAP
+                var xmlSing = await json2xml({
+                    "distDFeInt": {
+                        "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                        "@versao": "1.01",
+                        "tpAmb": 1, // 1 = produção, 2 = homologação
+                        "cUFAutor": UF2cUF[__classPrivateFieldGet(this, _Tools_config, "f").UF], // "AN" - Ambiente Nacional
+                        "CNPJ": __classPrivateFieldGet(this, _Tools_config, "f").CNPJ,
+                        "distNSU": {
+                            "ultNSU": `${ultNSU}`.padStart(15, '0')
+                        }
+                    }
+                });
+                await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, xmlSing, `distDFeInt_v1.01`).catch(reject); //Validar corpo
+                const tempUF = urlEventos(`AN`, __classPrivateFieldGet(this, _Tools_config, "f").versao);
+                xmlSing = await json2xml({
+                    "soap:Envelope": {
+                        "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                        "@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+                        "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
+                        "soap:Body": {
+                            "nfeDistDFeInteresse": {
+                                "@xmlns": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeDistribuicaoDFe",
+                                "nfeDadosMsg": {
+                                    ...{ "@xmlns": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeDistribuicaoDFe" },
+                                    ...await xml2json(xmlSing)
+                                }
+                            }
+                        }
+                    }
+                });
+                // HTTPS Request
+                const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
+                    ...{
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/soap+xml; charset=utf-8',
+                            'Content-Length': xmlSing.length,
+                        },
+                        rejectUnauthorized: false
+                    },
+                    ...await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this)
+                }, (res) => {
+                    let data = '';
+                    res.on('data', (chunk) => {
+                        console.log(chunk);
+                        data += chunk;
+                    });
+                    res.on('end', () => {
+                        resolve(data);
+                    });
+                });
+                req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
+                    reject({
+                        name: 'TimeoutError',
+                        message: 'The operation was aborted due to timeout'
+                    });
+                    req.destroy(); // cancela a requisição
+                });
+                req.on('error', (erro) => {
+                    reject(erro);
+                });
+                req.write(xmlSing);
+                req.end();
+                // Opcional: salvar a requisição para análise
+                fs.writeFileSync("testes/consultaDistribuicao.xml", xmlSing, "utf8");
             }
             catch (erro) {
                 reject(erro);

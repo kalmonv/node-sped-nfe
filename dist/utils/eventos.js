@@ -62,14 +62,12 @@ const urlEventos400 = {
             "producao": {
                 "NFeRecepcaoEvento": "https://www.nfe.fazenda.gov.br/NFeRecepcaoEvento4/NFeRecepcaoEvento4.asmx",
                 "NFeDistribuicaoDFe": "https://www1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx",
-                "NFeConsultaDest": "https://www.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx",
                 "NFeDownloadNF": "https://www.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx",
                 "RecepcaoEPEC": "https://www.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx"
             },
             "homologacao": {
                 "NFeRecepcaoEvento": "https://hom1.nfe.fazenda.gov.br/NFeRecepcaoEvento4/NFeRecepcaoEvento4.asmx",
                 "NFeDistribuicaoDFe": "https://hom1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx",
-                "NFeConsultaDest": "https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx",
                 "NFeDownloadNF": "https://hom.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx",
                 "RecepcaoEPEC": "https://hom.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx"
             }

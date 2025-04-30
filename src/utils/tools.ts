@@ -8,7 +8,7 @@ import fs from "fs"
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pem from 'pem';
-import { cUF2UF, json2xml, xml2json, formatData } from "./extras.js"
+import { cUF2UF, json2xml, xml2json, formatData, UF2cUF } from "./extras.js"
 import { SignedXml } from 'xml-crypto';
 
 
@@ -101,7 +101,7 @@ class Tools {
                         },
                         rejectUnauthorized: false
                     },
-                    ...this.#pem
+                    ...await this.#certTools()
                 }, (res) => {
                     let data = '';
 
@@ -136,7 +136,7 @@ class Tools {
         return new Promise(async (resvol, reject) => {
             if (data.tag === undefined) data.tag = "infNFe";
             var xml = await this.xml2json(xmlJSON) as any;
-            
+
             if (data.tag == "infNFe") {
                 if (xml.NFe.infNFe.ide.mod == 65) {
                     xml.NFe.infNFeSupl.qrCode = this.#gerarQRCodeNFCe(xml.NFe, "2", this.#config.CSCid, this.#config.CSC)
@@ -407,9 +407,9 @@ class Tools {
                                 'Content-Type': 'application/soap+xml; charset=utf-8',
                                 'Content-Length': xmlSing.length,
                             },
-                            rejectUnauthorized: false
+                            rejectUnauthorized: false,
                         },
-                        ...this.#pem
+                        ...await this.#certTools()
                     }, (res) => {
                         let data = '';
 
@@ -437,6 +437,94 @@ class Tools {
                 } catch (erro) {
                     reject(erro);
                 }
+            } catch (erro) {
+                reject(erro);
+            }
+        });
+    }
+
+    async sefazDistDFe({ ultNSU = "000000000000000" }: { ultNSU?: string }): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (!this.#config.CNPJ) throw "CNPJ não definido!";
+                if (this.#config.CNPJ.length !== 14) throw "CNPJ inválido!";
+
+                // Gera o XML da consulta
+                // Prepara o SOAP
+                var xmlSing = await json2xml({
+                    "distDFeInt": {
+                        "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                        "@versao": "1.01",
+                        "tpAmb": 1, // 1 = produção, 2 = homologação
+                        "cUFAutor": UF2cUF[this.#config.UF], // "AN" - Ambiente Nacional
+                        "CNPJ": this.#config.CNPJ,
+                        "distNSU": {
+                            "ultNSU": `${ultNSU}`.padStart(15, '0')
+                        }
+                    }
+                });
+
+                await this.#xmlValido(xmlSing, `distDFeInt_v1.01`).catch(reject); //Validar corpo
+                const tempUF = urlEventos(`AN`, this.#config.versao);
+
+                xmlSing = await json2xml({
+                    "soap:Envelope": {
+                        "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                        "@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+                        "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
+                        "soap:Body": {
+                            "nfeDistDFeInteresse": {
+                                "@xmlns": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeDistribuicaoDFe",
+                                "nfeDadosMsg": {
+                                    ... { "@xmlns": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeDistribuicaoDFe" },
+                                    ...await xml2json(xmlSing)
+                                }
+                            }
+                        }
+                    }
+                });
+
+
+
+                // HTTPS Request
+                const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
+                    ...{
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/soap+xml; charset=utf-8',
+                            'Content-Length': xmlSing.length,
+                        },
+                        rejectUnauthorized: false
+                    },
+                    ...await this.#certTools()
+                }, (res) => {
+                    let data = '';
+
+                    res.on('data', (chunk) => {
+                        data += chunk;
+                    });
+
+                    res.on('end', () => {
+                        resolve(data);
+                    });
+                });
+
+                req.setTimeout(this.#config.timeout * 1000, () => {
+                    reject({
+                        name: 'TimeoutError',
+                        message: 'The operation was aborted due to timeout'
+                    });
+                    req.destroy(); // cancela a requisição
+                });
+                req.on('error', (erro) => {
+                    reject(erro);
+                });
+                req.write(xmlSing);
+                req.end();
+
+                // Opcional: salvar a requisição para análise
+                fs.writeFileSync("testes/consultaDistribuicao.xml", xmlSing, "utf8");
+
             } catch (erro) {
                 reject(erro);
             }

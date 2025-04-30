@@ -49,6 +49,7 @@ Toda a documentação completa com guias, exemplos, status SEFAZ e muito mais es
 | Emissão de NFC-e modelo 65              | ✅     |
 | Consulta Status do Serviço SEFAZ       | ✅     |
 | Consulta Situação de NF-e/NFC-e         | ✅     |
+| Consulta NF-e/NFC-e emitidas contra (DistNFe)  | ✅     |
 | Manifestação de Destinatário - Ciência da Operação (210210) | ✅ |
 | Manifestação de Destinatário - Confirmação da Operação (210200) | ✅ |
 | Manifestação de Destinatário - Desconhecimento da Operação (210220) | ✅ |
