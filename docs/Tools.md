@@ -140,3 +140,10 @@ myTools.sefazEvento({ chNFe: "351701...", tpEvento: "210200" }).then(res => {
 // 4. Operação Não Realizada
 //await myTools.sefazEvento({ chNFe: "351701...", tpEvento: "210240", justificativa: "Entrega não realizada por recusa do destinatário." });
 ```
+
+
+## 📥 Método `async sefazDistDFe({ultNSU}): Promise<string>`
+O método `sefazDistDFe` realiza a **consulta ded NFe/NFCe** emitidas contra o CNPJ.
+```ts
+const xmlDocs = await tools.sefazDistDFe({ultNSU:"0"});
+```
