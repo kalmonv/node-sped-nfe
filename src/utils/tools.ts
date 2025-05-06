@@ -112,7 +112,7 @@ class Tools {
 
                     res.on('end', () => {
                         xml2json(data).then((jRes: any) => {
-                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject)
+                            json2xml(jRes['soapenv:Envelope']['soapenv:Body']).then(resolve).catch(reject)
                         })
                     });
                 });
@@ -613,8 +613,9 @@ class Tools {
                     });
 
                     res.on('end', () => {
+                        console.log(data)
                         xml2json(data).then((jRes: any) => {
-                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject)
+                            json2xml(jRes['soapenv:Envelope']['soapenv:Body']).then(resolve).catch(reject)
                         })
                     });
                 });
