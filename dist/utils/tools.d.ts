@@ -22,13 +22,13 @@ declare class Tools {
     json2xml(obj: object): Promise<string>;
     getCertificado(): Promise<object>;
     consultarNFe(chNFe: string): Promise<string>;
-    sefazEvento({ chNFe, tpEvento, nProt, justificativa, textoCorrecao, sequencial }: {
+    sefazEvento({ chNFe, tpEvento, nProt, xJust, nSeqEvento, dhEvento }: {
         chNFe?: string | undefined;
         tpEvento?: string | undefined;
         nProt?: string | undefined;
-        justificativa?: string | undefined;
-        textoCorrecao?: string | undefined;
-        sequencial?: number | undefined;
+        xJust?: string | undefined;
+        nSeqEvento?: number | undefined;
+        dhEvento?: string | undefined;
     }): Promise<string>;
     sefazDistDFe({ ultNSU, chNFe }: {
         ultNSU?: string;

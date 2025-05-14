@@ -20,7 +20,7 @@ import fs from "fs";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pem from 'pem';
-import { cUF2UF, json2xml, xml2json, UF2cUF } from "./extras.js";
+import { cUF2UF, json2xml, xml2json, formatData, UF2cUF } from "./extras.js";
 import { SignedXml } from 'xml-crypto';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -103,7 +103,7 @@ class Tools {
                     });
                     res.on('end', () => {
                         xml2json(data).then((jRes) => {
-                            json2xml(jRes['soapenv:Envelope']['soapenv:Body']).then(resolve).catch(reject);
+                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
                         });
                     });
                 });
@@ -131,8 +131,9 @@ class Tools {
                 data.tag = "infNFe";
             var xml = await this.xml2json(xmlJSON);
             if (data.tag == "infNFe") {
-                if (xml.NFe.infNFe.ide.mod == 65) {
+                if (xml.NFe.infNFe.ide.mod * 1 == 65) {
                     xml.NFe.infNFeSupl.qrCode = __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_gerarQRCodeNFCe).call(this, xml.NFe, "2", __classPrivateFieldGet(this, _Tools_config, "f").CSCid, __classPrivateFieldGet(this, _Tools_config, "f").CSC);
+                    xmlJSON = await json2xml(xml);
                 }
                 xml.NFe = {
                     ...xml.NFe,
@@ -217,7 +218,7 @@ class Tools {
                     res.on('data', (chunk) => data += chunk);
                     res.on('end', () => {
                         xml2json(data).then((jRes) => {
-                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject);
+                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
                         });
                     });
                 });
@@ -237,7 +238,7 @@ class Tools {
             }
         });
     }
-    async sefazEvento({ chNFe = "", tpEvento = "", nProt = "", justificativa = "", textoCorrecao = "", sequencial = 1 }) {
+    async sefazEvento({ chNFe = "", tpEvento = "", nProt = "", xJust = "", nSeqEvento = 1, dhEvento = formatData() }) {
         return new Promise(async (resolve, reject) => {
             try {
                 if (!chNFe)
@@ -262,32 +263,33 @@ class Tools {
                     }
                     return idLote;
                 };
-                const tempUF = urlEventos(`AN`, __classPrivateFieldGet(this, _Tools_config, "f").versao);
                 let detEvento = {
                     "@versao": "1.00",
                     "descEvento": __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_descEvento).call(this, `${tpEvento}`)
                 };
+                const cOrgao = !['210200', '210210', '210220', '210240'].includes(tpEvento) ? chNFe.substring(0, 2) : '91';
                 // Adicionar campos específicos por tipo de evento
                 if (tpEvento === "110111") { // Cancelamento
                     if (!nProt)
                         throw "sefazEvento({nProt}) obrigatório para Cancelamento!";
-                    if (!justificativa)
-                        throw "sefazEvento({justificativa}) obrigatório para Cancelamento!";
+                    if (!xJust)
+                        throw "sefazEvento({xJust}) obrigatório para Cancelamento!";
                     detEvento["nProt"] = nProt;
-                    detEvento["xJust"] = justificativa;
+                    detEvento["xJust"] = xJust;
                 }
                 else if (tpEvento === "110110") { // Carta de Correção
-                    if (!textoCorrecao)
-                        throw "sefazEvento({textoCorrecao}) obrigatório para Carta de Correção!";
-                    detEvento["xCorrecao"] = textoCorrecao;
-                    detEvento["xCondUso"] = "A carta de correção é disciplinada pelo § 1º-A do art. 7º do Convênio S/N, de 15 de dezembro de 1970...";
+                    if (!xJust)
+                        throw "sefazEvento({xJust}) obrigatório para Carta de Correção!";
+                    detEvento["xCorrecao"] = xJust;
+                    detEvento["xCondUso"] = "A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do destinatario; III - a data de emissao ou de saida.";
                 }
                 else if (tpEvento === "210240") { // Operação não realizada
-                    if (!justificativa)
-                        throw "sefazEvento({justificativa}) obrigatório para Operação não realizada!";
-                    detEvento["xJust"] = justificativa;
+                    if (!xJust)
+                        throw "sefazEvento({xJust}) obrigatório para Operação não realizada!";
+                    detEvento["xJust"] = xJust;
                 }
                 // Ciência (210210), Confirmação (210200), Desconhecimento (210220) não precisam de campos extras
+                const tempUF = urlEventos(cUF2UF[cOrgao], __classPrivateFieldGet(this, _Tools_config, "f").versao);
                 const evento = {
                     "envEvento": {
                         "@xmlns": "http://www.portalfiscal.inf.br/nfe",
@@ -297,14 +299,14 @@ class Tools {
                             "@xmlns": "http://www.portalfiscal.inf.br/nfe",
                             "@versao": "1.00",
                             "infEvento": {
-                                "@Id": `ID${tpEvento}${chNFe}${sequencial.toString().padStart(2, '0')}`,
-                                "cOrgao": "91",
+                                "@Id": `ID${tpEvento}${chNFe}${nSeqEvento.toString().padStart(2, '0')}`,
+                                cOrgao,
                                 "tpAmb": __classPrivateFieldGet(this, _Tools_config, "f").tpAmb,
                                 "CNPJ": __classPrivateFieldGet(this, _Tools_config, "f").CNPJ,
                                 "chNFe": chNFe,
-                                "dhEvento": "2025-04-29T14:16:21-03:00",
+                                dhEvento,
                                 "tpEvento": tpEvento,
-                                "nSeqEvento": sequencial,
+                                "nSeqEvento": nSeqEvento,
                                 "verEvento": "1.00",
                                 "detEvento": detEvento
                             }
@@ -319,7 +321,10 @@ class Tools {
                         "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
                         "@xmlns:nfe": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeRecepcaoEvento4",
                         "soap:Body": {
-                            "nfe:nfeDadosMsg": await xml2json(xmlSing)
+                            "nfe:nfeDadosMsg": {
+                                ...await xml2json(xmlSing),
+                                "@xmlns": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeRecepcaoEvento4"
+                            }
                         }
                     }
                 });
@@ -341,7 +346,7 @@ class Tools {
                         });
                         res.on('end', () => {
                             xml2json(data).then((jRes) => {
-                                json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject);
+                                json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
                             });
                         });
                     });
@@ -429,7 +434,7 @@ class Tools {
                     });
                     res.on('end', () => {
                         xml2json(data).then((jRes) => {
-                            json2xml(jRes['soap:Envelope']['soap:Body']).then(resolve).catch(reject);
+                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
                         });
                     });
                 });
@@ -505,9 +510,8 @@ class Tools {
                         data += chunk;
                     });
                     res.on('end', () => {
-                        console.log(data);
                         xml2json(data).then((jRes) => {
-                            json2xml(jRes['soapenv:Envelope']['soapenv:Body']).then(resolve).catch(reject);
+                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
                         });
                     });
                 });

@@ -1,4 +1,4 @@
-import { Make, Tools } from "../dist/index.js"
+import { Tools } from "../dist/index.js"
 import fs from "fs";
 
 let myTools = new Tools({ //Configuração de habiente e sistema
@@ -31,21 +31,21 @@ myTools.sefazEvento({ chNFe: "351701...", tpEvento: "210200" }).then(res => {
 });
 
 2. Cancelamento
-myTools.sefazEvento({ chNFe: "351701...", tpEvento: "110111", nProt: "135230000000000", justificativa: "Cancelamento por erro na emissão." }).then(res => {
+myTools.sefazEvento({ chNFe: "351701...", tpEvento: "110111", nProt: "135230000000000", xJust: "Cancelamento por erro na emissão." }).then(res => {
     console.log(res)
 }).catch(err=>{
     console.error(err)
 });
 
 3. Carta de Correção
-myTools.sefazEvento({ chNFe: "351701...", tpEvento: "110110", textoCorrecao: "Corrigir a descrição do produto." }).then(res => {
+myTools.sefazEvento({ chNFe: "351701...", tpEvento: "110110", xJust: "Corrigir a descrição do produto." }).then(res => {
     console.log(res)
 }).catch(err=>{
     console.error(err)
 });
 
 4. Operação Não Realizada
-myTools.sefazEvento({ chNFe: "351701...", tpEvento: "210240", justificativa: "Entrega não realizada por recusa do destinatário." }).then(res => {
+myTools.sefazEvento({ chNFe: "351701...", tpEvento: "210240", xJust: "Entrega não realizada por recusa do destinatário." }).then(res => {
     console.log(res)
 }).catch(err=>{
     console.error(err)

@@ -14,7 +14,7 @@ class Make {
         _Make_NFe.set(this, {
             "@xmlns": "http://www.portalfiscal.inf.br/nfe",
             infNFe: {
-                "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+            //"@xmlns": "http://www.portalfiscal.inf.br/nfe",
             }
         });
         _Make_ICMSTot.set(this, {
@@ -442,16 +442,14 @@ class Make {
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total = {
             ICMSTot: {}
         };
-        if (obj != null) {
+        Object.keys(__classPrivateFieldGet(this, _Make_ICMSTot, "f")).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot[key] = (__classPrivateFieldGet(this, _Make_ICMSTot, "f")[key] * 1).toFixed(2);
+        });
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vNF = (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vProd - __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vDesc).toFixed(2);
+        if (obj != null) { // Substituir campos que deseja
             Object.keys(obj).forEach(key => {
                 __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot[key] = obj[key];
             });
-        }
-        else {
-            Object.keys(__classPrivateFieldGet(this, _Make_ICMSTot, "f")).forEach(key => {
-                __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot[key] = (__classPrivateFieldGet(this, _Make_ICMSTot, "f")[key] * 1).toFixed(2);
-            });
-            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vNF = (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vProd - __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vDesc).toFixed(2);
         }
     }
     tagISSQNTot(obj) {
@@ -556,7 +554,7 @@ class Make {
         if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe[`@Id`] == null)
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe[`@Id`] = `NFe${__classPrivateFieldGet(this, _Make_instances, "m", _Make_gerarChaveNFe).call(this)}`;
         //Adicionar QrCode
-        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.mod == 65) {
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.mod * 1 == 65) {
             //Como ja temos cUF, vamos usar o extras.cUF2UF
             let tempUF = urlEventos(cUF2UF[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF], __classPrivateFieldGet(this, _Make_NFe, "f").infNFe['@versao']);
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFeSupl = {

@@ -11,7 +11,7 @@ class Make {
     } = {
             "@xmlns": "http://www.portalfiscal.inf.br/nfe",
             infNFe: {
-                "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                //"@xmlns": "http://www.portalfiscal.inf.br/nfe",
             }
         };
     #ICMSTot: Record<string, number> = {
@@ -493,15 +493,15 @@ class Make {
         this.#NFe.infNFe.total = {
             ICMSTot: {}
         };
-        if (obj != null) {
+        Object.keys(this.#ICMSTot).forEach(key => {
+            this.#NFe.infNFe.total.ICMSTot[key] = (this.#ICMSTot[key] * 1).toFixed(2);
+        });
+        this.#NFe.infNFe.total.ICMSTot.vNF = (this.#NFe.infNFe.total.ICMSTot.vProd - this.#NFe.infNFe.total.ICMSTot.vDesc).toFixed(2)
+
+        if (obj != null) { // Substituir campos que deseja
             Object.keys(obj).forEach(key => {
                 this.#NFe.infNFe.total.ICMSTot[key] = obj[key];
             });
-        } else {
-            Object.keys(this.#ICMSTot).forEach(key => {
-                this.#NFe.infNFe.total.ICMSTot[key] = (this.#ICMSTot[key] * 1).toFixed(2);
-            });
-            this.#NFe.infNFe.total.ICMSTot.vNF = (this.#NFe.infNFe.total.ICMSTot.vProd - this.#NFe.infNFe.total.ICMSTot.vDesc).toFixed(2)
         }
     }
 
@@ -680,7 +680,7 @@ class Make {
         if (this.#NFe.infNFe[`@Id`] == null) this.#NFe.infNFe[`@Id`] = `NFe${this.#gerarChaveNFe()}`;
 
         //Adicionar QrCode
-        if (this.#NFe.infNFe.ide.mod == 65) {
+        if (this.#NFe.infNFe.ide.mod * 1 == 65) {
             //Como ja temos cUF, vamos usar o extras.cUF2UF
             let tempUF = urlEventos(cUF2UF[this.#NFe.infNFe.ide.cUF], this.#NFe.infNFe['@versao']);
             this.#NFe.infNFeSupl = {
@@ -700,7 +700,7 @@ class Make {
     #calICMSTot(obj: any) {
         Object.keys(obj).map(key => {
             if (this.#ICMSTot[key] !== undefined) {
-                this.#ICMSTot[key] += (obj[key])*1;
+                this.#ICMSTot[key] += (obj[key]) * 1;
             }
         });
 
