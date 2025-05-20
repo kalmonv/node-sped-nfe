@@ -319,7 +319,7 @@ const docZip = async (xml, retorno = "original") => {
         };
         const jXml = await xml2json(xml);
         try {
-            var docZips = jXml["nfeDistDFeInteresseResponse"]["nfeDistDFeInteresseResult"]["retDistDFeInt"];
+            var docZips = jXml["nfeDistDFeInteresseResult"]["retDistDFeInt"];
             if (typeof docZips['loteDistDFeInt'] == "undefined")
                 return resolve([]);
             docZips = docZips["loteDistDFeInt"]['docZip'];

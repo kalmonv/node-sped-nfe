@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Tools_instances, _Tools_cert, _Tools_pem, _Tools_config, _Tools_getSignature, _Tools_gerarQRCodeNFCe, _Tools_descEvento, _Tools_xmlValido, _Tools_certTools;
+var _Tools_instances, _Tools_cert, _Tools_pem, _Tools_config, _Tools_getSignature, _Tools_gerarQRCodeNFCe, _Tools_descEvento, _Tools_xmlValido, _Tools_certTools, _Tools_limparSoap;
 import { XMLBuilder } from "fast-xml-parser";
 import https from "https";
 import { spawnSync } from "child_process";
@@ -101,10 +101,13 @@ class Tools {
                     res.on('data', (chunk) => {
                         data += chunk;
                     });
-                    res.on('end', () => {
-                        xml2json(data).then((jRes) => {
-                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
-                        });
+                    res.on('end', async () => {
+                        try {
+                            resolve(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_limparSoap).call(this, data));
+                        }
+                        catch (error) {
+                            resolve(data);
+                        }
                     });
                 });
                 req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
@@ -216,10 +219,13 @@ class Tools {
                 }, (res) => {
                     let data = '';
                     res.on('data', (chunk) => data += chunk);
-                    res.on('end', () => {
-                        xml2json(data).then((jRes) => {
-                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
-                        });
+                    res.on('end', async () => {
+                        try {
+                            resolve(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_limparSoap).call(this, data));
+                        }
+                        catch (error) {
+                            resolve(data);
+                        }
                     });
                 });
                 req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
@@ -344,10 +350,13 @@ class Tools {
                         res.on('data', (chunk) => {
                             data += chunk;
                         });
-                        res.on('end', () => {
-                            xml2json(data).then((jRes) => {
-                                json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
-                            });
+                        res.on('end', async () => {
+                            try {
+                                resolve(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_limparSoap).call(this, data));
+                            }
+                            catch (error) {
+                                resolve(data);
+                            }
                         });
                     });
                     req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
@@ -432,10 +441,13 @@ class Tools {
                     res.on('data', (chunk) => {
                         data += chunk;
                     });
-                    res.on('end', () => {
-                        xml2json(data).then((jRes) => {
-                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
-                        });
+                    res.on('end', async () => {
+                        try {
+                            resolve(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_limparSoap).call(this, data));
+                        }
+                        catch (error) {
+                            resolve(data);
+                        }
                     });
                 });
                 req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
@@ -509,10 +521,13 @@ class Tools {
                     res.on('data', (chunk) => {
                         data += chunk;
                     });
-                    res.on('end', () => {
-                        xml2json(data).then((jRes) => {
-                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject);
-                        });
+                    res.on('end', async () => {
+                        try {
+                            resolve(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_limparSoap).call(this, data));
+                        }
+                        catch (error) {
+                            resolve(data);
+                        }
                     });
                 });
                 req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
@@ -633,5 +648,29 @@ async function _Tools_xmlValido(xml, xsd) {
             resvol(__classPrivateFieldGet(this, _Tools_pem, "f"));
         });
     });
+}, _Tools_limparSoap = 
+//Remove coisas inuteis da resposta do sefaz
+async function _Tools_limparSoap(xml) {
+    const clear = [
+        'soapenv:Envelope',
+        'soapenv:Body',
+        'nfeResultMsg',
+        'soap:Envelope',
+        'soap:Body',
+        'nfeResultMsg',
+        'nfeDistDFeInteresseResponse'
+    ];
+    let jXml = await xml2json(xml);
+    let index = 0;
+    while (index < clear.length) {
+        if (typeof jXml[clear[index]] !== "undefined") {
+            jXml = jXml[clear[index]];
+            index = 0; // reinicia a busca no novo nível
+        }
+        else {
+            index++;
+        }
+    }
+    return await json2xml(jXml);
 };
 export { Tools };

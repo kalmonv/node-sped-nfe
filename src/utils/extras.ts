@@ -351,7 +351,7 @@ const docZip = async (xml: string, retorno: string = "original") => {
         const jXml = await xml2json(xml) as any;
 
         try {
-            var docZips = jXml["nfeDistDFeInteresseResponse"]["nfeDistDFeInteresseResult"]["retDistDFeInt"];
+            var docZips = jXml["nfeDistDFeInteresseResult"]["retDistDFeInt"];
             if (typeof docZips['loteDistDFeInt'] == "undefined") return resolve([])
             docZips = docZips["loteDistDFeInt"]['docZip'];
             if (!Array.isArray(docZips))

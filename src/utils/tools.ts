@@ -110,10 +110,12 @@ class Tools {
                         data += chunk;
                     });
 
-                    res.on('end', () => {
-                        xml2json(data).then((jRes: any) => {
-                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject)
-                        })
+                    res.on('end', async () => {
+                        try {
+                            resolve(await this.#limparSoap(data));
+                        } catch (error) {
+                            resolve(data)
+                        }
                     });
                 });
 
@@ -292,10 +294,12 @@ class Tools {
                 }, (res) => {
                     let data = '';
                     res.on('data', (chunk) => data += chunk);
-                    res.on('end', () => {
-                        xml2json(data).then((jRes: any) => {
-                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject)
-                        })
+                    res.on('end', async () => {
+                        try {
+                            resolve(await this.#limparSoap(data));
+                        } catch (error) {
+                            resolve(data)
+                        }
                     });
                 });
 
@@ -427,10 +431,12 @@ class Tools {
                             data += chunk;
                         });
 
-                        res.on('end', () => {
-                            xml2json(data).then((jRes: any) => {
-                                json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject)
-                            })
+                        res.on('end', async () => {
+                            try {
+                                resolve(await this.#limparSoap(data));
+                            } catch (error) {
+                                resolve(data)
+                            }
                         });
                     });
 
@@ -522,10 +528,12 @@ class Tools {
                         data += chunk;
                     });
 
-                    res.on('end', () => {
-                        xml2json(data).then((jRes: any) => {
-                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject)
-                        })
+                    res.on('end', async () => {
+                        try {
+                            resolve(await this.#limparSoap(data));
+                        } catch (error) {
+                            resolve(data)
+                        }
                     });
                 });
 
@@ -617,10 +625,12 @@ class Tools {
                         data += chunk;
                     });
 
-                    res.on('end', () => {
-                        xml2json(data).then((jRes: any) => {
-                            json2xml(jRes['soapenv:Envelope']?.['soapenv:Body']?.['nfeResultMsg'] || jRes['soap:Envelope']?.['soap:Body']?.['nfeResultMsg']).then(resolve).catch(reject)
-                        })
+                    res.on('end', async () => {
+                        try {
+                            resolve(await this.#limparSoap(data));
+                        } catch (error) {
+                            resolve(data)
+                        }
                     });
                 });
 
@@ -694,6 +704,30 @@ class Tools {
                 resvol(this.#pem);
             });
         })
+    }
+
+    //Remove coisas inuteis da resposta do sefaz
+    async #limparSoap(xml: string) {
+        const clear: any = [
+            'soapenv:Envelope',
+            'soapenv:Body',
+            'nfeResultMsg',
+            'soap:Envelope',
+            'soap:Body',
+            'nfeResultMsg',
+            'nfeDistDFeInteresseResponse'
+        ]
+        let jXml = await xml2json(xml) as any;
+        let index = 0;
+        while (index < clear.length) {
+            if (typeof jXml[clear[index]] !== "undefined") {
+                jXml = jXml[clear[index]];
+                index = 0; // reinicia a busca no novo nível
+            } else {
+                index++;
+            }
+        }
+        return await json2xml(jXml);
     }
 }
 export { Tools }
