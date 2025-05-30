@@ -1384,6 +1384,7 @@ Node com o detalhamento da forma de pagamento **OBRIGATÓRIO para NFCe e NFe lay
 let std = new Object();
 std.indPag = '0'; //0= Pagamento à Vista 1= Pagamento à Prazo
 std.tPag = '03';
+std.xPag = "Pagamento via PIX através de app externo."; //Obrigatorio caso tPag=99
 std.vPag = 200.00; //Obs: deve ser informado o valor pago pelo cliente
 std.CNPJ = '12345678901234';
 std.tBand = '01';
@@ -1430,7 +1431,7 @@ nfe.tagIntermed(std);
 ```
 
 
-### 🔴 function taginfAdic(std)
+### 🟢 function taginfAdic(std)
 Node referente as informações adicionais da NFe
 
 | Parâmetro | Tipo | Descrição |

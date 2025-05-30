@@ -34,7 +34,7 @@ Para uma integração correta, consulte sempre o **Manual de Integração do Con
 
 ### 1. 🧾 Criar o XML da NF-e ou NFC-e 
    📚 Guia de instalação e uso:  
-   [Documentação](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/xml.md)
+   [Documentação](https://github.com/kalmonv/node-sped-nfe/blob/main/docs/Make.md)
 - 📂 **NF-e**: [Ver exemplo completo](https://github.com/kalmonv/node-sped-nfe/blob/main/exemplos/nfe.js)  
 - 📂 **NFC-e**: [Ver exemplo completo](https://github.com/kalmonv/node-sped-nfe/blob/main/exemplos/nfce.js)
 

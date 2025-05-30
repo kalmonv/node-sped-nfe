@@ -577,7 +577,10 @@ class Make {
     }
 
     tagInfAdic(obj: any) {
-        throw "Não implementado!";
+        if (this.#NFe.infNFe.infAdic === undefined) this.#NFe.infNFe.infAdic = {};
+        Object.keys(obj).forEach(key => {
+            this.#NFe.infNFe.infAdic[key] = obj[key];
+        });
     }
 
     tagObsCont(obj: any) {

@@ -509,7 +509,11 @@ class Make {
         throw "Não implementado!";
     }
     tagInfAdic(obj) {
-        throw "Não implementado!";
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.infAdic === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.infAdic = {};
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.infAdic[key] = obj[key];
+        });
     }
     tagObsCont(obj) {
         throw "Não implementado!";
