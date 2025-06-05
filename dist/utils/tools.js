@@ -296,6 +296,7 @@ class Tools {
                 }
                 // Ciência (210210), Confirmação (210200), Desconhecimento (210220) não precisam de campos extras
                 const tempUF = urlEventos(cUF2UF[cOrgao], __classPrivateFieldGet(this, _Tools_config, "f").versao);
+                console.log(cUF2UF);
                 const evento = {
                     "envEvento": {
                         "@xmlns": "http://www.portalfiscal.inf.br/nfe",
@@ -651,6 +652,8 @@ async function _Tools_xmlValido(xml, xsd) {
 }, _Tools_limparSoap = 
 //Remove coisas inuteis da resposta do sefaz
 async function _Tools_limparSoap(xml) {
+    if (xml == "Bad Request")
+        throw xml;
     const clear = [
         'soapenv:Envelope',
         'soapenv:Body',

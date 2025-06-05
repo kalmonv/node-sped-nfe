@@ -372,6 +372,8 @@ class Tools {
 
                 const tempUF = urlEventos(cUF2UF[cOrgao], this.#config.versao);
 
+                console.log(cUF2UF)
+
                 const evento = {
                     "envEvento": {
                         "@xmlns": "http://www.portalfiscal.inf.br/nfe",
@@ -708,6 +710,7 @@ class Tools {
 
     //Remove coisas inuteis da resposta do sefaz
     async #limparSoap(xml: string) {
+        if(xml=="Bad Request") throw xml
         const clear: any = [
             'soapenv:Envelope',
             'soapenv:Body',
