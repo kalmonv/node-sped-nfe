@@ -1,6 +1,9 @@
 import { XMLParser, XMLBuilder } from "fast-xml-parser";
 import { gunzipSync } from 'zlib'; // ou zlibSync
 import { Buffer } from 'buffer';
+import pem from 'pem';
+import { resolve } from "path";
+
 
 const cUF2UF: any = {
     "11": "RO",
@@ -374,4 +377,34 @@ const docZip = async (xml: string, retorno: string = "original") => {
     })
 }
 
-export { cUF2UF, UF2cUF, json2xml, xml2json, formatData, docZip }
+const certInfo = async (pfx: string, senha: string) => {
+    return new Promise((resolve, reject) => {
+        pem.readPkcs12(pfx, { p12Password: senha }, (err, myPem) => {
+            if (err) return reject(err); // <-- importante!
+            pem.readCertificateInfo(myPem.cert, (err: any, info: any) => {
+                if (err) return console.error(err);
+
+                const formatDateBR = (timestamp: any) => {
+                    const date = new Date(timestamp);
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // meses começam do 0
+                    const year = date.getFullYear();
+                    return `${day}/${month}/${year}`;
+                }
+                resolve({
+                    ...{
+                        xNome: info.commonName.split(":")[0],
+                        xMun: info.locality,
+                        UF: info.state,
+                        xPais: info.country,
+                        criado: formatDateBR(info?.validity?.start),
+                        validade: formatDateBR(info?.validity?.end)
+                    },
+                    ...(`${info.commonName.split(":")[1]}`.length >= 14 ? { CNPJ: info.commonName.split(":")[1] } : { CPF: info.commonName.split(":")[1] })
+                });
+            });
+        });
+    })
+}
+
+export { cUF2UF, UF2cUF, json2xml, xml2json, formatData, docZip, certInfo }

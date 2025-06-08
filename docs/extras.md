@@ -46,3 +46,20 @@ Retorna data formatada, caso não seja informada nem uma data o sistema ira gera
 import {docZip} from "node-sped-nfe"
 console.log(docZip(xmlDistNFe)) // [{xml, NSU, schema}, {xml, NSU, schema}, ...]
 ```
+
+
+### 🟢 certInfo(pfx, senha) <Promise>
+Retorna informação do certificado
+```javascript
+import { certInfo } from "../dist/index.js"
+import fs from "fs"
+
+//pfx pode ser um Buffer ou diretorio para certificado!
+const pfx = fs.readFileSync('../certificado.pfx')
+//const pfx = '../certificado.pfx'
+certInfo(pfx, 'senha').then(res => {
+    console.log(res) //{ xNome: 'PROGRAMADORES GALATICOS', xMun: 'Novo JavaScript', UF: 'SP', xPais: 'BR', criado: '01/10/2025', validade: '01/10/2026', CNPJ/CPF: '00000000000000' }
+}).catch(err => {
+    console.error(err)
+});
+```
