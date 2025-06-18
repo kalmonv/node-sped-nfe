@@ -296,7 +296,6 @@ class Tools {
                 }
                 // Ciência (210210), Confirmação (210200), Desconhecimento (210220) não precisam de campos extras
                 const tempUF = urlEventos(cUF2UF[cOrgao], __classPrivateFieldGet(this, _Tools_config, "f").versao);
-                console.log(cUF2UF);
                 const evento = {
                     "envEvento": {
                         "@xmlns": "http://www.portalfiscal.inf.br/nfe",
@@ -335,8 +334,9 @@ class Tools {
                         }
                     }
                 });
+                console.log(tempUF[`mod${chNFe.substring(20, 22)}`]);
                 try {
-                    const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
+                    const req = https.request(tempUF[`mod${chNFe.substring(20, 22)}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
                         ...{
                             method: 'POST',
                             headers: {

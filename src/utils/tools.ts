@@ -372,8 +372,6 @@ class Tools {
 
                 const tempUF = urlEventos(cUF2UF[cOrgao], this.#config.versao);
 
-                console.log(cUF2UF)
-
                 const evento = {
                     "envEvento": {
                         "@xmlns": "http://www.portalfiscal.inf.br/nfe",
@@ -401,7 +399,7 @@ class Tools {
                 let xmlSing = await json2xml(evento);
                 xmlSing = await this.xmlSign(xmlSing, { tag: "infEvento" }); //Assinado
                 await this.#xmlValido(xmlSing, `envEvento_v1.00`).catch(reject); //Validar corpo
-
+                
                 xmlSing = await json2xml({
                     "soap:Envelope": {
                         "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
@@ -416,7 +414,7 @@ class Tools {
                 });
 
                 try {
-                    const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
+                    const req = https.request(tempUF[`mod${chNFe.substring(20, 22)}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
                         ...{
                             method: 'POST',
                             headers: {

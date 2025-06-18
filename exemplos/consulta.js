@@ -15,6 +15,6 @@ let myTools = new Tools({ //Configuração de habiente e sistema
     senha: fs.readFileSync('../senha.txt', { encoding: "utf8" }),
 });
 
-myTools.consultarNFe("35250541387387000168550030002747121015932697").then(res => {
+myTools.consultarNFe("35250660142655000126650000000002511000020232").then(res => {
     console.log(res);
 })
