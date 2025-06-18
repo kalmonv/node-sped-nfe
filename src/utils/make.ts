@@ -62,11 +62,16 @@ class Make {
         });
     }
 
-    tagRefNFe(obj: any) {
+    //Referencimanto de NFe
+    tagRefNFe(obj: string | string[]) {
         if (typeof this.#NFe.infNFe.ide.NFref == "undefined") {
             this.#NFe.infNFe.ide.NFref = new Array();
         }
-        this.#NFe.infNFe.ide.NFref.push({ refNFe: obj });
+        if (Array.isArray(obj)) { //Array de referenciamento de refNFe
+            this.#NFe.infNFe.ide.NFref = this.#NFe.infNFe.ide.NFref.concat(obj);
+        } else { //String unica de refNFe
+            this.#NFe.infNFe.ide.NFref.push({ refNFe: obj });
+        }
     }
 
     tagRefNF(obj: any) {
@@ -148,7 +153,7 @@ class Make {
     }
 
     //tagprod
-    tagProd(obj: any) {
+    async tagProd(obj: any) {
         //Abrir tag de imposto
         for (let cont = 0; cont < obj.length; cont++) {
 

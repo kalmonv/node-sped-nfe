@@ -3,7 +3,7 @@ declare class Make {
     formatData(dataUsr?: Date): string;
     tagInfNFe(obj: any): void;
     tagIde(obj: any): void;
-    tagRefNFe(obj: any): void;
+    tagRefNFe(obj: string | string[]): void;
     tagRefNF(obj: any): void;
     tagRefNFP(obj: any): void;
     tagRefCTe(obj: any): void;
@@ -14,7 +14,7 @@ declare class Make {
     tagEnderDest(obj: any): 1 | undefined;
     tagRetirada(obj: any): void;
     tagAutXML(obj: any): void;
-    tagProd(obj: any): void;
+    tagProd(obj: any): Promise<void>;
     tagCreditoPresumidoProd(obj: any): void;
     taginfAdProd(index: any, obj: any): void;
     tagCEST(obj: any): void;

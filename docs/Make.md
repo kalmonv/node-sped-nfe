@@ -123,7 +123,7 @@ nfe.tagIde(std);
 ```
 
 
-### 🟢 function tagrefNFe(std)
+### 🟢 function tagRefNFe(std)
 Node referente a NFe referenciada
 
 | Parâmetro | Tipo | Descrição |
@@ -131,10 +131,9 @@ Node referente a NFe referenciada
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 
 ```javascript
-let std = new Object();
-std.refNFe = '35150271780456000160550010000253101000253101';
-
-nfe.tagrefNFe(std);
+nfe.tagRefNFe('Chave da NFe');
+// OU
+nfe.tagRefNFe(['Chave da NFe', 'Chave da NFe', 'Chave da NFe']);
 ```
 
 ### 🟢 function tagrefNF(std)

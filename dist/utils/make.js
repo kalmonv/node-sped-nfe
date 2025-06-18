@@ -62,11 +62,17 @@ class Make {
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide[key] = obj[key];
         });
     }
+    //Referencimanto de NFe
     tagRefNFe(obj) {
         if (typeof __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref == "undefined") {
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref = new Array();
         }
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref.push({ refNFe: obj });
+        if (Array.isArray(obj)) { //Array de referenciamento de refNFe
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref = __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref.concat(obj);
+        }
+        else { //String unica de refNFe
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref.push({ refNFe: obj });
+        }
     }
     tagRefNF(obj) {
         if (typeof __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref == "undefined") {
@@ -138,7 +144,7 @@ class Make {
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.autXML.push(obj);
     }
     //tagprod
-    tagProd(obj) {
+    async tagProd(obj) {
         //Abrir tag de imposto
         for (let cont = 0; cont < obj.length; cont++) {
             if (obj[cont]['@nItem'] === undefined) {
