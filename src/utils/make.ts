@@ -68,7 +68,7 @@ class Make {
             this.#NFe.infNFe.ide.NFref = new Array();
         }
         if (Array.isArray(obj)) { //Array de referenciamento de refNFe
-            this.#NFe.infNFe.ide.NFref = this.#NFe.infNFe.ide.NFref.concat(obj);
+            this.#NFe.infNFe.ide.NFref = obj.map(ref => ({ refNFe: `${ref}` }));
         } else { //String unica de refNFe
             this.#NFe.infNFe.ide.NFref.push({ refNFe: obj });
         }

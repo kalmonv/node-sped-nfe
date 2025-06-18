@@ -68,7 +68,7 @@ class Make {
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref = new Array();
         }
         if (Array.isArray(obj)) { //Array de referenciamento de refNFe
-            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref = __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref.concat(obj);
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref = obj.map(ref => ({ refNFe: `${ref}` }));
         }
         else { //String unica de refNFe
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.NFref.push({ refNFe: obj });
