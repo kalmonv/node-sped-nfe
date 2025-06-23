@@ -145,17 +145,21 @@ NFe.tagProd([
 
 //Setor o imposto de cada produto.
 [0, 1, 2, 3].map((value, index) => {
+    NFe.tagProdICMSSN(index, { orig: "0", CSOSN: "400" })
     //NFe.tagProdICMSST(index, { orig: "0", CST: '60', vBCSTRet: 0, pST: "0.00", vICMSSTRet: 0 });
     //NFe.tagProdICMSPart(index, { orig: "0", CST: '90', modBC: 0, vBC: 0, pICMS: 0, vICMS: 0, modBCST: 4, pMVAST: 0, pRedBCST: 0, vBCST: 0, pICMSST: 0, vICMSST: 0, pBCOp: 0, UFST: 'RJ' });
     //NFe.tagProdICMS(index, { orig: 0, CST: '00', modBC: 3, vBC: 0, pICMS: 0, vICMS: 0 });
-    
-    NFe.tagProdICMSSN(index, { orig: "0", CSOSN: "400" })
+    //NFe.tagProdICMSUFDest(index, { vBCUFDest: 0, vBCFCPUFDest: 0, pFCPUFDest: 0, pICMSUFDest: 0, pICMSInter: "4.00", pICMSInterPart: 0, vFCPUFDest: 0, vICMSUFDest: 0, vICMSUFRemet: 0 });
+
+    //NFe.tagProdII(index, { vBC: 0, vDespAdu: 0, vII: 0, vIOF: 0 });
     NFe.tagProdPIS(index, { CST: "49", qBCProd: 0, vAliqProd: 0, vPIS: 0 })
     NFe.tagProdCOFINS(index, { CST: "49", qBCProd: 0, vAliqProd: 0, vCOFINS: 0 })
+
+
 });
 NFe.tagICMSTot();
 NFe.tagTransp({ modFrete: 9 });
-NFe.tagDetPag([{ indPag: 0, tPag: 17, vPag: "1200.00" }]);
+NFe.tagDetPag([{ indPag: 0, tPag: "17", vPag: "1200.00" }]);
 NFe.tagTroco("0.00");
 NFe.tagInfRespTec({ CNPJ: "000000000000", xContato: "PP Programador Perfeito", email: "pp@email.com", fone: "551140028922" })
 fs.writeFileSync("exemplos/nfe.xml", NFe.xml(), { encoding: "utf-8" });
