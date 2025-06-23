@@ -145,6 +145,10 @@ NFe.tagProd([
 
 //Setor o imposto de cada produto.
 [0, 1, 2, 3].map((value, index) => {
+    //NFe.tagProdICMSST(index, { orig: "0", CST: '60', vBCSTRet: 0, pST: "0.00", vICMSSTRet: 0 });
+    //NFe.tagProdICMSPart(index, { orig: "0", CST: '90', modBC: 0, vBC: 0, pICMS: 0, vICMS: 0, modBCST: 4, pMVAST: 0, pRedBCST: 0, vBCST: 0, pICMSST: 0, vICMSST: 0, pBCOp: 0, UFST: 'RJ' });
+    //NFe.tagProdICMS(index, { orig: 0, CST: '00', modBC: 3, vBC: 0, pICMS: 0, vICMS: 0 });
+    
     NFe.tagProdICMSSN(index, { orig: "0", CSOSN: "400" })
     NFe.tagProdPIS(index, { CST: "49", qBCProd: 0, vAliqProd: 0, vPIS: 0 })
     NFe.tagProdCOFINS(index, { CST: "49", qBCProd: 0, vAliqProd: 0, vCOFINS: 0 })

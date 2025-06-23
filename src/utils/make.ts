@@ -185,7 +185,7 @@ class Make {
         throw "não implementado!";
     }
 
-    taginfAdProd(index: any, obj: any) {
+    taginfAdProd(index: number, obj: any) {
         Object.keys(obj).forEach(key => {
             this.#NFe.infNFe.det[index][key] = obj[key];
         });
@@ -199,7 +199,7 @@ class Make {
         throw "não implementado!";
     }
 
-    tagDI(index: any, obj: any) {
+    tagDI(index: number, obj: any) {
         if (this.#NFe.infNFe.det[index].DI === undefined) this.#NFe.infNFe.det[index].DI = {};
         Object.keys(obj).forEach(key => {
             this.#NFe.infNFe.det[index].DI[key] = obj[key];
@@ -209,7 +209,7 @@ class Make {
         this.#calICMSTot(obj);
     }
 
-    tagAdi(index: any, obj: any) {
+    tagAdi(index: number, obj: any) {
         if (this.#NFe.infNFe.det[index].DI === undefined) this.#NFe.infNFe.det[index].DI = {};
         if (this.#NFe.infNFe.det[index].DI.adi === undefined) this.#NFe.infNFe.det[index].DI.adi = {};
 
@@ -261,17 +261,38 @@ class Make {
         throw "não implementado!";
     }
 
-    tagProdICMS(index: any, obj: any) {
-        throw "não implementado!";
+    tagProdICMS(index: number, obj: any) {
+        if (this.#NFe.infNFe.det[index].imposto.ICMS === undefined) this.#NFe.infNFe.det[index].imposto.ICMS = {};
+        let keyXML = "";
+        switch (obj.CST) {
+            case '00': keyXML = 'ICMS00'; break;
+            case '10': keyXML = 'ICMS10'; break;
+            case '20': keyXML = 'ICMS20'; break;
+            case '30': keyXML = 'ICMS30'; break;
+            case '40': case '41': case '50': keyXML = 'ICMS40'; break;
+            case '51': keyXML = 'ICMS51'; break;
+            case '60': keyXML = 'ICMS60'; break;
+            case '70': keyXML = 'ICMS70'; break;
+            case '90': keyXML = 'ICMS90'; break;
+            default: throw new Error('CST inválido');
+        }
+
+        this.#NFe.infNFe.det[index].imposto.ICMS[keyXML] = {};
+        Object.keys(obj).forEach(key => {
+            if (!['orig', 'CST', 'modBC', 'modBCST', 'motDesICMS', 'motDesICMSST', 'cBenefRBC', 'indDeduzDeson', 'UFST'].includes(key))
+                obj[key] = obj[key] == 0 ? "0.00" : obj[key];
+            this.#NFe.infNFe.det[index].imposto.ICMS[keyXML][key] = obj[key];
+        });
     }
 
-    //
-    tagProdICMSST(index: any, obj: any) {
+    tagProdICMSPart(index: number, obj: any) {
         if (this.#NFe.infNFe.det[index].imposto.ICMS === undefined) this.#NFe.infNFe.det[index].imposto.ICMS = {};
 
-        this.#NFe.infNFe.det[index].imposto.ICMS.ICMSST = {};
+        this.#NFe.infNFe.det[index].imposto.ICMS.ICMSPart = {};
         Object.keys(obj).forEach(key => {
-            this.#NFe.infNFe.det[index].imposto.ICMS.ICMSST[key] = obj[key];
+            if (key != 'orig' && key != 'modBC')
+                obj[key] = obj[key] == 0 ? "0.00" : obj[key];
+            this.#NFe.infNFe.det[index].imposto.ICMS.ICMSPart[key] = obj[key];
         });
 
         //Calcular ICMSTot
@@ -279,7 +300,24 @@ class Make {
     }
 
     //
-    tagProdICMSSN(index: any, obj: any) {
+    tagProdICMSST(index: number, obj: any) {
+        if (this.#NFe.infNFe.det[index].imposto.ICMS === undefined) this.#NFe.infNFe.det[index].imposto.ICMS = {};
+        let CST = obj.CST;
+        //delete obj.CST;
+
+        this.#NFe.infNFe.det[index].imposto.ICMS[`ICMS${CST}`] = {};
+        Object.keys(obj).forEach(key => {
+            if (key != 'orig')
+                obj[key] = obj[key] == 0 ? "0.00" : obj[key];
+            this.#NFe.infNFe.det[index].imposto.ICMS[`ICMS${CST}`][key] = obj[key];
+        });
+
+        //Calcular ICMSTot
+        this.#calICMSTot(obj);
+    }
+
+    //
+    tagProdICMSSN(index: number, obj: any) {
         if (this.#NFe.infNFe.det[index].imposto.ICMS === undefined) this.#NFe.infNFe.det[index].imposto.ICMS = {};
 
         let keyXML = "";
@@ -320,19 +358,67 @@ class Make {
     }
 
 
-    tagProdICMSUFDest(index: any, obj: any) {
-        throw "Não implementado!";
+    tagProdICMSUFDest(index: number, obj: any) {
+        console.log(this.#NFe.infNFe.total)
+        if (this.#NFe.infNFe.det[index].imposto.ICMSUFDest === undefined) this.#NFe.infNFe.det[index].imposto.ICMSUFDest = {};
+
+        Object.keys(obj).forEach(key => {
+            this.#NFe.infNFe.det[index].imposto.ICMSUFDest[key] = obj[key] == 0 ? "0.00" : obj[key];
+        });
+        this.#calICMSTot?.(obj); // opcional
     }
 
-    tagProdIPI(index: any, obj: any) {
-        throw "Não implementado!";
+    tagProdIPI(index: number, obj: any) {
+        if (this.#NFe.infNFe.det[index].imposto.IPI === undefined)
+            this.#NFe.infNFe.det[index].imposto.IPI = {};
+
+
+        // Campo obrigatório na raiz do IPI
+        this.#NFe.infNFe.det[index].imposto.IPI.cEnq = obj.cEnq;
+        delete obj.cEnq;
+        let keyXML = "";
+        switch (obj.CST) {
+            case '00':
+            case '49':
+            case '50':
+            case '99':
+                keyXML = 'IPITrib';
+                break;
+            case '01':
+            case '02':
+            case '03':
+            case '04':
+            case '05':
+            case '51':
+            case '52':
+            case '53':
+            case '54':
+            case '55':
+                keyXML = 'IPINT';
+                break;
+            default:
+                throw new Error("CST de IPI não identificado!");
+        }
+
+        this.#NFe.infNFe.det[index].imposto.IPI[keyXML] = {};
+        Object.keys(obj).forEach(key => {
+            obj[key] = obj[key] == 0 ? "0.00" : obj[key];
+            this.#NFe.infNFe.det[index].imposto.IPI[keyXML][key] = obj[key];
+        });
+
+        this.#calICMSTot(obj); // opcional se considerar IPI no total
     }
 
-    tagProdII(index: any, obj: any) {
-        throw "Não implementado!";
+
+    tagProdII(index: number, obj: any) {
+        if (this.#NFe.infNFe.det[index].imposto.II === undefined) this.#NFe.infNFe.det[index].imposto.II = {};
+        Object.keys(obj).forEach(key => {
+            this.#NFe.infNFe.det[index].imposto.II[key] = obj[key];
+        });
+        this.#calICMSTot(obj);
     }
 
-    tagProdPIS(index: any, obj: any) {
+    tagProdPIS(index: number, obj: any) {
         if (this.#NFe.infNFe.det[index].imposto.PIS === undefined) this.#NFe.infNFe.det[index].imposto.PIS = {};
 
         let keyXML = "";
@@ -392,7 +478,7 @@ class Make {
         this.#calICMSTot(obj);
     }
 
-    tagProdPISST(index: any, obj: any) {
+    tagProdPISST(index: number, obj: any) {
         if (this.#NFe.infNFe.det[index].imposto.PIS === undefined) this.#NFe.infNFe.det[index].imposto.PIS = {};
 
         this.#NFe.infNFe.det[index].imposto.PIS.PISST = {};
@@ -405,7 +491,7 @@ class Make {
         this.#calICMSTot(obj);
     }
 
-    tagProdCOFINS(index: any, obj: any) {
+    tagProdCOFINS(index: number, obj: any) {
         if (this.#NFe.infNFe.det[index].imposto.COFINS === undefined) this.#NFe.infNFe.det[index].imposto.COFINS = {};
 
         let keyXML = null;
@@ -468,7 +554,7 @@ class Make {
         this.#calICMSTot(obj);
     }
 
-    tagProdCOFINSST(index: any, obj: any) {
+    tagProdCOFINSST(index: number, obj: any) {
         if (this.#NFe.infNFe.det[index].imposto.COFINS === undefined) this.#NFe.infNFe.det[index].imposto.COFINS = {};
 
         this.#NFe.infNFe.det[index].imposto.COFINS.COFINSST = {};
@@ -480,7 +566,7 @@ class Make {
         this.#calICMSTot(obj);
     }
 
-    tagProdISSQN(index: any, obj: any) {
+    tagProdISSQN(index: number, obj: any) {
         this.#NFe.infNFe.det[index].imposto.ISSQN = {};
         Object.keys(obj).forEach(key => {
             this.#NFe.infNFe.det[index].imposto.ISSQN[key] = obj[key];
@@ -490,7 +576,7 @@ class Make {
         this.#calICMSTot(obj);
     }
 
-    tagProdImpostoDevol(index: any, obj: any) {
+    tagProdImpostoDevol(index: number, obj: any) {
         throw "Não implementado!";
     }
 

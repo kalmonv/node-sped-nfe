@@ -234,15 +234,71 @@ class Make {
         throw "não implementado!";
     }
     tagProdICMS(index, obj) {
-        throw "não implementado!";
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS = {};
+        let keyXML = "";
+        switch (obj.CST) {
+            case '00':
+                keyXML = 'ICMS00';
+                break;
+            case '10':
+                keyXML = 'ICMS10';
+                break;
+            case '20':
+                keyXML = 'ICMS20';
+                break;
+            case '30':
+                keyXML = 'ICMS30';
+                break;
+            case '40':
+            case '41':
+            case '50':
+                keyXML = 'ICMS40';
+                break;
+            case '51':
+                keyXML = 'ICMS51';
+                break;
+            case '60':
+                keyXML = 'ICMS60';
+                break;
+            case '70':
+                keyXML = 'ICMS70';
+                break;
+            case '90':
+                keyXML = 'ICMS90';
+                break;
+            default: throw new Error('CST inválido');
+        }
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS[keyXML] = {};
+        Object.keys(obj).forEach(key => {
+            if (!['orig', 'CST', 'modBC', 'modBCST', 'motDesICMS', 'motDesICMSST', 'cBenefRBC', 'indDeduzDeson', 'UFST'].includes(key))
+                obj[key] = obj[key] == 0 ? "0.00" : obj[key];
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS[keyXML][key] = obj[key];
+        });
+    }
+    tagProdICMSPart(index, obj) {
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS = {};
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS.ICMSPart = {};
+        Object.keys(obj).forEach(key => {
+            if (key != 'orig' && key != 'modBC')
+                obj[key] = obj[key] == 0 ? "0.00" : obj[key];
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS.ICMSPart[key] = obj[key];
+        });
+        //Calcular ICMSTot
+        __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
     }
     //
     tagProdICMSST(index, obj) {
         if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS === undefined)
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS = {};
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS.ICMSST = {};
+        let CST = obj.CST;
+        //delete obj.CST;
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS[`ICMS${CST}`] = {};
         Object.keys(obj).forEach(key => {
-            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS.ICMSST[key] = obj[key];
+            if (key != 'orig')
+                obj[key] = obj[key] == 0 ? "0.00" : obj[key];
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS[`ICMS${CST}`][key] = obj[key];
         });
         //Calcular ICMSTot
         __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
@@ -287,13 +343,57 @@ class Make {
         __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
     }
     tagProdICMSUFDest(index, obj) {
-        throw "Não implementado!";
+        console.log(__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total);
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMSUFDest === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMSUFDest = {};
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMSUFDest[key] = obj[key] == 0 ? "0.00" : obj[key];
+        });
+        __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot)?.call(this, obj); // opcional
     }
     tagProdIPI(index, obj) {
-        throw "Não implementado!";
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IPI === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IPI = {};
+        // Campo obrigatório na raiz do IPI
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IPI.cEnq = obj.cEnq;
+        delete obj.cEnq;
+        let keyXML = "";
+        switch (obj.CST) {
+            case '00':
+            case '49':
+            case '50':
+            case '99':
+                keyXML = 'IPITrib';
+                break;
+            case '01':
+            case '02':
+            case '03':
+            case '04':
+            case '05':
+            case '51':
+            case '52':
+            case '53':
+            case '54':
+            case '55':
+                keyXML = 'IPINT';
+                break;
+            default:
+                throw new Error("CST de IPI não identificado!");
+        }
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IPI[keyXML] = {};
+        Object.keys(obj).forEach(key => {
+            obj[key] = obj[key] == 0 ? "0.00" : obj[key];
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IPI[keyXML][key] = obj[key];
+        });
+        __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj); // opcional se considerar IPI no total
     }
     tagProdII(index, obj) {
-        throw "Não implementado!";
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.II === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.II = {};
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.II[key] = obj[key];
+        });
+        __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
     }
     tagProdPIS(index, obj) {
         if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.PIS === undefined)

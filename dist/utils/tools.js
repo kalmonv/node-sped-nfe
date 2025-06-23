@@ -334,7 +334,6 @@ class Tools {
                         }
                     }
                 });
-                console.log(tempUF[`mod${chNFe.substring(20, 22)}`]);
                 try {
                     const req = https.request(tempUF[`mod${chNFe.substring(20, 22)}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
                         ...{

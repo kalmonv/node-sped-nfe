@@ -426,7 +426,7 @@ std.vCredPresumido = '4';
 $make.tagCreditoPresumidoProd(indexProd ,std);
 ```
 
-### 🔴 function taginfAdProd(std)
+### 🟢 function taginfAdProd(std)
 Node de informações adicionais do produto
 
 | Parâmetro | Tipo | Descrição |
@@ -732,7 +732,7 @@ std.vTotTrib = 1000.00;
 nfe.tagimposto(indexProd, std);
 ```
 
-### 🔴 function tagICMS(std)
+### 🟢 function tagProdICMS(std)
 > NOTA: Ajustado conforme NT 2018.005_1.10
 Node com informações do ICMS do item da NFe
 
@@ -740,61 +740,108 @@ Node com informações do ICMS do item da NFe
 | :--- | :---: | :--- |
 | std | Object | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
-let std = new Object();
 let indexProd = 1; //item da NFe
-std.orig;
-std.CST;
-std.modBC;
-std.vBC;
-std.pICMS;
-std.vICMS;
-std.pFCP;
-std.vFCP;
-std.vBCFCP;
-std.modBCST;
-std.pMVAST;
-std.pRedBCST;
-std.vBCST;
-std.pICMSST;
-std.vICMSST;
-std.vBCFCPST;
-std.pFCPST;
-std.vFCPST;
-std.vICMSDeson;
-std.motDesICMS;
-std.pRedBC;
-std.vICMSOp;
-std.pDif;
-std.vICMSDif;
-std.vBCSTRet;
-std.pST;
-std.vICMSSTRet;
-std.vBCFCPSTRet;
-std.pFCPSTRet;
-std.vFCPSTRet;
-std.pRedBCEfet;
-std.vBCEfet;
-std.pICMSEfet;
-std.vICMSEfet;
-std.vICMSSubstituto; //NT 2020.005 v1.20
-std.vICMSSTDeson; //NT 2020.005 v1.20
-std.motDesICMSST; //NT 2020.005 v1.20
-std.pFCPDif; //NT 2020.005 v1.20
-std.vFCPDif; //NT 2020.005 v1.20
-std.vFCPEfet; //NT 2020.005 v1.20
-std.pRedAdRem; //NT 2023.001-v1.10
-std.qBCMono; //NT 2023.001-v1.10
-std.adRemiICMS; //NT 2023.001-v1.10
-std.vICMSMono; //NT 2023.001-v1.10
-std.adRemICMSRet; //NT 2023.001-v1.10
-std.vICMSMonoRet; //NT 2023.001-v1.10
-std.vICMSMonoDif; //NT 2023.001-v1.10
-std.cBenefRBC; //NT 2019.001 v1.61
-std.indDeduzDeson; //NT 2023.004 v1.00
-nfe.tagICMS(indexProd, std);
+const icms = {
+  "00": {
+    orig: 0,
+    CST: "00",
+    modBC: 3,
+    vBC: 1000.00,
+    pICMS: 18.00,
+    vICMS: 180.00
+  },
+  "10": {
+    orig: 0,
+    CST: "10",
+    modBC: 3,
+    vBC: 1000.00,
+    pICMS: 18.00,
+    vICMS: 180.00,
+    modBCST: 4,
+    pMVAST: 40.00,
+    vBCST: 1400.00,
+    pICMSST: 12.00,
+    vICMSST: 168.00
+  },
+  "20": {
+    orig: 0,
+    CST: "20",
+    modBC: 3,
+    pRedBC: 10.00,
+    vBC: 900.00,
+    pICMS: 18.00,
+    vICMS: 162.00
+  },
+  "30": {
+    orig: 0,
+    CST: "30",
+    modBCST: 4,
+    pMVAST: 40.00,
+    vBCST: 1400.00,
+    pICMSST: 18.00,
+    vICMSST: 252.00
+  },
+  "40": {
+    orig: 0,
+    CST: "40"
+  },
+  "41": {
+    orig: 0,
+    CST: "41"
+  },
+  "50": {
+    orig: 0,
+    CST: "50"
+  },
+  "51": {
+    orig: 0,
+    CST: "51",
+    modBC: 3,
+    vBC: 1000.00,
+    pICMS: 18.00,
+    vICMSOp: 180.00,
+    pDif: 70.00,
+    vICMSDif: 126.00,
+    vICMS: 54.00
+  },
+  "60": {
+    orig: 0,
+    CST: "60",
+    vBCSTRet: 1200.00,
+    vICMSSTRet: 216.00
+  },
+  "70": {
+    orig: 0,
+    CST: "70",
+    modBC: 3,
+    pRedBC: 10.00,
+    vBC: 900.00,
+    pICMS: 18.00,
+    vICMS: 162.00,
+    modBCST: 4,
+    pMVAST: 40.00,
+    vBCST: 1400.00,
+    pICMSST: 18.00,
+    vICMSST: 252.00
+  },
+  "90": {
+    orig: 0,
+    CST: "90",
+    modBC: 3,
+    vBC: 1000.00,
+    pICMS: 18.00,
+    vICMS: 180.00,
+    modBCST: 4,
+    pMVAST: 40.00,
+    vBCST: 1400.00,
+    pICMSST: 12.00,
+    vICMSST: 168.00
+  }
+};
+nfe.tagICMS(indexProd, icms[?]); // ? = Codigo do CST
 ```
 
-### 🔴 function tagICMSPart(std)
+### 🟢 function tagICMSPart(std)
 Node com informações da partilha do ICMS entre a UF de origem e UF de destino ou a UF definida na legislação.
 
 | Parâmetro | Tipo | Descrição |
@@ -822,7 +869,7 @@ std.UFST = 'RJ';
 nfe.tagICMSPart(indexProd, std);
 ```
 
-### 🔴 function tagICMSST(std)
+### 🟢 function tagProdICMSST(std)
 > NOTA: Ajustado conforme NT 2018.005 e NT 2018.005_1.10
 Node Repasse de ICMS ST retido anteriormente em operações interestaduais com repasses através do Substituto Tributário
 
@@ -830,25 +877,87 @@ Node Repasse de ICMS ST retido anteriormente em operações interestaduais com r
 | :--- | :---: | :--- |
 | std | stcClass | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
-let std = new Object();
 let indexProd = 1; //item da NFe
-std.orig = 0;
-std.CST = '60';
-std.vBCSTRet = 1000.00;
-std.vICMSSTRet = 190.00;
-std.vBCSTDest = 1000.00;
-std.vICMSSTDest = 1.00;
-std.vBCFCPSTRet = 1000.00;
-std.pFCPSTRet = 1.00;
-std.vFCPSTRet = 10.00;
-std.pST = null;
-std.vICMSSubstituto = null;
-std.pRedBCEfet = null;
-std.vBCEfet = null;
-std.pICMSEfet = null;
-std.vICMSEfet = null;
+const icms = {
+  "10": {
+    orig: 0,
+    CST: "10",
+    modBC: 3,
+    vBC: 200.00,
+    pICMS: 18.00,
+    vICMS: 36.00,
+    modBCST: 4,
+    pMVAST: 40.00,
+    pRedBCST: "0.00",
+    vBCST: 280.00,
+    pICMSST: 18.00,
+    vICMSST: 50.40
+    // FCP opcional
+  },
+  "30": {
+    orig: 0,
+    CST: "30",
+    modBCST: 4,
+    pMVAST: 40.00,
+    pRedBCST: "0.00",
+    vBCST: 280.00,
+    pICMSST: 18.00,
+    vICMSST: 50.40
+    // FCP opcional
+  },
+  "60-sem-fcp": {
+    orig: 0,
+    CST: "60",
+    vBCSTRet: 1000.00,
+    pST: 18.00,
+    vICMSSTRet: 180.00
+  },
+  "60-com-fcp": {
+    orig: 0,
+    CST: "60",
+    vBCSTRet: 1000.00,
+    pST: 18.00,
+    vICMSSTRet: 180.00,
+    vBCFCPSTRet: 1000.00,
+    pFCPSTRet: 2.00,
+    vFCPSTRet: 20.00
+  },
+  "70": {
+    orig: 0,
+    CST: "70",
+    modBC: 3,
+    pRedBC: 20.00,
+    vBC: 160.00,
+    pICMS: 18.00,
+    vICMS: 28.80,
+    modBCST: 4,
+    pMVAST: 40.00,
+    pRedBCST: "0.00",
+    vBCST: 224.00,
+    pICMSST: 18.00,
+    vICMSST: 40.32
+    // FCP opcional
+  },
+  "90": {
+    orig: 0,
+    CST: "90",
+    modBC: 3,
+    vBC: 200.00,
+    pICMS: 18.00,
+    vICMS: 36.00,
+    modBCST: 4,
+    pMVAST: 40.00,
+    pRedBCST: "0.00",
+    vBCST: 280.00,
+    pICMSST: 18.00,
+    vICMSST: 50.40
+    // FCP opcional
+  }
+};
 
-nfe.tagICMSST(indexProd, std);
+
+
+nfe.tagICMSST(indexProd, icms[?]); // ? = codigo do CST
 ```
 
 ### 🟢 function tagProdICMSSN(std)
@@ -894,29 +1003,49 @@ std.vICMSSubstituto = null;
 nfe.tagICMSSN(indexProd, std);
 ```
 
-### 🔴 function tagICMSUFDest(std)
+### 🟢 function tagProdICMSUFDest(std)
 Node de informação do ICMS Interestadual do item na NFe
 
 | Parâmetro | Tipo | Descrição |
 | :--- | :---: | :--- |
 | std | stcClass | contêm os dados dos campos, nomeados conforme manual |
 ```javascript
-let std = new Object();
 let indexProd = 1; //item da NFe
-std.vBCUFDest = 100.00;
-std.vBCFCPUFDest = 100.00;
-std.pFCPUFDest = 1.00;
-std.pICMSUFDest = 18.00;
-std.pICMSInter = 12.00;
-std.pICMSInterPart = 80.00;
-std.vFCPUFDest = 1.00;
-std.vICMSUFDest = 14.44;
-std.vICMSUFRemet = 3.56;
+const std = {
+  // Valor da base de cálculo do ICMS na UF de destino
+  vBCUFDest: 1000.00,
 
-nfe.tagICMSUFDest(indexProd, std);
+  // Valor da base de cálculo do FCP (Fundo de Combate à Pobreza) na UF de destino
+  vBCFCPUFDest: 1000.00,
+
+  // Alíquota do FCP na UF de destino (ex: 2%)
+  pFCPUFDest: 2.00,
+
+  // Alíquota do ICMS na UF de destino (ex: 18%)
+  pICMSUFDest: 18.00,
+
+  // Alíquota interestadual do ICMS (deve ser 4.00, 7.00 ou 12.00 conforme operação)
+  pICMSInter: 12.00,
+
+  // Percentual de partilha do ICMS interestadual para a UF de destino (ex: 80%)
+  pICMSInterPart: 80.00,
+
+  // Valor do FCP destinado à UF de destino
+  vFCPUFDest: 20.00,
+
+  // Valor do ICMS destinado à UF de destino
+  vICMSUFDest: 144.00,
+
+  // Valor do ICMS destinado à UF de origem (remetente)
+  vICMSUFRemet: 36.00
+};
+
+
+
+nfe.tagProdICMSUFDest(indexProd, std);
 ```
 
-### 🔴 function tagIPI(std)
+### 🟢 function tagProdIPI(std)
 Node referente ao IPI do item da NFe
 
 > NOTA: clEnq foi removido do layout 4.00 na NT_2016_V1.40
@@ -939,10 +1068,10 @@ std.pIPI = 15.00;
 std.qUnid = null;
 std.vUnid = null;
 
-nfe.tagIPI(indexProd, std);
+nfe.tagProdIPI(indexProd, std);
 ```
 
-### 🔴 function tagII(std)
+### 🟢 function tagProdII(std)
 Node Imposto de Importação do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -956,7 +1085,7 @@ std.vDespAdu = 100.00;
 std.vII = 220.00;
 std.vIOF = null;
 
-nfe.tagII(indexProd, std);
+nfe.tagProdII(indexProd, std);
 ```
 
 ### 🟢 function tagProdPIS(std)
@@ -978,7 +1107,7 @@ std.vAliqProd = null;
 nfe.tagPIS(indexProd, std);
 ```
 
-### 🔴 function tagPISST(std)
+### 🟢 function tagProdPISST(std)
 Node PIS Substituição Tributária do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -1017,7 +1146,7 @@ std.vAliqProd = null;
 nfe.tagCOFINS(indexProd, std);
 ```
 
-### 🔴 function tagCOFINSST(std)
+### 🟢 function tagProdCOFINSST(std)
 Node COFINS Substituição Tributária do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -1034,10 +1163,10 @@ std.vAliqProd = null;
 std.indSomaCOFINSST = 0; //0=Valor do COFINS ST não compõe o valor total da NF-e
                            //1=Valor do COFINS ST compõe o valor total da NF-e
 
-nfe.tagCOFINSST(indexProd, std);
+nfe.tagProdCOFINSST(indexProd, std);
 ```
 
-### 🔴 function tagISSQN(std)
+### 🟢 function tagProdISSQN(std)
 Node ISSQN do item da NFe
 
 | Parâmetro | Tipo | Descrição |
@@ -1063,10 +1192,10 @@ std.cPais = '1058';
 std.nProcesso = null;
 std.indIncentivo = 2;
 
-nfe.tagISSQN(indexProd, std);
+nfe.tagProdISSQN(indexProd, std);
 ```
 
-### 🔴 function tagimpostoDevol(std)
+### 🔴 function tagProdImpostoDevol(std)
 Node referente a informação do Imposto devolvido
 
 > NOTA: O motivo da devolução deverá ser informado pela empresa no campo de Informações Adicionais do Produto (tag:infAdProd).
@@ -1080,7 +1209,7 @@ let indexProd = 1; //item da NFe
 std.pDevol = 2.00;
 std.vIPIDevol = 123.36;
 
-nfe.tagimpostoDevol(indexProd, std);
+nfe.tagProdImpostoDevol(indexProd, std);
 ```
 
 ### 🟢 function tagICMSTot(std)
