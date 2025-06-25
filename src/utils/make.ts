@@ -307,7 +307,7 @@ class Make {
 
         this.#NFe.infNFe.det[index].imposto.ICMS[`ICMS${CST}`] = {};
         Object.keys(obj).forEach(key => {
-            if (key != 'orig')
+            if (!["orig", "CSOSN", "modBC", "modBCST"].includes(key))
                 obj[key] = obj[key] == 0 ? "0.00" : obj[key];
             this.#NFe.infNFe.det[index].imposto.ICMS[`ICMS${CST}`][key] = obj[key];
         });
@@ -350,6 +350,8 @@ class Make {
         }
         this.#NFe.infNFe.det[index].imposto.ICMS[keyXML] = {};
         Object.keys(obj).forEach(key => {
+            if (key != 'orig')
+                obj[key] = obj[key] == 0 ? "0.00" : obj[key];
             this.#NFe.infNFe.det[index].imposto.ICMS[keyXML][key] = obj[key];
         });
 
@@ -479,11 +481,11 @@ class Make {
     }
 
     tagProdPISST(index: number, obj: any) {
-        if (this.#NFe.infNFe.det[index].imposto.PIS === undefined) this.#NFe.infNFe.det[index].imposto.PIS = {};
+        if (this.#NFe.infNFe.det[index].imposto.PISST === undefined) this.#NFe.infNFe.det[index].imposto.PISST = {};
 
-        this.#NFe.infNFe.det[index].imposto.PIS.PISST = {};
+        this.#NFe.infNFe.det[index].imposto.PISST = {};
         Object.keys(obj).forEach(key => {
-            this.#NFe.infNFe.det[index].imposto.PIS.PISST[key] = obj[key];
+            this.#NFe.infNFe.det[index].imposto.PISST[key] = obj[key];
         });
 
 

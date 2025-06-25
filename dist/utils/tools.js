@@ -654,9 +654,10 @@ async function _Tools_limparSoap(xml) {
     if (xml == "Bad Request")
         throw xml;
     const clear = [
+        'S:Envelope',
+        'S:Body',
         'soapenv:Envelope',
         'soapenv:Body',
-        'nfeResultMsg',
         'soap:Envelope',
         'soap:Body',
         'nfeResultMsg',

@@ -296,7 +296,7 @@ class Make {
         //delete obj.CST;
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS[`ICMS${CST}`] = {};
         Object.keys(obj).forEach(key => {
-            if (key != 'orig')
+            if (!["orig", "CSOSN", "modBC", "modBCST"].includes(key))
                 obj[key] = obj[key] == 0 ? "0.00" : obj[key];
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS[`ICMS${CST}`][key] = obj[key];
         });
@@ -337,6 +337,8 @@ class Make {
         }
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS[keyXML] = {};
         Object.keys(obj).forEach(key => {
+            if (key != 'orig')
+                obj[key] = obj[key] == 0 ? "0.00" : obj[key];
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMS[keyXML][key] = obj[key];
         });
         //Calcular ICMSTot
@@ -453,11 +455,11 @@ class Make {
         __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
     }
     tagProdPISST(index, obj) {
-        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.PIS === undefined)
-            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.PIS = {};
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.PIS.PISST = {};
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.PISST === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.PISST = {};
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.PISST = {};
         Object.keys(obj).forEach(key => {
-            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.PIS.PISST[key] = obj[key];
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.PISST[key] = obj[key];
         });
         //Calcular ICMSTot
         __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
