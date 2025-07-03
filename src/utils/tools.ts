@@ -710,6 +710,8 @@ class Tools {
     async #limparSoap(xml: string) {
         if(xml=="Bad Request") throw xml
         const clear: any = [
+            'env:Envelope',
+            'env:Body',
             'S:Envelope',
             'S:Body',
             'soapenv:Envelope',
