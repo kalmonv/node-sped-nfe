@@ -12,6 +12,13 @@ Seja bem-vindo(a) à **Biblioteca de Emissão de NF-e** — sua parceira definit
 ![npm](https://img.shields.io/npm/dw/node-sped-nfe)
 
 </div>
+---
+
+## 📦 Instalação
+
+```bash
+npm install node-sped-nfe
+
 
 ---
 
@@ -57,3 +64,11 @@ Toda a documentação completa com guias, exemplos, status SEFAZ e muito mais es
 | Manifestação de Destinatário - Confirmação da Operação (210200) | ✅ |
 | Manifestação de Destinatário - Desconhecimento da Operação (210220) | ✅ |
 | Manifestação de Destinatário - Operação Não Realizada (210240) | ✅ |
+
+## 📄 XML para DANFE (PDF)
+Esta biblioteca permite a conversão de arquivos XML em documentos PDF, com suporte para execução tanto no backend quanto no frontend.
+<div align="center">
+<a href="https://www.npmjs.com/package/node-sped-pdf">
+  🧾 <strong>node-sped-pdf</strong>
+</a>
+</div>

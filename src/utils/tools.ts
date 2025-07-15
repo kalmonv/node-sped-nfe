@@ -246,6 +246,9 @@ class Tools {
             let UF = cUF2UF[cUF];
             let mod = `${chNFe}`.substring(20, 22);
 
+            //https://www.nfe.fazenda.gov.br/portal/webservices.aspx?AspxAutoDetectCookieSupport=1
+            if (['AC', 'ES', 'RN', 'PB', 'SC'].includes(UF))
+                UF = 'SVRS'
             if (typeof this.#config.tpAmb === "undefined") throw "consultarNFe({...tpAmb}) -> não definido!";
 
             let consSitNFe = {
@@ -399,7 +402,7 @@ class Tools {
                 let xmlSing = await json2xml(evento);
                 xmlSing = await this.xmlSign(xmlSing, { tag: "infEvento" }); //Assinado
                 await this.#xmlValido(xmlSing, `envEvento_v1.00`).catch(reject); //Validar corpo
-                
+
                 xmlSing = await json2xml({
                     "soap:Envelope": {
                         "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
@@ -708,7 +711,7 @@ class Tools {
 
     //Remove coisas inuteis da resposta do sefaz
     async #limparSoap(xml: string) {
-        if(xml=="Bad Request") throw xml
+        if (xml == "Bad Request") throw xml
         const clear: any = [
             'env:Envelope',
             'env:Body',

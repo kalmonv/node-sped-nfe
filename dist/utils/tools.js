@@ -177,6 +177,9 @@ class Tools {
             let cUF = `${chNFe}`.substring(0, 2);
             let UF = cUF2UF[cUF];
             let mod = `${chNFe}`.substring(20, 22);
+            //https://www.nfe.fazenda.gov.br/portal/webservices.aspx?AspxAutoDetectCookieSupport=1
+            if (['AC', 'ES', 'RN', 'PB', 'SC'].includes(UF))
+                UF = 'SVRS';
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").tpAmb === "undefined")
                 throw "consultarNFe({...tpAmb}) -> não definido!";
             let consSitNFe = {
