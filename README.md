@@ -15,10 +15,15 @@ Seja bem-vindo(a) à **Biblioteca de Emissão de NF-e** — sua parceira definit
 ---
 
 ## 📦 Instalação
+<div align="center">
+<a href="https://www.npmjs.com/package/node-sped-nfe">
+  🧾 <strong>node-sped-nfe</strong>
+</a>
+</div>
 
 ```bash
 npm install node-sped-nfe
-
+```
 
 ---
 
