@@ -1,4 +1,4 @@
-import { XMLParser, XMLBuilder } from "fast-xml-parser";
+import { XMLBuilder } from "fast-xml-parser";
 import https from "https";
 import { spawnSync, SpawnSyncReturns } from "child_process"
 import tmp from "tmp"
@@ -10,7 +10,6 @@ import { fileURLToPath } from 'url';
 import pem from 'pem';
 import { cUF2UF, json2xml, xml2json, formatData, UF2cUF } from "./extras.js"
 import { SignedXml } from 'xml-crypto';
-import { json } from "stream/consumers";
 
 
 

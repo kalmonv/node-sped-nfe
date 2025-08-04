@@ -2,8 +2,6 @@ import { XMLParser, XMLBuilder } from "fast-xml-parser";
 import { gunzipSync } from 'zlib'; // ou zlibSync
 import { Buffer } from 'buffer';
 import pem from 'pem';
-import { resolve } from "path";
-
 
 const cUF2UF: any = {
     "11": "RO",

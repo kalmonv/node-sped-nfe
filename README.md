@@ -12,12 +12,12 @@ Seja bem-vindo(a) à **Biblioteca de Emissão de NF-e** — sua parceira definit
 ![npm](https://img.shields.io/npm/dw/node-sped-nfe)
 
 </div>
----
+
 
 ## 📦 Instalação
 <div align="center">
 <a href="https://www.npmjs.com/package/node-sped-nfe">
-  🧾 <strong>node-sped-nfe</strong>
+  NPM: <strong>node-sped-nfe</strong>
 </a>
 </div>
 

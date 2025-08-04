@@ -1,5 +1,5 @@
 
-import { XMLParser, XMLBuilder, XMLValidator } from "fast-xml-parser";
+import { XMLBuilder } from "fast-xml-parser";
 import { urlEventos } from "./eventos.js"
 import { cUF2UF } from "./extras.js"
 
