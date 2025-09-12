@@ -165,7 +165,12 @@ class Make {
             obj[cont].prod.qTrib = (obj[cont].prod.qTrib * 1).toFixed(4);
             obj[cont].prod.vUnTrib = (obj[cont].prod.vUnTrib * 1).toFixed(10);
             //Calcular ICMSTot
-            __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj[cont].prod);
+            __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, {
+                ...obj[cont].prod,
+                ...{
+                    vNF: ((obj[cont].prod.vUnCom - (obj[cont].prod?.vDesc || 0)) * obj[cont].prod.qTrib).toFixed(2)
+                }
+            });
         }
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det = obj;
     }
@@ -670,7 +675,7 @@ class Make {
             //Como ja temos cUF, vamos usar o extras.cUF2UF
             let tempUF = urlEventos(cUF2UF[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF], __classPrivateFieldGet(this, _Make_NFe, "f").infNFe['@versao']);
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFeSupl = {
-                qrCode: tempUF.mod65[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].NFeConsultaQR, //Este não e o valor final, vamos utilizar apenas para carregar os dados que vão ser utlizados no make
+                qrCode: tempUF.mod65[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].NfeConsultaQR, //Este não e o valor final, vamos utilizar apenas para carregar os dados que vão ser utlizados no make
                 urlChave: tempUF.mod65[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].urlChave
             };
         }

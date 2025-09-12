@@ -14,8 +14,7 @@ import { SignedXml } from 'xml-crypto';
 
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 class Tools {
     #cert: {
@@ -373,7 +372,6 @@ class Tools {
                 // Ciência (210210), Confirmação (210200), Desconhecimento (210220) não precisam de campos extras
 
                 const tempUF = urlEventos(cUF2UF[cOrgao], this.#config.versao);
-
                 const evento = {
                     "envEvento": {
                         "@xmlns": "http://www.portalfiscal.inf.br/nfe",
@@ -467,8 +465,13 @@ class Tools {
         return new Promise(async (resolve, reject) => {
             try {
                 if (!chNFe && !ultNSU) throw "sefazDistDFe({chNFe|ultNSU})";
-                if (!this.#config.CNPJ) throw "CNPJ não definido!";
-                if (this.#config.CNPJ.length !== 14) throw "CNPJ inválido!";
+                if (!this.#config.CNPJ && !this.#config.CPF) throw "Tools({CNPJ|CPF})";
+                if (this.#config.CPF != undefined) {
+                    if (this.#config.CPF.length !== 11) throw "Tools({CPF}) inválido!";
+                } else {
+                    if (this.#config.CNPJ.length !== 14) throw "Tools({CNPJ}) inválido!";
+                }
+
 
 
                 // Gera o XML da consulta
@@ -511,9 +514,8 @@ class Tools {
                         }
                     }
                 });
-
-                // HTTPS Request
-                const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
+                // HTTPS Request, trava modelo 55
+                const req = https.request(tempUF[`mod55`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -584,7 +586,7 @@ class Tools {
                 "@versao": "4.00",
                 "@xmlns": "http://www.portalfiscal.inf.br/nfe",
                 "tpAmb": this.#config.tpAmb,
-                "cUF": tempUF.cUF,
+                "cUF": UF2cUF[this.#config.UF],
                 "xServ": "STATUS"
             }
 
@@ -668,7 +670,17 @@ class Tools {
             const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
 
             fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
-            const schemaPath = path.resolve(__dirname, `../../schemas/PL_010_V1/${xsd}.xsd`);
+
+            //Obter caminho, dos schemas
+            var schemaPath = ""
+            try { //NW.js + ElectronJS
+                schemaPath = path.dirname(require.resolve("node-sped-nfe"));
+                schemaPath = path.resolve(`${path.join(schemaPath, "..", "schemas")}/PL_010_V1/${xsd}.xsd`);
+            } catch (error) { //Caso o require seja desativo
+                const __filename = fileURLToPath(import.meta.url);
+                const __dirname = path.dirname(__filename);
+                schemaPath = path.resolve(__dirname, `../../schemas/PL_010_V1/${xsd}.xsd`);
+            }
 
             const verif: SpawnSyncReturns<string> = spawnSync(
                 this.#config.xmllint,

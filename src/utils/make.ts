@@ -176,7 +176,12 @@ class Make {
             obj[cont].prod.qTrib = (obj[cont].prod.qTrib * 1).toFixed(4)
             obj[cont].prod.vUnTrib = (obj[cont].prod.vUnTrib * 1).toFixed(10)
             //Calcular ICMSTot
-            this.#calICMSTot(obj[cont].prod);
+            this.#calICMSTot({
+                ...obj[cont].prod,
+                ...{
+                    vNF: ((obj[cont].prod.vUnCom - (obj[cont].prod?.vDesc || 0)) * obj[cont].prod.qTrib).toFixed(2)
+                }
+            });
         }
         this.#NFe.infNFe.det = obj;
     }
@@ -780,7 +785,7 @@ class Make {
             //Como ja temos cUF, vamos usar o extras.cUF2UF
             let tempUF = urlEventos(cUF2UF[this.#NFe.infNFe.ide.cUF], this.#NFe.infNFe['@versao']);
             this.#NFe.infNFeSupl = {
-                qrCode: tempUF.mod65[this.#NFe.infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].NFeConsultaQR, //Este não e o valor final, vamos utilizar apenas para carregar os dados que vão ser utlizados no make
+                qrCode: tempUF.mod65[this.#NFe.infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].NfeConsultaQR, //Este não e o valor final, vamos utilizar apenas para carregar os dados que vão ser utlizados no make
                 urlChave: tempUF.mod65[this.#NFe.infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].urlChave
             }
         }

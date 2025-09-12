@@ -41,8 +41,8 @@ NFe.tagIde({
 });
 NFe.tagEmit({
     CNPJ: "47506306000188",
-    xNome: "47.506.306 KALMON VALADAO TAVARES",
-    xFant: "GUARA DEV",
+    xNome: "Guarix",
+    xFant: "Guarix",
     IE: "139551956",
     CRT: "1"
 });

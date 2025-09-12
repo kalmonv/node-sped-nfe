@@ -1,6 +1,6 @@
 {
   "name": "node-sped-nfe",
-  "version": "1.2.41",
+  "version": "1.2.42",
   "author": "Kalmon V. Tavares",
   "type": "module",
   "main": "dist/index.js",
@@ -21,7 +21,8 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./schemas/*": "./schemas/*"
   },
   "scripts": {
     "build": "tsc > saida.txt",

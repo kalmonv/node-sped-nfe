@@ -22,8 +22,6 @@ import { fileURLToPath } from 'url';
 import pem from 'pem';
 import { cUF2UF, json2xml, xml2json, formatData, UF2cUF } from "./extras.js";
 import { SignedXml } from 'xml-crypto';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 class Tools {
     constructor(config = { mod: "", xmllint: 'xmllint', UF: '', tpAmb: 2, CSC: "", CSCid: "", versao: "4.00", timeout: 30, openssl: null, CPF: "", CNPJ: "" }, certificado = { pfx: "", senha: "" }) {
         _Tools_instances.add(this);
@@ -389,10 +387,16 @@ class Tools {
             try {
                 if (!chNFe && !ultNSU)
                     throw "sefazDistDFe({chNFe|ultNSU})";
-                if (!__classPrivateFieldGet(this, _Tools_config, "f").CNPJ)
-                    throw "CNPJ não definido!";
-                if (__classPrivateFieldGet(this, _Tools_config, "f").CNPJ.length !== 14)
-                    throw "CNPJ inválido!";
+                if (!__classPrivateFieldGet(this, _Tools_config, "f").CNPJ && !__classPrivateFieldGet(this, _Tools_config, "f").CPF)
+                    throw "Tools({CNPJ|CPF})";
+                if (__classPrivateFieldGet(this, _Tools_config, "f").CPF != undefined) {
+                    if (__classPrivateFieldGet(this, _Tools_config, "f").CPF.length !== 11)
+                        throw "Tools({CPF}) inválido!";
+                }
+                else {
+                    if (__classPrivateFieldGet(this, _Tools_config, "f").CNPJ.length !== 14)
+                        throw "Tools({CNPJ}) inválido!";
+                }
                 // Gera o XML da consulta
                 // Prepara o SOAP
                 var xmlSing = await json2xml({
@@ -428,8 +432,8 @@ class Tools {
                         }
                     }
                 });
-                // HTTPS Request
-                const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
+                // HTTPS Request, trava modelo 55
+                const req = https.request(tempUF[`mod55`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -486,7 +490,7 @@ class Tools {
                 "@versao": "4.00",
                 "@xmlns": "http://www.portalfiscal.inf.br/nfe",
                 "tpAmb": __classPrivateFieldGet(this, _Tools_config, "f").tpAmb,
-                "cUF": tempUF.cUF,
+                "cUF": UF2cUF[__classPrivateFieldGet(this, _Tools_config, "f").UF],
                 "xServ": "STATUS"
             };
             let xmlObj = {
@@ -619,7 +623,16 @@ async function _Tools_xmlValido(xml, xsd) {
     return new Promise((resolve, reject) => {
         const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
         fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
-        const schemaPath = path.resolve(__dirname, `../../schemas/PL_010_V1/${xsd}.xsd`);
+        var schemaPath = "";
+        try {
+            schemaPath = path.dirname(require.resolve("node-sped-nfe"));
+            schemaPath = path.resolve(`${path.join(schemaPath, "..", "schemas")}/PL_010_V1/${xsd}.xsd`);
+        }
+        catch (error) {
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
+            schemaPath = path.resolve(__dirname, `../../schemas/PL_010_V1/${xsd}.xsd`);
+        }
         const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', schemaPath, xmlFile.name], { encoding: 'utf8' });
         xmlFile.removeCallback();
         // Aqui, usamos o operador de encadeamento opcional (?.)
