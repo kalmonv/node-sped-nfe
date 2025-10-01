@@ -350,7 +350,6 @@ class Make {
         __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
     }
     tagProdICMSUFDest(index, obj) {
-        console.log(__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total);
         if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMSUFDest === undefined)
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ICMSUFDest = {};
         Object.keys(obj).forEach(key => {

@@ -176,8 +176,10 @@ class Tools {
             let UF = cUF2UF[cUF];
             let mod = `${chNFe}`.substring(20, 22);
             //https://www.nfe.fazenda.gov.br/portal/webservices.aspx?AspxAutoDetectCookieSupport=1
-            if (['AC', 'ES', 'RN', 'PB', 'SC'].includes(UF))
+            if (["AC", "AL", "AP", "CE", "DF", "ES", "PA", "PB", "PI", "RJ", "RN", "RO", "RR", "SC", "SE", "TO"].includes(UF))
                 UF = 'SVRS';
+            if (["MA"].includes(UF))
+                UF = 'SVAN';
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").tpAmb === "undefined")
                 throw "consultarNFe({...tpAmb}) -> não definido!";
             let consSitNFe = {
@@ -254,22 +256,6 @@ class Tools {
                     throw "sefazEvento({tpEvento}) -> não definido!";
                 if (!__classPrivateFieldGet(this, _Tools_config, "f").CNPJ && !__classPrivateFieldGet(this, _Tools_config, "f").CPF)
                     throw "new Tools({CNPJ|CPF}) -> não definido!";
-                const geradorLote = function () {
-                    const agora = new Date();
-                    const ano = agora.getFullYear().toString().slice(2); // Só os 2 últimos dígitos do ano
-                    const mes = String(agora.getMonth() + 1).padStart(2, '0');
-                    const dia = String(agora.getDate()).padStart(2, '0');
-                    const hora = String(agora.getHours()).padStart(2, '0');
-                    const minuto = String(agora.getMinutes()).padStart(2, '0');
-                    const segundo = String(agora.getSeconds()).padStart(2, '0');
-                    // Junta tudo
-                    let idLote = `${ano}${mes}${dia}${hora}${minuto}${segundo}`;
-                    // Se ainda tiver menos de 15 dígitos, adiciona um número aleatório no final
-                    while (idLote.length < 15) {
-                        idLote += Math.floor(Math.random() * 10); // Adiciona dígitos aleatórios
-                    }
-                    return idLote;
-                };
                 let detEvento = {
                     "@versao": "1.00",
                     "descEvento": __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_descEvento).call(this, `${tpEvento}`)
@@ -484,7 +470,6 @@ class Tools {
                 throw "sefazStatus({...tpAmb}) -> não definido!";
             if (typeof __classPrivateFieldGet(this, _Tools_config, "f").mod == "undefined")
                 throw "sefazStatus({...mod}) -> não definido!";
-            let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
             //Separado para validar o corpo da consulta
             let consStatServ = {
                 "@versao": "4.00",
@@ -519,6 +504,7 @@ class Tools {
                         headers: {
                             'Content-Type': 'application/soap+xml; charset=utf-8',
                             'Content-Length': xml.length,
+                            'SOAPAction': 'http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico4/nfeStatusServicoNF'
                         },
                         rejectUnauthorized: false
                     },
@@ -623,12 +609,13 @@ async function _Tools_xmlValido(xml, xsd) {
     return new Promise((resolve, reject) => {
         const xmlFile = tmp.fileSync({ mode: 0o644, prefix: 'xml-', postfix: '.xml' });
         fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
+        //Obter caminho, dos schemas
         var schemaPath = "";
-        try {
+        try { //NW.js + ElectronJS
             schemaPath = path.dirname(require.resolve("node-sped-nfe"));
             schemaPath = path.resolve(`${path.join(schemaPath, "..", "schemas")}/PL_010_V1/${xsd}.xsd`);
         }
-        catch (error) {
+        catch (error) { //Caso o require seja desativo
             const __filename = fileURLToPath(import.meta.url);
             const __dirname = path.dirname(__filename);
             schemaPath = path.resolve(__dirname, `../../schemas/PL_010_V1/${xsd}.xsd`);

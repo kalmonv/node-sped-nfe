@@ -366,7 +366,6 @@ class Make {
 
 
     tagProdICMSUFDest(index: number, obj: any) {
-        console.log(this.#NFe.infNFe.total)
         if (this.#NFe.infNFe.det[index].imposto.ICMSUFDest === undefined) this.#NFe.infNFe.det[index].imposto.ICMSUFDest = {};
 
         Object.keys(obj).forEach(key => {
