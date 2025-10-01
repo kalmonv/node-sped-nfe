@@ -40,10 +40,10 @@ NFe.tagIde({
     verProc: "4.13"
 });
 NFe.tagEmit({
-    CNPJ: "47506306000188",
-    xNome: "Guarix",
-    xFant: "Guarix",
-    IE: "139551956",
+    CNPJ: "0000000000000",
+    xNome: "NICE JOBS",
+    xFant: "NICE JOBS",
+    IE: "00000000",
     CRT: "1"
 });
 NFe.tagEnderEmit({
@@ -51,7 +51,7 @@ NFe.tagEnderEmit({
     nro: "22",
     xBairro: "Githubsom",
     cMun: "00000",
-    xMun: "Nova Commite",
+    xMun: "Nova JavaScript",
     UF: "SP",
     CEP: "0000000",
     cPais: "1058",

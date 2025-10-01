@@ -6,7 +6,7 @@ let myTools = new Tools({ //Configuração de habiente e sistema
     tpAmb: "1",
     UF: 'MT',
     versao: '4.00',
-    CNPJ: "47506306000188", // CNPJ/CPF DO TOMADOR
+    CNPJ: "0000000000000", // CNPJ/CPF DO TOMADOR
 
     //Optativo: Leia sobre Requisitos.
     xmllint: `../libs/libxml2-2.9.3-win32-x86_64/bin/xmllint.exe`
