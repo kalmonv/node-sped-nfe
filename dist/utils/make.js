@@ -21,6 +21,9 @@ class Make {
             vBC: 0,
             vICMS: 0,
             vICMSDeson: 0,
+            vFCPUFDest: 0,
+            vICMSUFDest: 0,
+            vICMSUFRemet: 0,
             vFCP: 0,
             vBCST: 0,
             vST: 0,
@@ -36,7 +39,8 @@ class Make {
             vPIS: 0,
             vCOFINS: 0,
             vOutro: 0,
-            vNF: 0
+            vNF: 0,
+            vTotTrib: 0
         });
     }
     formatData(dataUsr = new Date()) {
