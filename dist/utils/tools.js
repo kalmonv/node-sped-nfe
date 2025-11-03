@@ -613,12 +613,12 @@ async function _Tools_xmlValido(xml, xsd) {
         var schemaPath = "";
         try { //NW.js + ElectronJS
             schemaPath = path.dirname(require.resolve("node-sped-nfe"));
-            schemaPath = path.resolve(`${path.join(schemaPath, "..", "schemas")}/PL_010_V1/${xsd}.xsd`);
+            schemaPath = path.resolve(`${path.join(schemaPath, "..", "schemas")}/PL_010b_V1.30/${xsd}.xsd`);
         }
         catch (error) { //Caso o require seja desativo
             const __filename = fileURLToPath(import.meta.url);
             const __dirname = path.dirname(__filename);
-            schemaPath = path.resolve(__dirname, `../../schemas/PL_010_V1/${xsd}.xsd`);
+            schemaPath = path.resolve(__dirname, `../../schemas/PL_010b_V1.30/${xsd}.xsd`);
         }
         const verif = spawnSync(__classPrivateFieldGet(this, _Tools_config, "f").xmllint, ['--noout', '--schema', schemaPath, xmlFile.name], { encoding: 'utf8' });
         xmlFile.removeCallback();

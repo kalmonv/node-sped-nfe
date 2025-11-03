@@ -1,4 +1,3 @@
-
 import { XMLBuilder } from "fast-xml-parser";
 import { urlEventos } from "./eventos.js"
 import { cUF2UF } from "./extras.js"
@@ -39,6 +38,10 @@ class Make {
         vNF: 0,
         vTotTrib: 0
     };
+
+    #IBSCBSTot: Record<string, number> = {
+
+    }
 
     formatData(dataUsr = new Date()) {
         const ano = dataUsr.getFullYear();
@@ -576,6 +579,70 @@ class Make {
         this.#calICMSTot(obj);
     }
 
+
+    //!FALTA
+    tagProdIS(index: number, obj: any) {
+        if (this.#NFe.infNFe.det[index].imposto.IBSCBS === undefined) this.#NFe.infNFe.det[index].imposto.IBSCBS = {};
+
+        this.#NFe.infNFe.det[index].imposto.IBSCBS.seletivo = {};
+        Object.keys(obj).forEach(key => {
+            if (['vBCImpSel', 'pImpSel', 'pImpSelEspec', 'uTrib', 'vImpSel'].includes(key)) {
+                if (this.#NFe.infNFe.det[index].imposto.IBSCBS.seletivo.gImpSel === undefined)
+                    this.#NFe.infNFe.det[index].imposto.IBSCBS.seletivo.gImpSel = {};
+                this.#NFe.infNFe.det[index].imposto.IBSCBS.seletivo.gImpSel[key] = obj[key];
+            } else {
+                this.#NFe.infNFe.det[index].imposto.IBSCBS.seletivo[key] = obj[key];
+            }
+        });
+
+        //Calcular IBSCBSTot
+        this.#IBSCBSTot = this.#mergeobject(this.#IBSCBSTot, {
+            gSel: {
+                ...(obj?.gImpSel?.vBCImpSel !== undefined ? { vBCSel: obj.gImpSel.vBCImpSel } : {}),
+                ...(obj?.gImpSel?.vImpSel !== undefined ? { vImpSel: obj.gImpSel.vImpSel } : {}),
+            }
+        });
+    }
+
+    tagProdIBSCBS(index: number, obj: any) {
+        if (this.#NFe.infNFe.det[index].imposto.IBSCBS === undefined)
+            this.#NFe.infNFe.det[index].imposto.IBSCBS = {};
+
+        Object.keys(obj).forEach(key => {
+            this.#NFe.infNFe.det[index].imposto.IBSCBS[key] = obj[key];
+        });
+
+        //Calcular IBSCBSTot
+        let temp = {
+            ...({ vBCIBSCBS: obj.gIBSCBS.vBC }),
+            gIBS: {
+                gIBSUF: {
+                    vDif: obj?.gIBSCBS?.gIBSUF?.gDif?.vDif ?? "0.00",
+                    vDevTrib: obj?.gIBSCBS?.gIBSUF?.gDevTrib?.vDevTrib ?? "0.00",
+
+                    vIBSUF: obj?.gIBSCBS?.gIBSUF?.vIBSUF ?? "0.00"
+                },
+                gIBSMun: {
+                    vDif: obj?.gIBSCBS?.gIBSMun?.gDif?.vDif ?? "0.00",
+                    vDevTrib: obj?.gIBSCBS?.gIBSMun?.gDevTrib?.vDevTrib ?? "0.00",
+
+                    vIBSMun: obj?.gIBSCBS?.gIBSMun?.vIBSMun ?? "0.00",
+                },
+                vIBS: obj?.gIBSCBS?.vIBS ?? "0.00",
+                vCredPres: obj?.gIBSCBS?.gIBSCredPres?.vCredPres ?? "0.00",
+                vCredPresCondSus: obj?.gIBSCBS?.gIBSCredPres?.vCredPresCondSus ?? "0.00"
+            },
+            gCBS: {
+                vDif: obj?.gIBSCBS?.gCBS?.gDif?.vDif ?? "0.00",
+                vDevTrib: obj?.gIBSCBS?.gCBS?.gDevTrib?.vDevTrib ?? "0.00",
+                vCBS: obj?.gIBSCBS?.gCBS?.vCBS ?? "0.00",
+                vCredPres: obj?.gIBSCBS?.gCBS?.gCBSCredPres?.vCredPres ?? "0.00",
+                vCredPresCondSus: obj?.gIBSCBS?.gCBS?.gCBSCredPres?.vCredPresCondSus ?? "0.00",
+            }
+        };
+        this.#IBSCBSTot = this.#mergeobject(this.#IBSCBSTot, temp);
+    }
+
     tagProdISSQN(index: number, obj: any) {
         this.#NFe.infNFe.det[index].imposto.ISSQN = {};
         Object.keys(obj).forEach(key => {
@@ -591,17 +658,39 @@ class Make {
     }
 
     tagICMSTot(obj = null) {
-        this.#NFe.infNFe.total = {
-            ICMSTot: {}
-        };
+        if (this.#NFe.infNFe.total == undefined)
+            this.#NFe.infNFe.total = new Object();
+        if (this.#NFe.infNFe.total.ICMSTot == undefined)
+            this.#NFe.infNFe.total.ICMSTot = new Object();
+
         Object.keys(this.#ICMSTot).forEach(key => {
             this.#NFe.infNFe.total.ICMSTot[key] = (this.#ICMSTot[key] * 1).toFixed(2);
         });
+
         this.#NFe.infNFe.total.ICMSTot.vNF = (this.#NFe.infNFe.total.ICMSTot.vProd - this.#NFe.infNFe.total.ICMSTot.vDesc).toFixed(2)
 
         if (obj != null) { // Substituir campos que deseja
             Object.keys(obj).forEach(key => {
                 this.#NFe.infNFe.total.ICMSTot[key] = obj[key];
+            });
+        }
+    }
+
+    tagIBSCBSTot(obj = null) {
+        if (this.#NFe.infNFe.total == undefined)
+            this.#NFe.infNFe.total = new Object();
+        if (this.#NFe.infNFe.total.IBSCBSTot == undefined)
+            this.#NFe.infNFe.total.IBSCBSTot = new Object();
+
+        Object.keys(this.#IBSCBSTot).forEach(key => {
+            this.#NFe.infNFe.total.IBSCBSTot[key] = this.#IBSCBSTot[key];
+        });
+
+
+
+        if (obj != null) { // Substituir campos que deseja
+            Object.keys(obj).forEach(key => {
+                this.#NFe.infNFe.total.IBSCBSTot[key] = obj[key];
             });
         }
     }
@@ -807,8 +896,94 @@ class Make {
                 this.#ICMSTot[key] += (obj[key]) * 1;
             }
         });
-
     }
+
+    // ---- merge recursivo mantendo ordem de el1 ----
+    #mergeobject<T1 extends Record<string, unknown>, T2 extends Record<string, unknown>>(
+        el1: T1,
+        el2: T2,
+        fixedScale?: number
+    ): T1 & T2 {
+        // --- helpers locais (apenas dentro deste método) ---
+        const isRecord = (v: unknown): v is Record<string, unknown> =>
+            typeof v === "object" && v !== null && !Array.isArray(v);
+
+        const isDecimalLike = (v: unknown): v is string | number => {
+            if (typeof v === "number") return Number.isFinite(v);
+            if (typeof v === "string") return /^-?\d+(?:\.\d+)?$/.test(v.trim());
+            return false;
+        };
+
+        const decLen = (s: string) => (String(s).split(".")[1] || "").length;
+
+        const addDecimalStrings = (
+            a: string | number,
+            b: string | number,
+            scaleOverride?: number
+        ): string => {
+            const sa = String(a).trim();
+            const sb = String(b).trim();
+            const scale = scaleOverride ?? Math.max(decLen(sa), decLen(sb));
+
+            const toInt = (s: string): bigint => {
+                let neg = false;
+                if (s.startsWith("-")) { neg = true; s = s.slice(1); }
+                let [i = "0", f = ""] = s.split(".");
+                f = f.padEnd(scale, "0").slice(0, scale);
+                const bi = BigInt(((i.replace(/^0+(?=\d)/, "")) || "0") + f);
+                return neg ? -bi : bi;
+            };
+
+            const fromInt = (bi: bigint): string => {
+                const neg = bi < 0n;
+                let s = (neg ? -bi : bi).toString();
+                if (scale > 0) {
+                    if (s.length <= scale) s = "0".repeat(scale - s.length + 1) + s;
+                    s = s.slice(0, -scale) + "." + s.slice(-scale);
+                }
+                return (neg ? "-" : "") + s;
+            };
+
+            return fromInt(toInt(sa) + toInt(sb));
+        };
+
+        // --- regra: se el1 não for objeto simples, retorna el1 (prioridade) ---
+        if (!isRecord(el1)) return el1 as T1 & T2;
+
+        const out: Record<string, unknown> = {};
+        const k1 = Object.keys(el1 || {});
+        const k2 = Object.keys(el2 || {});
+
+        // 1) percorre chaves de el1 (preserva ordem do el1)
+        for (const k of k1) {
+            const v1 = (el1 as Record<string, unknown>)[k];
+            const hasV2 = Object.prototype.hasOwnProperty.call(el2 || {}, k);
+            const v2 = hasV2 ? (el2 as Record<string, unknown>)[k] : undefined;
+
+            if (isRecord(v1)) {
+                const sub2 = isRecord(v2) ? v2 : {};
+                out[k] = this.mergeSumKeepOrder(
+                    v1 as Record<string, unknown>,
+                    sub2 as Record<string, unknown>,
+                    fixedScale
+                );
+            } else if (hasV2 && isDecimalLike(v1) && isDecimalLike(v2)) {
+                out[k] = addDecimalStrings(v1, v2, fixedScale);
+            } else {
+                out[k] = v1; // mantém valor de el1
+            }
+        }
+
+        // 2) acrescenta ao final as chaves que existem só em el2
+        for (const k of k2) {
+            if (!Object.prototype.hasOwnProperty.call(el1, k)) {
+                out[k] = (el2 as Record<string, unknown>)[k];
+            }
+        }
+
+        return out as T1 & T2;
+    }
+
 }
 
 
