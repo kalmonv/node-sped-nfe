@@ -156,8 +156,32 @@ NFe.tagProd([
     NFe.tagProdCOFINS(index, { CST: "49", qBCProd: 0, vAliqProd: 0, vCOFINS: 0 })
 
 
+    // "Onde o filho chora e a mãe não vê"
+    NFe.tagProdIBSCBS(index, {
+        CST: "000",
+        cClassTrib: "000001",
+        gIBSCBS: {
+            vBC: "100.00",
+            gIBSUF: {
+                pIBSUF: "0.10",
+                vIBSUF: "0.10"
+            },
+            gIBSMun: {
+                pIBSMun: "0.0000",
+                vIBSMun: "0.00"
+            },
+            vIBS: "0.10", //gIBSCBS?.vIBS + gIBSCBS?.vIBSMun
+            gCBS: {
+                pCBS: "0.90",
+                vCBS: "0.90"
+            }
+        }
+    })
 });
+
 NFe.tagICMSTot();
+NFe.tagIBSCBSTot();
+
 NFe.tagTransp({ modFrete: 9 });
 NFe.tagDetPag([{ indPag: 0, tPag: "17", vPag: "1200.00" }]);
 NFe.tagTroco("0.00");

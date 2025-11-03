@@ -1288,7 +1288,7 @@ Esta função consegue manipular todo corpo de IBSCBS, basta seguir a ordem de c
 
 ```javascript
 let indexProd = 1; //item da NFe
-const ibscbs = {
+const ibscbs = { // Exemplemo extremo
     CST: "000",
     cClassTrib: "000000",
     gIBSCBS: {
@@ -1430,7 +1430,7 @@ const ibscbs = {
 nfe.tagProdIBSCBS(index, ibscbs);
 ```
 
-## function tagProdIBSCBSTribRegular(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
+## 🔴 function tagProdIBSCBSTribRegular(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
 Node det/imposto/IBSCBS/gIBSCBS/gTribRegular
 
 > Grupo de informações da Tributação Regular. Informar como seria a tributação caso não cumprida a condição resolutória/suspensiva.
@@ -1444,7 +1444,7 @@ Node det/imposto/IBSCBS/gIBSCBS/gTribRegular
 
 Não existe, como tagProdIBSCBS ja manipula todos dados existente dentro da tag.
 
-## function tagProdgTribCompraGov(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária))
+## 🔴 function tagProdgTribCompraGov(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária))
 Node det/imposto/IBSCBS/gIBSCBS/gTribCompraGov
 
 > Grupo de informações da composição do valor do IBS e da CBS em compras governamental
@@ -1458,7 +1458,7 @@ Node det/imposto/IBSCBS/gIBSCBS/gTribCompraGov
 Não existe, como tagProdIBSCBS ja manipula todos dados existente dentro da tag.
 
 
-## function tagProdIBSCBSMono(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
+## 🔴 function tagProdIBSCBSMono(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
 Node det/imposto/IBSCBS/gIBSCBSMono
 
 > Grupo de Informações do IBS e CBS em operações com imposto monofásico
@@ -1471,7 +1471,7 @@ Node det/imposto/IBSCBS/gIBSCBSMono
 
 Não existe, como tagProdIBSCBS ja manipula todos dados existente dentro da tag.
 
-## function tagProdgTranfCred(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
+## 🔴 function tagProdgTranfCred(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
 Node det/imposto/IBSCBS/gTranfCred
 
 > Grupo de Informações de transferência de Crédito
@@ -1483,7 +1483,7 @@ Node det/imposto/IBSCBS/gTranfCred
 
 Não existe, como tagProdIBSCBS ja manipula todos dados existente dentro da tag.
 
-## function tagProdgAjusteCompet(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária NT2025.002_v1.30)
+## 🔴 function tagProdgAjusteCompet(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária NT2025.002_v1.30)
 Node det/imposto/IBSCBS/gAjusteCompet
 
 > Nota: Somente para PL_010_V1.30 ou superior, não informar caso não esteja validando com esse PL 
@@ -1497,7 +1497,7 @@ Node det/imposto/IBSCBS/gAjusteCompet
 
 Não existe, como tagProdIBSCBS ja manipula todos dados existente dentro da tag.
 
-## function taggEstornoCred(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária NT2025.002_v1.30)
+## 🔴 function taggEstornoCred(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária NT2025.002_v1.30)
 Node det/imposto/IBSCBS/gEstornoCred
 
 > Obs: a obrigatoriedade ou vedação do preenchimento deste grupo está condicionada ao indicador “ind_gEstornoCred” da tabela de cClassTrib do IBS e da CBS.
@@ -1508,7 +1508,7 @@ Node det/imposto/IBSCBS/gEstornoCred
 
 Não existe, como tagProdIBSCBS ja manipula todos dados existente dentro da tag.
 
-## function taggCredPresOper(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária NT2025.002_v1.30)
+## 🔴 function taggCredPresOper(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária NT2025.002_v1.30)
 Node det/imposto/IBSCBS/gCredPresOper
 
 > Nota: Somente para PL_010_V1.30 ou superior, não informar caso não esteja validando com esse PL
@@ -1523,7 +1523,7 @@ Node det/imposto/IBSCBS/gCredPresOper
 | $std      | stdClass | contêm os dados dos campos, nomeados conforme manual |
 Não existe, como tagProdIBSCBS ja manipula todos dados existente dentro da tag.
 
-## function taggCredPresIBSZFM(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
+## 🔴 function taggCredPresIBSZFM(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
 Node det/imposto/IBSCBS/gCredPresIBSZFM
 
 > Grupo de informações de Crédito Presumido em operações com a Zona Franca de Manaus
@@ -1534,7 +1534,7 @@ Node det/imposto/IBSCBS/gCredPresIBSZFM
 | $std      | stdClass | contêm os dados dos campos, nomeados conforme manual |
 Não existe, como tagProdIBSCBS ja manipula todos dados existente dentro da tag.
 
-## function tagIBSCredPres(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
+## 🔴 function tagIBSCredPres(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
 ### REMOVIDO pela NT2025.002_v1.30 - PL_010_V1.30, não usar com essa PL  
 Node det/imposto/IBSCBS/gIBSCBS/gIBSCredPres
 
@@ -1547,7 +1547,7 @@ Node det/imposto/IBSCBS/gIBSCBS/gIBSCredPres
 |:----------|:--------:|:-----------------------------------------------------|
 | $std      | stdClass | contêm os dados dos campos, nomeados conforme manual |
 
-## function tagCBSCredPres(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
+## 🔴 function tagCBSCredPres(object $std): DOMElement    (NOVO MÉTODO Reforma Tributária)
 ### REMOVIDO pela NT2025.002_v1.30 - PL_010_V1.30, não usar com essa PL
 Node det/imposto/IBSCBS/gIBSCBS/gCBSCredPres
 
@@ -1560,7 +1560,7 @@ Node det/imposto/IBSCBS/gIBSCBS/gCBSCredPres
 |:----------|:--------:|:-----------------------------------------------------|
 | $std      | stdClass | contêm os dados dos campos, nomeados conforme manual |
 
-## function tagimpostoDevol(object $std): DOMElement    (SEM ALTERAÇÃO)
+## 🔴 function tagimpostoDevol(object $std): DOMElement    (SEM ALTERAÇÃO)
 Node det/imposto/impostoDevol
 
 > Grupo de infomrções sobre IPI devolvido
