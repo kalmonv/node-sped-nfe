@@ -1244,7 +1244,7 @@ nfe.tagProdCOFINSST(indexProd, std);
 
 ### 🟢 function tagProdIS(std)
 
-Node det/imposto/IS - Grupo de informações sobre o Imposto Seletivo - OPCIONAL
+Node det/imposto/IBSCBS/IS - Grupo de informações sobre o Imposto Seletivo
 
 \> Este é o grupo referente ao "imposto do pecado" será aplicado a produtos específicos  
 \> IMPORTANTE: Esse imposto NÃO SUBSTITUI O IPI, o ipi permanecerá mesmo quanado a Reforma Tributaria do Consumo estiver concluída.  
@@ -1619,50 +1619,28 @@ std.vIPIDevol = 123.36;
 nfe.tagProdImpostoDevol(indexProd, std);
 ```
 
-### 🟢 function tagICMSTot(std)
-
-Node dos totais referentes ao ICMS
+### 🟢 function tagTotal(std, force)
+NFe/infNFe/total/*
+Node dos totais;
 
 \> NOTA: Esta tag não necessita que sejam passados valores, pois a classe irá calcular esses totais e irá usar essa totalização para complementar e gerar esse node, caso nenhum valor seja passado como parâmetro.
 
 | Parâmetro | Tipo   | Descrição                                            |
 | --------- | ------ | ---------------------------------------------------- |
 | std       | Object | contêm os dados dos campos, nomeados conforme manual |
+| force     | boolean | *false* PADRÃO - Atualiza/Cria campos, *true* sobrescreve o NFe/infNFe/total/* |
+
+Retorna a estrutura construida.
 
 ```javascript
 let std = new Object();
-std.vBC;
-std.vICMS;
-std.vICMSDeson;
-std.vBCST;
-std.vST;
-std.vProd;
-std.vFrete;
-std.vSeg;
-std.vDesc;
-std.vII;
-std.vIPI;
-std.vPIS;
-std.vCOFINS;
-std.vOutro;
-std.vNF;
-std.vIPIDevol;
-std.vTotTrib;
-std.vFCP;
-std.vFCPST;
-std.vFCPSTRet;
-std.vFCPUFDest;
-std.vICMSUFDest;
-std.vICMSUFRemet;
-std.qBCMono;
-std.vICMSMono;
-std.qBCMonoReten;
-std.vICMSMonoReten;
-std.qBCMonoRet;
-std.vICMSMonoRet;
-
-
-nfe.tagICMSTot(std);
+std.ICMSTot = {}
+std.ISSQNtot = {}
+std.retTrib = {}
+std.ISTot = {}
+std.IBSCBSTot = {}
+std.vNFTot = "0.00";
+let respTotal = nfe.tagTotal(std); // Retorna um json da estrutura criada.
 ```
 
 ### 🔴 function tagISSQNTot(std)

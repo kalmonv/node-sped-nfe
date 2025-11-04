@@ -46,9 +46,7 @@ declare class Make {
     tagProdIBSCBS(index: number, obj: any): void;
     tagProdISSQN(index: number, obj: any): void;
     tagProdImpostoDevol(index: number, obj: any): void;
-    tagICMSTot(obj?: null): void;
-    tagIBSCBSTot(obj?: null): void;
-    tagISSQNTot(obj: any): void;
+    tagTotal(obj: any, force?: boolean): any;
     tagRetTrib(obj: any): void;
     tagTransp(obj: any): void;
     tagTransporta(obj: any): void;

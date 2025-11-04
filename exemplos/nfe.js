@@ -179,8 +179,7 @@ NFe.tagProd([
     })
 });
 
-NFe.tagICMSTot();
-NFe.tagIBSCBSTot();
+NFe.tagTotal();
 
 NFe.tagTransp({ modFrete: 9 });
 NFe.tagDetPag([{ indPag: 0, tPag: "17", vPag: "1200.00" }]);
