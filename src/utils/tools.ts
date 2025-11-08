@@ -60,7 +60,7 @@ class Tools {
         this.#cert = certificado;
     }
 
-    sefazEnviaLote(xml: string, data: any = { idLote: 1, indSinc: 0, compactar: false }): Promise<string> {
+    sefazEnviaLote(xml: string, data: { idLote?: 1, indSinc?: 0, compactar?: false } = { idLote: 1, indSinc: 0, compactar: false }): Promise<string> {
         return new Promise(async (resolve, reject) => {
             if (typeof data.idLote == "undefined") data.idLote = 1;
             if (typeof data.indSinc == "undefined") data.indSinc = 0;
@@ -658,11 +658,11 @@ class Tools {
             var schemaPath = ""
             try { //NW.js + ElectronJS
                 schemaPath = path.dirname(require.resolve("node-sped-nfe"));
-                schemaPath = path.resolve(`${path.join(schemaPath, "..", "schemas")}/PL_010_V1/${xsd}.xsd`);
+                schemaPath = path.resolve(`${path.join(schemaPath, "..", "schemas")}/PL_010b_V1.30/${xsd}.xsd`);
             } catch (error) { //Caso o require seja desativo
                 const __filename = fileURLToPath(import.meta.url);
                 const __dirname = path.dirname(__filename);
-                schemaPath = path.resolve(__dirname, `../../schemas/PL_010_V1/${xsd}.xsd`);
+                schemaPath = path.resolve(__dirname, `../../schemas/PL_010b_V1.30/${xsd}.xsd`);
             }
 
             const verif: SpawnSyncReturns<string> = spawnSync(

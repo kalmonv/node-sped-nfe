@@ -1,6 +1,6 @@
 {
   "name": "node-sped-nfe",
-  "version": "1.2.44",
+  "version": "1.2.45",
   "author": "Kalmon V. Tavares",
   "type": "module",
   "main": "dist/index.js",
@@ -30,14 +30,15 @@
     "t:nfe": "node exemplos/nfe.js",
     "t:nfce": "node exemplos/nfce.js",
     "t:cons": "node exemplos/consulta.js",
-    "teste": "node testes/teste.js"
+    "teste": "tsx testes/teste.js"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@types/node-forge": "^1.3.11",
     "@types/pem": "^1.14.4",
     "@types/tmp": "^0.2.6",
-    "typescript": "^5.0.0"
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "crypto": "^1.0.1",

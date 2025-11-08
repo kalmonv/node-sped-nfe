@@ -42,10 +42,11 @@ declare class Make {
     tagProdPISST(index: number, obj: any): void;
     tagProdCOFINS(index: number, obj: any): void;
     tagProdCOFINSST(index: number, obj: any): void;
+    tagProdIS(index: number, obj: any): void;
+    tagProdIBSCBS(index: number, obj: any): void;
     tagProdISSQN(index: number, obj: any): void;
     tagProdImpostoDevol(index: number, obj: any): void;
-    tagICMSTot(obj?: null): void;
-    tagISSQNTot(obj: any): void;
+    tagTotal(obj: any, force?: boolean): any;
     tagRetTrib(obj: any): void;
     tagTransp(obj: any): void;
     tagTransporta(obj: any): void;

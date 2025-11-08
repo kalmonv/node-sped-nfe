@@ -3,7 +3,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Make_instances, _Make_NFe, _Make_ICMSTot, _Make_gerarChaveNFe, _Make_calcularDigitoVerificador, _Make_calICMSTot;
+var _Make_instances, _Make_NFe, _Make_tagTotal, _Make_gerarChaveNFe, _Make_calcularDigitoVerificador, _Make_calICMSTot, _Make_mergeobject;
 import { XMLBuilder } from "fast-xml-parser";
 import { urlEventos } from "./eventos.js";
 import { cUF2UF } from "./extras.js";
@@ -17,31 +17,7 @@ class Make {
             //"@xmlns": "http://www.portalfiscal.inf.br/nfe",
             }
         });
-        _Make_ICMSTot.set(this, {
-            vBC: 0,
-            vICMS: 0,
-            vICMSDeson: 0,
-            vFCPUFDest: 0,
-            vICMSUFDest: 0,
-            vICMSUFRemet: 0,
-            vFCP: 0,
-            vBCST: 0,
-            vST: 0,
-            vFCPST: 0,
-            vFCPSTRet: 0,
-            vProd: 0,
-            vFrete: 0,
-            vSeg: 0,
-            vDesc: 0,
-            vII: 0,
-            vIPI: 0,
-            vIPIDevol: 0,
-            vPIS: 0,
-            vCOFINS: 0,
-            vOutro: 0,
-            vNF: 0,
-            vTotTrib: 0
-        });
+        _Make_tagTotal.set(this, {});
     }
     formatData(dataUsr = new Date()) {
         const ano = dataUsr.getFullYear();
@@ -543,33 +519,118 @@ class Make {
         //Calcular ICMSTot
         __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
     }
+    //!FALTA
+    tagProdIS(index, obj) {
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto = {};
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IS = {};
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IS[key] = obj[key];
+        });
+    }
+    tagProdIBSCBS(index, obj) {
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IBSCBS === undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IBSCBS = {};
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.IBSCBS[key] = obj[key];
+        });
+        //Calcular IBSCBSTot
+        let temp = {
+            ...({ vBCIBSCBS: obj.gIBSCBS.vBC }),
+            gIBS: {
+                gIBSUF: {
+                    vDif: obj?.gIBSCBS?.gIBSUF?.gDif?.vDif ?? "0.00",
+                    vDevTrib: obj?.gIBSCBS?.gIBSUF?.gDevTrib?.vDevTrib ?? "0.00",
+                    vIBSUF: obj?.gIBSCBS?.gIBSUF?.vIBSUF ?? "0.00"
+                },
+                gIBSMun: {
+                    vDif: obj?.gIBSCBS?.gIBSMun?.gDif?.vDif ?? "0.00",
+                    vDevTrib: obj?.gIBSCBS?.gIBSMun?.gDevTrib?.vDevTrib ?? "0.00",
+                    vIBSMun: obj?.gIBSCBS?.gIBSMun?.vIBSMun ?? "0.00",
+                },
+                vIBS: obj?.gIBSCBS?.vIBS ?? "0.00",
+                vCredPres: obj?.gIBSCBS?.gIBSCredPres?.vCredPres ?? "0.00",
+                vCredPresCondSus: obj?.gIBSCBS?.gIBSCredPres?.vCredPresCondSus ?? "0.00"
+            },
+            gCBS: {
+                vDif: obj?.gIBSCBS?.gCBS?.gDif?.vDif ?? "0.00",
+                vDevTrib: obj?.gIBSCBS?.gCBS?.gDevTrib?.vDevTrib ?? "0.00",
+                vCBS: obj?.gIBSCBS?.gCBS?.vCBS ?? "0.00",
+                vCredPres: obj?.gIBSCBS?.gCBS?.gCBSCredPres?.vCredPres ?? "0.00",
+                vCredPresCondSus: obj?.gIBSCBS?.gCBS?.gCBSCredPres?.vCredPresCondSus ?? "0.00",
+            }
+        };
+        __classPrivateFieldGet(this, _Make_tagTotal, "f").IBSCBSTot = __classPrivateFieldGet(this, _Make_instances, "m", _Make_mergeobject).call(this, __classPrivateFieldGet(this, _Make_tagTotal, "f").IBSCBSTot ?? {}, temp);
+    }
     tagProdISSQN(index, obj) {
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ISSQN = {};
         Object.keys(obj).forEach(key => {
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.ISSQN[key] = obj[key];
         });
         //Calcular ICMSTot
-        __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
+        //this.#calICMSTot(obj);
+        __classPrivateFieldGet(this, _Make_tagTotal, "f").ISSQNtot = __classPrivateFieldGet(this, _Make_instances, "m", _Make_mergeobject).call(this, __classPrivateFieldGet(this, _Make_tagTotal, "f").ISSQNtot ?? {
+            "vServ": 0,
+            "vBC": obj.vBC ?? 0,
+            "vISS": obj.vISSQN ?? 0,
+            "vPIS": 0,
+            "vCOFINS": 0,
+            "dCompet": this.formatData().split("T")[0],
+            "vDeducao": 0,
+            "vOutro": 0,
+            "vDescIncond": 0,
+            "vDescCond": 0,
+            "vISSRet": 0,
+            "cRegTrib": null
+        }, obj);
     }
     tagProdImpostoDevol(index, obj) {
         throw "Não implementado!";
     }
-    tagICMSTot(obj = null) {
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total = {
-            ICMSTot: {}
-        };
-        Object.keys(__classPrivateFieldGet(this, _Make_ICMSTot, "f")).forEach(key => {
-            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot[key] = (__classPrivateFieldGet(this, _Make_ICMSTot, "f")[key] * 1).toFixed(2);
-        });
-        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vNF = (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vProd - __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vDesc).toFixed(2);
-        if (obj != null) { // Substituir campos que deseja
-            Object.keys(obj).forEach(key => {
-                __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot[key] = obj[key];
-            });
+    //["ICMSTot", "ISSQNtot", "retTrib", "ISTot", "IBSCBSTot", "vNFTot"]
+    tagTotal(obj, force = false) {
+        if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total == undefined)
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total = new Object();
+        //Ignora o calculo auxiliar.
+        if (force) {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total = obj;
+            return obj;
         }
-    }
-    tagISSQNTot(obj) {
-        throw "Não implementado!";
+        //ICMSTot
+        if (__classPrivateFieldGet(this, _Make_tagTotal, "f").ICMSTot !== undefined) {
+            if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot == undefined)
+                __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot = new Object();
+            Object.keys(__classPrivateFieldGet(this, _Make_tagTotal, "f").ICMSTot).forEach(key => {
+                __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot[key] = (__classPrivateFieldGet(this, _Make_tagTotal, "f").ICMSTot[key] * 1).toFixed(2);
+            });
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vNF = (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vProd - __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot.vDesc).toFixed(2);
+            if (obj?.ICMSTot != null) { // Substituir campos que deseja
+                Object.keys(obj.ICMSTot).forEach(key => {
+                    __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.ICMSTot[key] = obj.ICMSTot[key];
+                });
+            }
+        }
+        //ISSQNtot - Não implementado
+        //retTrib - Não implementado
+        //ISTot - Não implementado
+        //IBSCBSTot
+        if (__classPrivateFieldGet(this, _Make_tagTotal, "f").IBSCBSTot !== undefined) {
+            if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.IBSCBSTot == undefined)
+                __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.IBSCBSTot = {};
+            Object.keys(__classPrivateFieldGet(this, _Make_tagTotal, "f").IBSCBSTot).forEach(key => {
+                __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.IBSCBSTot[key] = __classPrivateFieldGet(this, _Make_tagTotal, "f").IBSCBSTot[key];
+            });
+            if (obj?.IBSCBSTot != null) { // Substituir campos que deseja
+                Object.keys(obj.IBSCBSTot).forEach(key => {
+                    __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.IBSCBSTot[key] = obj.IBSCBSTot[key];
+                });
+            }
+        }
+        //vNFTot
+        if (__classPrivateFieldGet(this, _Make_tagTotal, "f").vNFTot !== undefined) {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total.vNFTot = __classPrivateFieldGet(this, _Make_tagTotal, "f").vNFTot;
+        }
+        return __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.total;
     }
     tagRetTrib(obj) {
         throw "Não implementado!";
@@ -689,7 +750,7 @@ class Make {
         return tempBuild.build({ NFe: __classPrivateFieldGet(this, _Make_NFe, "f") });
     }
 }
-_Make_NFe = new WeakMap(), _Make_ICMSTot = new WeakMap(), _Make_instances = new WeakSet(), _Make_gerarChaveNFe = function _Make_gerarChaveNFe() {
+_Make_NFe = new WeakMap(), _Make_tagTotal = new WeakMap(), _Make_instances = new WeakSet(), _Make_gerarChaveNFe = function _Make_gerarChaveNFe() {
     const chaveSemDV = `${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF}`.padStart(2, '0') + // Código da UF (2 dígitos)
         __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.dhEmi.substring(2, 4) + __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.dhEmi.substring(5, 7) + // Ano e Mês da emissão (AAMM, 4 dígitos)
         `${__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.emit.CNPJ}`.padStart(14, '0') + // CNPJ do emitente (14 dígitos)
@@ -720,11 +781,104 @@ _Make_NFe = new WeakMap(), _Make_ICMSTot = new WeakMap(), _Make_instances = new 
     }
     return vdigit.toString();
 }, _Make_calICMSTot = function _Make_calICMSTot(obj) {
+    if (__classPrivateFieldGet(this, _Make_tagTotal, "f").ICMSTot == undefined)
+        __classPrivateFieldGet(this, _Make_tagTotal, "f").ICMSTot = {
+            vBC: 0,
+            vICMS: 0,
+            vICMSDeson: 0,
+            vFCPUFDest: 0,
+            vICMSUFDest: 0,
+            vICMSUFRemet: 0,
+            vFCP: 0,
+            vBCST: 0,
+            vST: 0,
+            vFCPST: 0,
+            vFCPSTRet: 0,
+            vProd: 0,
+            vFrete: 0,
+            vSeg: 0,
+            vDesc: 0,
+            vII: 0,
+            vIPI: 0,
+            vIPIDevol: 0,
+            vPIS: 0,
+            vCOFINS: 0,
+            vOutro: 0,
+            vNF: 0,
+            vTotTrib: 0
+        };
     Object.keys(obj).map(key => {
-        if (__classPrivateFieldGet(this, _Make_ICMSTot, "f")[key] !== undefined) {
-            __classPrivateFieldGet(this, _Make_ICMSTot, "f")[key] += (obj[key]) * 1;
+        if (__classPrivateFieldGet(this, _Make_tagTotal, "f").ICMSTot[key] !== undefined) {
+            __classPrivateFieldGet(this, _Make_tagTotal, "f").ICMSTot[key] += (obj[key]) * 1;
         }
     });
+}, _Make_mergeobject = function _Make_mergeobject(el1, el2, fixedScale) {
+    // --- helpers locais (apenas dentro deste método) ---
+    const isRecord = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
+    const isDecimalLike = (v) => {
+        if (typeof v === "number")
+            return Number.isFinite(v);
+        if (typeof v === "string")
+            return /^-?\d+(?:\.\d+)?$/.test(v.trim());
+        return false;
+    };
+    const decLen = (s) => (String(s).split(".")[1] || "").length;
+    const addDecimalStrings = (a, b, scaleOverride) => {
+        const sa = String(a).trim();
+        const sb = String(b).trim();
+        const scale = scaleOverride ?? Math.max(decLen(sa), decLen(sb));
+        const toInt = (s) => {
+            let neg = false;
+            if (s.startsWith("-")) {
+                neg = true;
+                s = s.slice(1);
+            }
+            let [i = "0", f = ""] = s.split(".");
+            f = f.padEnd(scale, "0").slice(0, scale);
+            const bi = BigInt(((i.replace(/^0+(?=\d)/, "")) || "0") + f);
+            return neg ? -bi : bi;
+        };
+        const fromInt = (bi) => {
+            const neg = bi < 0n;
+            let s = (neg ? -bi : bi).toString();
+            if (scale > 0) {
+                if (s.length <= scale)
+                    s = "0".repeat(scale - s.length + 1) + s;
+                s = s.slice(0, -scale) + "." + s.slice(-scale);
+            }
+            return (neg ? "-" : "") + s;
+        };
+        return fromInt(toInt(sa) + toInt(sb));
+    };
+    // --- regra: se el1 não for objeto simples, retorna el1 (prioridade) ---
+    if (!isRecord(el1))
+        return el1;
+    const out = {};
+    const k1 = Object.keys(el1 || {});
+    const k2 = Object.keys(el2 || {});
+    // 1) percorre chaves de el1 (preserva ordem do el1)
+    for (const k of k1) {
+        const v1 = el1[k];
+        const hasV2 = Object.prototype.hasOwnProperty.call(el2 || {}, k);
+        const v2 = hasV2 ? el2[k] : undefined;
+        if (isRecord(v1)) {
+            const sub2 = isRecord(v2) ? v2 : {};
+            out[k] = __classPrivateFieldGet(this, _Make_instances, "m", _Make_mergeobject).call(this, v1, sub2, fixedScale);
+        }
+        else if (hasV2 && isDecimalLike(v1) && isDecimalLike(v2)) {
+            out[k] = addDecimalStrings(v1, v2, fixedScale);
+        }
+        else {
+            out[k] = v1; // mantém valor de el1
+        }
+    }
+    // 2) acrescenta ao final as chaves que existem só em el2
+    for (const k of k2) {
+        if (!Object.prototype.hasOwnProperty.call(el1, k)) {
+            out[k] = el2[k];
+        }
+    }
+    return out;
 };
 export { Make };
 export default { Make };
