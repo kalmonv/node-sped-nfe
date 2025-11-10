@@ -480,11 +480,11 @@ class Make {
     tagProdCOFINS(index: number, obj: any) {
         if (this.#NFe.infNFe.det[index].imposto.COFINS === undefined) this.#NFe.infNFe.det[index].imposto.COFINS = {};
 
-        let keyXML = null;
+        let keyXML: string;
         switch (obj.CST) {
             case '01':
             case '02':
-                keyXML = null;
+                keyXML = "COFINSAliq";
                 break;
             case '03':
                 keyXML = "COFINSQtde";
@@ -523,18 +523,14 @@ class Make {
             case '99':
                 keyXML = "COFINSOutr";
                 break;
+            default:
+                throw new Error(`CST COFINS inválido: ${obj.CST}`);
         }
 
-        if (keyXML == null) {
-            Object.keys(obj).forEach(key => {
-                this.#NFe.infNFe.det[index].imposto.COFINS[key] = obj[key];
-            });
-        } else {
-            this.#NFe.infNFe.det[index].imposto.COFINS[keyXML] = {};
-            Object.keys(obj).forEach(key => {
-                this.#NFe.infNFe.det[index].imposto.COFINS[keyXML][key] = obj[key];
-            });
-        }
+        this.#NFe.infNFe.det[index].imposto.COFINS[keyXML] = {};
+        Object.keys(obj).forEach(key => {
+            this.#NFe.infNFe.det[index].imposto.COFINS[keyXML][key] = obj[key];
+        });
 
         //Calcular ICMSTot
         this.#calICMSTot(obj);
