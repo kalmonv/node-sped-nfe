@@ -60,11 +60,14 @@ class Tools {
         this.#cert = certificado;
     }
 
-    sefazEnviaLote(xml: string, data: { idLote?: 1, indSinc?: 0, compactar?: false } = { idLote: 1, indSinc: 0, compactar: false }): Promise<string> {
+    sefazEnviaLote(xml: string, data: { idLote?: 1, indSinc?: 0, compactar?: false } = { idLote: 1, indSinc: 0, compactar: false }, xmlCompleto: boolean = false): Promise<string> {
         return new Promise(async (resolve, reject) => {
             if (typeof data.idLote == "undefined") data.idLote = 1;
             if (typeof data.indSinc == "undefined") data.indSinc = 0;
             if (typeof data.compactar == "undefined") data.compactar = false;
+
+            // Salvar XML original para uso posterior se xmlCompleto for true
+            const xmlOriginal = xml;
 
             await this.#certTools();
             let jsonXmlLote = {
@@ -110,7 +113,17 @@ class Tools {
 
                     res.on('end', async () => {
                         try {
-                            resolve(await this.#limparSoap(data));
+                            const respostaLimpa = await this.#limparSoap(data);
+                            
+                            // Se xmlCompleto for true, tentar montar nfeProc
+                            if (xmlCompleto) {
+                                const xmlCompletoGerado = await this.#montarNfeProc(xmlOriginal, respostaLimpa);
+                                if (xmlCompletoGerado) {
+                                    return resolve(xmlCompletoGerado);
+                                }
+                            }
+                            
+                            resolve(respostaLimpa);
                         } catch (error) {
                             resolve(data)
                         }
@@ -133,6 +146,48 @@ class Tools {
                 reject(erro);
             }
         })
+    }
+
+    // Monta o nfeProc quando cStat = 100 e protNFe está presente
+    async #montarNfeProc(xmlOriginal: string, respostaSefaz: string): Promise<string | null> {
+        try {
+            // Extrair protNFe da resposta usando regex (captura a tag completa com atributos)
+            const protNFeMatch = respostaSefaz.match(/<protNFe[^>]*>([\s\S]*?)<\/protNFe>/);
+            if (!protNFeMatch) {
+                return null; // protNFe não encontrado, retorna null
+            }
+
+            const protNFeCompleto = protNFeMatch[0]; // Inclui a tag <protNFe> completa
+
+            // Extrair cStat da resposta (pode estar no retEnviNFe ou dentro do protNFe)
+            const cStatMatch = respostaSefaz.match(/<cStat>(\d+)<\/cStat>/);
+            if (!cStatMatch || cStatMatch[1] !== '100') {
+                return null; // Não é autorizado, retorna null para usar resposta original
+            }
+
+            // Remover <?xml ...?> do XML original se existir
+            let xmlNFe = xmlOriginal.trim().replace(/^<\?xml[^>]*\?>\s*/i, '');
+
+            // Remover xmlns do <NFe> se existir
+            // Primeiro tenta remover xmlns="..." (com ou sem aspas)
+            xmlNFe = xmlNFe.replace(/<NFe\s+([^>]*?)\s*xmlns\s*=\s*["'][^"']*["']\s*([^>]*?)>/i, '<NFe $1$2>');
+            // Depois remove xmlns:xxx="..." (namespaces prefixados)
+            xmlNFe = xmlNFe.replace(/<NFe\s+([^>]*?)\s*xmlns\s*:\s*\w+\s*=\s*["'][^"']*["']\s*([^>]*?)>/gi, '<NFe $1$2>');
+            // Limpar espaços duplos que possam ter ficado
+            xmlNFe = xmlNFe.replace(/\s{2,}/g, ' ').trim();
+
+            // Montar o nfeProc com formatação correta
+            const nfeProc = `<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+${xmlNFe}
+${protNFeCompleto}
+</nfeProc>`;
+
+            return nfeProc;
+        } catch (error) {
+            // Em caso de erro, retorna null para usar resposta original
+            return null;
+        }
     }
 
     async xmlSign(xmlJSON: string, data: any = { tag: "infNFe" }): Promise<string> {

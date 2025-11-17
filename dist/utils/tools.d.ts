@@ -20,7 +20,7 @@ declare class Tools {
         idLote?: 1;
         indSinc?: 0;
         compactar?: false;
-    }): Promise<string>;
+    }, xmlCompleto?: boolean): Promise<string>;
     xmlSign(xmlJSON: string, data?: any): Promise<string>;
     xml2json(xml: string): Promise<object>;
     json2xml(obj: object): Promise<string>;

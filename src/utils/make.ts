@@ -730,11 +730,71 @@ class Make {
     }
 
     tagFat(obj: any) {
-        throw "Não implementado!";
+        // Grupo de Cobrança - apenas para NF-e (modelo 55)
+        if (this.#NFe.infNFe.cobr === undefined) {
+            this.#NFe.infNFe.cobr = {};
+        }
+
+        // Criar objeto de fatura
+        this.#NFe.infNFe.cobr.fat = {};
+
+        // Processar cada campo da fatura
+        if (obj.nFat !== undefined) {
+            this.#NFe.infNFe.cobr.fat.nFat = String(obj.nFat);
+        }
+
+        if (obj.vOrig !== undefined) {
+            this.#NFe.infNFe.cobr.fat.vOrig = (obj.vOrig * 1).toFixed(2);
+        }
+
+        if (obj.vDesc !== undefined) {
+            this.#NFe.infNFe.cobr.fat.vDesc = (obj.vDesc * 1).toFixed(2);
+        }
+
+        if (obj.vLiq !== undefined) {
+            this.#NFe.infNFe.cobr.fat.vLiq = (obj.vLiq * 1).toFixed(2);
+        }
     }
 
     tagDup(obj: any) {
-        throw "Não implementado!";
+        // Grupo de Cobrança - apenas para NF-e (modelo 55)
+        if (this.#NFe.infNFe.cobr === undefined) {
+            this.#NFe.infNFe.cobr = {};
+        }
+
+        // Criar array de duplicatas se não existir
+        if (this.#NFe.infNFe.cobr.dup === undefined) {
+            this.#NFe.infNFe.cobr.dup = [];
+        }
+
+        // Criar objeto da duplicata
+        const duplicata: any = {};
+
+        // nDup - obrigatório
+        if (obj.nDup !== undefined) {
+            duplicata.nDup = String(obj.nDup);
+        }
+
+        // dVenc - obrigatório, normalizar para formato YYYY-MM-DD
+        if (obj.dVenc !== undefined) {
+            if (obj.dVenc instanceof Date) {
+                const ano = obj.dVenc.getFullYear();
+                const mes = String(obj.dVenc.getMonth() + 1).padStart(2, '0');
+                const dia = String(obj.dVenc.getDate()).padStart(2, '0');
+                duplicata.dVenc = `${ano}-${mes}-${dia}`;
+            } else {
+                // Assumir que já está em formato string YYYY-MM-DD ou compatível
+                duplicata.dVenc = String(obj.dVenc);
+            }
+        }
+
+        // vDup - obrigatório, normalizar valor
+        if (obj.vDup !== undefined) {
+            duplicata.vDup = (obj.vDup * 1).toFixed(2);
+        }
+
+        // Adicionar duplicata ao array
+        this.#NFe.infNFe.cobr.dup.push(duplicata);
     }
 
     //tagpag()
