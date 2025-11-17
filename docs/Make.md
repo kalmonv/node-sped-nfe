@@ -1857,8 +1857,8 @@ std.nLacre = 'ZZEX425365';
 nfe.taglacres(indexProd, std);
 ```
 
-### 🔴 function tagfat(std)
-
+### 🟢 function tagFat(std)
+**Grupo de Cobrança (cobr)** para NF-e modelo 55, conforme o **MOC Versão 7.00 – Novembro/2020**.
 Node com os dados da fatura
 
 | Parâmetro | Tipo   | Descrição                                            |
@@ -1866,17 +1866,18 @@ Node com os dados da fatura
 | std       | Object | contêm os dados dos campos, nomeados conforme manual |
 
 ```javascript
-let std = new Object();
-std.nFat = '1233';
-std.vOrig = 1254.22;
-std.vDesc = null;
-std.vLiq = 1254.22;
+let std = {
+    nFat: "FAT-100",
+    vOrig: 3000.00,
+    vDesc: 150.00,
+    vLiq: 2850.00
+}
 
-nfe.tagfat(std);
+nfe.tagFat(std);
 ```
 
-### 🔴 function tagdup(std)
-
+### 🟢 function tagDup(std)
+**Grupo de Cobrança (cobr)** para NF-e modelo 55, conforme o **MOC Versão 7.00 – Novembro/2020**.
 Node de informações das duplicatas
 
 | Parâmetro | Tipo   | Descrição                                            |
@@ -1884,12 +1885,26 @@ Node de informações das duplicatas
 | std       | Object | contêm os dados dos campos, nomeados conforme manual |
 
 ```javascript
-let std = new Object();
-std.nDup = '1233-1';
-std.dVenc = '2017-08-22';
-std.vDup = 1254.22;
+// Parcela 1/3
+NFe.tagDup({
+    nDup: "001",
+    dVenc: "2025-12-01",
+    vDup: 950.00
+});
 
-nfe.tagdup(std);
+// Parcela 2/3 (usando objeto Date)
+NFe.tagDup({
+    nDup: "002",
+    dVenc: new Date("2026-01-01"),
+    vDup: 950.00
+});
+
+// Parcela 3/3
+NFe.tagDup({
+    nDup: "003",
+    dVenc: "2026-02-01",
+    vDup: 950.00
+});
 ```
 
 ### 🔴 function tagpag(std)
