@@ -65,6 +65,7 @@ Toda a documentação completa com guias, exemplos, status SEFAZ e muito mais es
 | Download NF-e/NFC-e emitidas contra (DistNFe)  | ✅     |
 | Cancelamento de NFe/NFCe emitida (110111) | ✅ |
 | Carta correção de NFe/NFCe emitida (110110) | ✅ |
+| Inutilizar  numeração | ✅ |
 | Manifestação de Destinatário - Ciência da Operação (210210) | ✅ |
 | Manifestação de Destinatário - Confirmação da Operação (210200) | ✅ |
 | Manifestação de Destinatário - Desconhecimento da Operação (210220) | ✅ |
