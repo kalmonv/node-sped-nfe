@@ -116,7 +116,7 @@ const xmlRetorno = await tools.sefazInutiliza({
   xJust: 'Erro durante manutenção do software.', // justificativa
   ano: 2025,                    // opcional: se omitido usa o ano atual (2 últimos dígitos)
 });
-
+```
 
 ## 📥 Método `async sefazStatus(): Promise<string>`
 O método `sefazStatus` realiza a **consulta ao servidor da SEFAZ** utilizando a UF de inicializaçao.
