@@ -16,6 +16,13 @@ declare class Tools {
         pfx: string;
         senha: string;
     });
+    sefazInutiliza({ nSerie, nIni, nFin, xJust, ano, }: {
+        nSerie: number;
+        nIni: number;
+        nFin: number;
+        xJust: string;
+        ano?: string;
+    }): Promise<string>;
     sefazEnviaLote(xml: string, data?: {
         idLote?: 1;
         indSinc?: 0;
