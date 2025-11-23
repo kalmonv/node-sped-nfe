@@ -51,6 +51,95 @@ class Tools {
         __classPrivateFieldSet(this, _Tools_config, config, "f");
         __classPrivateFieldSet(this, _Tools_cert, certificado, "f");
     }
+    sefazInutiliza({ nSerie, nIni, nFin, xJust, ano, }) {
+        return new Promise(async (resolve, reject) => {
+            if (!__classPrivateFieldGet(this, _Tools_config, "f").CNPJ && !__classPrivateFieldGet(this, _Tools_config, "f").CPF)
+                throw "new Tools({CNPJ|CPF}) -> não definido!";
+            ano = `${ano ?? new Date().getFullYear()}`.slice(2, 4);
+            await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this);
+            let inutNFeXML = {
+                "inutNFe": {
+                    "@xmlns": "http://www.portalfiscal.inf.br/nfe",
+                    "@versao": "4.00",
+                    "infInut": {
+                        ...{
+                            "tpAmb": __classPrivateFieldGet(this, _Tools_config, "f").tpAmb,
+                            "xServ": "INUTILIZAR",
+                            "cUF": UF2cUF[__classPrivateFieldGet(this, _Tools_config, "f").UF],
+                            "ano": ano,
+                        },
+                        ...(__classPrivateFieldGet(this, _Tools_config, "f").CNPJ !== undefined ? { CNPJ: __classPrivateFieldGet(this, _Tools_config, "f").CNPJ } : { CPF: __classPrivateFieldGet(this, _Tools_config, "f").CPF }),
+                        ...{
+                            "mod": __classPrivateFieldGet(this, _Tools_config, "f").mod,
+                            "serie": nSerie,
+                            "nNFIni": nIni,
+                            "nNFFin": nFin,
+                            "xJust": xJust,
+                            "@Id": `ID${UF2cUF[__classPrivateFieldGet(this, _Tools_config, "f").UF]}${ano}${__classPrivateFieldGet(this, _Tools_config, "f").CNPJ != undefined ? __classPrivateFieldGet(this, _Tools_config, "f").CNPJ : __classPrivateFieldGet(this, _Tools_config, "f").CPF}${__classPrivateFieldGet(this, _Tools_config, "f").mod}${String(nSerie).padStart(3, '0')}${String(nIni).padStart(9, '0')}${String(nFin).padStart(9, '0')}`
+                        }
+                    },
+                }
+            };
+            let xmlSing = await json2xml(inutNFeXML);
+            xmlSing = await this.xmlSign(xmlSing, { tag: "infInut" }); //Assinado
+            await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, xmlSing, `inutNFe_v4.00`).catch(reject); //Validar corpo
+            xmlSing = await json2xml({
+                "soap:Envelope": {
+                    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                    "@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+                    "@xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
+                    "soap:Body": {
+                        "nfeDadosMsg": {
+                            "@xmlns": "http://www.portalfiscal.inf.br/nfe/wsdl/NFeInutilizacao4",
+                            ...await xml2json(xmlSing)
+                        }
+                    }
+                }
+            });
+            try {
+                let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
+                const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeInutilizacao, {
+                    ...{
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/soap+xml; charset=utf-8',
+                            'Content-Length': xmlSing.length,
+                        },
+                        rejectUnauthorized: false
+                    },
+                    ...await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this)
+                }, (res) => {
+                    let data = '';
+                    res.on('data', (chunk) => {
+                        data += chunk;
+                    });
+                    res.on('end', async () => {
+                        try {
+                            resolve(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_limparSoap).call(this, data));
+                        }
+                        catch (error) {
+                            resolve(data);
+                        }
+                    });
+                });
+                req.setTimeout(__classPrivateFieldGet(this, _Tools_config, "f").timeout * 1000, () => {
+                    reject({
+                        name: 'TimeoutError',
+                        message: 'The operation was aborted due to timeout'
+                    });
+                    req.destroy(); // cancela a requisição
+                });
+                req.on('error', (erro) => {
+                    reject(erro);
+                });
+                req.write(xmlSing);
+                req.end();
+            }
+            catch (erro) {
+                reject(erro);
+            }
+        });
+    }
     sefazEnviaLote(xml, data = { idLote: 1, indSinc: 0, compactar: false }) {
         return new Promise(async (resolve, reject) => {
             if (typeof data.idLote == "undefined")
@@ -144,6 +233,12 @@ class Tools {
             else if (data.tag == "infEvento") {
                 xml.envEvento.evento = {
                     ...xml.envEvento.evento,
+                    ...(await xml2json(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_getSignature).call(this, xmlJSON, data.tag)))
+                };
+            }
+            else if (data.tag == "infInut") {
+                xml.inutNFe = {
+                    ...xml.inutNFe,
                     ...(await xml2json(await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_getSignature).call(this, xmlJSON, data.tag)))
                 };
             }

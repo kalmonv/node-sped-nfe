@@ -451,11 +451,11 @@ class Make {
     tagProdCOFINS(index, obj) {
         if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.COFINS === undefined)
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.COFINS = {};
-        let keyXML = null;
+        let keyXML;
         switch (obj.CST) {
             case '01':
             case '02':
-                keyXML = null;
+                keyXML = "COFINSAliq";
                 break;
             case '03':
                 keyXML = "COFINSQtde";
@@ -494,18 +494,13 @@ class Make {
             case '99':
                 keyXML = "COFINSOutr";
                 break;
+            default:
+                throw new Error(`CST COFINS inválido: ${obj.CST}`);
         }
-        if (keyXML == null) {
-            Object.keys(obj).forEach(key => {
-                __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.COFINS[key] = obj[key];
-            });
-        }
-        else {
-            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.COFINS[keyXML] = {};
-            Object.keys(obj).forEach(key => {
-                __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.COFINS[keyXML][key] = obj[key];
-            });
-        }
+        __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.COFINS[keyXML] = {};
+        Object.keys(obj).forEach(key => {
+            __classPrivateFieldGet(this, _Make_NFe, "f").infNFe.det[index].imposto.COFINS[keyXML][key] = obj[key];
+        });
         //Calcular ICMSTot
         __classPrivateFieldGet(this, _Make_instances, "m", _Make_calICMSTot).call(this, obj);
     }

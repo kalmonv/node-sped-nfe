@@ -153,8 +153,8 @@ NFe.tagProd([
     NFe.tagProdCOFINS(index, { CST: "49", qBCProd: "0.0000", vAliqProd: "0.0000", vCOFINS: "0.00" })
 });
 
-//Calcular ICMSTot
-NFe.tagICMSTot();
+//Calcular total
+NFe.tagTotal();
 
 //Transporte
 NFe.tagTransp({ modFrete: 9 });

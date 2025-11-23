@@ -155,8 +155,6 @@ NFe.tagProd([
     NFe.tagProdPIS(index, { CST: "49", qBCProd: 0, vAliqProd: 0, vPIS: 0 })
     NFe.tagProdCOFINS(index, { CST: "49", qBCProd: 0, vAliqProd: 0, vCOFINS: 0 })
 
-
-    // "Onde o filho chora e a mãe não vê"
     NFe.tagProdIBSCBS(index, {
         CST: "000",
         cClassTrib: "000001",

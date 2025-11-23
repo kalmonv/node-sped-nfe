@@ -103,6 +103,21 @@ O método `consultarNFe` realiza a **consulta de uma NF-e ou NFC-e na SEFAZ** ut
 const xmlStatus = await tools.consultarNFe("CHAVE DA NFE");
 ```
 
+## 📥 Método `async sefazInutiliza({ nSerie, nIni, nFin, xJust, ano? }): Promise<string>`
+
+O método `sefazInutiliza` realiza a **inutilização de numeração de NF-e/NFC-e na SEFAZ**, enviando o pedido de inutilização de uma faixa de números (início/fim) para uma determinada série.  
+Ele retorna o **XML de resposta da SEFAZ** (protocolo de inutilização ou erro).
+
+```ts
+const xmlRetorno = await tools.sefazInutiliza({
+  nSerie: 0,                    // série da NF-e
+  nIni: 1,                      // número inicial a inutilizar
+  nFin: 2,                      // número final a inutilizar
+  xJust: 'Erro durante manutenção do software.', // justificativa
+  ano: 2025,                    // opcional: se omitido usa o ano atual (2 últimos dígitos)
+});
+```
+
 ## 📥 Método `async sefazStatus(): Promise<string>`
 O método `sefazStatus` realiza a **consulta ao servidor da SEFAZ** utilizando a UF de inicializaçao.
 ```ts
