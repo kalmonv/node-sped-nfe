@@ -2,10 +2,16 @@
     NFe Producao: https://www.nfe.fazenda.gov.br/portal/webservices.aspx
     NFe Homologacao: https://hom.nfe.fazenda.gov.br/portal/webServices.aspx
 */
+import event55 from "./webservices/mod55"
+import event65 from "./webservices/mod65"
+
 function urlEventos(UF: string, versao: string): any {
     switch (`${versao}`) {
         case "4.00":
-            return urlEventos400[UF]
+            return {
+                mod65: event65.eventos(UF),
+                mod55: event55.eventos(UF)
+            }
         default:
             throw `Versão incompativel! Tools({...versao:${versao}})`;
             break;
