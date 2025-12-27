@@ -1,3 +1,7 @@
+/*
+    NFe Producao: https://www.nfe.fazenda.gov.br/portal/webservices.aspx
+    NFe Homologacao: https://hom.nfe.fazenda.gov.br/portal/webServices.aspx
+*/
 const extras = {
     "SVAN": {
         "homologacao": {
