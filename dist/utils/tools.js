@@ -486,7 +486,7 @@ class Tools {
                         "@versao": "1.01",
                         "tpAmb": 1, // 1 = produção, 2 = homologação
                         "cUFAutor": UF2cUF[__classPrivateFieldGet(this, _Tools_config, "f").UF], // "AN" - Ambiente Nacional
-                        "CNPJ": __classPrivateFieldGet(this, _Tools_config, "f").CNPJ,
+                        ...(__classPrivateFieldGet(this, _Tools_config, "f").CNPJ !== undefined ? { CNPJ: __classPrivateFieldGet(this, _Tools_config, "f").CNPJ } : { CPF: __classPrivateFieldGet(this, _Tools_config, "f").CPF }),
                         ...(typeof ultNSU != "undefined" ?
                             { "distNSU": { "ultNSU": `${ultNSU}`.padStart(15, '0') } } :
                             {}),
