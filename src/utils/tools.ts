@@ -565,7 +565,7 @@ class Tools {
                         "@versao": "1.01",
                         "tpAmb": 1, // 1 = produção, 2 = homologação
                         "cUFAutor": UF2cUF[this.#config.UF], // "AN" - Ambiente Nacional
-                        "CNPJ": this.#config.CNPJ,
+                        ...(this.#config.CNPJ !== undefined ? { CNPJ: this.#config.CNPJ } : { CPF: this.#config.CPF }),
                         ...(typeof ultNSU != "undefined" ?
                             { "distNSU": { "ultNSU": `${ultNSU}`.padStart(15, '0') } } :
                             {}
