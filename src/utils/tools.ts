@@ -109,8 +109,7 @@ class Tools {
 
 
             try {
-                let tempUF = urlEventos(this.#config.UF, this.#config.versao);
-                const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeInutilizacao, {
+                const req = https.request(urlEventos(this.#config.mod, this.#config.UF, this.#config.versao)[(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeInutilizacao, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -184,8 +183,7 @@ class Tools {
             }
             let xmlLote = await this.json2xml(jsonXmlLote);
             try {
-                let tempUF = urlEventos(this.#config.UF, this.#config.versao);
-                const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeAutorizacao, {
+                const req = https.request(urlEventos(this.#config.mod, this.#config.UF, this.#config.versao)[(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeAutorizacao, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -384,9 +382,7 @@ class Tools {
 
                 const xml = builder.build(xmlObj);
 
-                let tempUF = urlEventos(UF, this.#config.versao);
-
-                const url = tempUF[`mod${mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
+                const url = urlEventos(mod, UF, this.#config.versao)[(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
 
                 const req = https.request(url, {
                     method: 'POST',
@@ -454,7 +450,6 @@ class Tools {
                 }
                 // Ciência (210210), Confirmação (210200), Desconhecimento (210220) não precisam de campos extras
 
-                const tempUF = urlEventos(cUF2UF[cOrgao], this.#config.versao);
                 const evento = {
                     "envEvento": {
                         "@xmlns": "http://www.portalfiscal.inf.br/nfe",
@@ -497,7 +492,7 @@ class Tools {
                 });
 
                 try {
-                    const req = https.request(tempUF[`mod${chNFe.substring(20, 22)}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
+                    const req = https.request(urlEventos(`mod${chNFe.substring(20, 22)}`, cUF2UF[cOrgao], this.#config.versao)[(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
                         ...{
                             method: 'POST',
                             headers: {
@@ -579,7 +574,6 @@ class Tools {
                 });
 
                 await this.#xmlValido(xmlSing, `distDFeInt_v1.01`).catch(reject); //Validar corpo
-                const tempUF = urlEventos(`AN`, this.#config.versao);
 
                 xmlSing = await json2xml({
                     "soap:Envelope": {
@@ -597,8 +591,9 @@ class Tools {
                         }
                     }
                 });
+                
                 // HTTPS Request, trava modelo 55
-                const req = https.request(tempUF[`mod55`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
+                const req = https.request(urlEventos("mod55",`AN`, this.#config.versao)[(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -691,9 +686,8 @@ class Tools {
 
                 //Validação
                 await this.#xmlValido(tempBuild.build({ consStatServ }), `consStatServ_v${this.#config.versao}`).catch(reject);
-                let tempUF = urlEventos(this.#config.UF, this.#config.versao);
                 let xml = tempBuild.build(xmlObj);
-                const req = https.request(tempUF[`mod${this.#config.mod}`][(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeStatusServico, {
+                const req = https.request(urlEventos(this.#config.mod, this.#config.UF, this.#config.versao)[(this.#config.tpAmb == 1 ? "producao" : "homologacao")].NFeStatusServico, {
                     ...{
                         method: 'POST',
                         headers: {

@@ -1,2 +1,2 @@
-declare function urlEventos(UF: string, versao: string): any;
+declare function urlEventos(mod: string, UF: string, versao: string): any;
 export { urlEventos };

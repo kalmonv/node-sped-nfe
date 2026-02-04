@@ -732,10 +732,10 @@ class Make {
         //Adicionar QrCode
         if (__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.mod * 1 == 65) {
             //Como ja temos cUF, vamos usar o extras.cUF2UF
-            let tempUF = urlEventos(cUF2UF[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF], __classPrivateFieldGet(this, _Make_NFe, "f").infNFe['@versao']);
+            let tempUF = urlEventos("mod65", cUF2UF[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.cUF], __classPrivateFieldGet(this, _Make_NFe, "f").infNFe['@versao']);
             __classPrivateFieldGet(this, _Make_NFe, "f").infNFeSupl = {
-                qrCode: tempUF.mod65[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].NFeConsultaQR, //Este não e o valor final, vamos utilizar apenas para carregar os dados que vão ser utlizados no make
-                urlChave: tempUF.mod65[__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao'].urlChave
+                qrCode: tempUF[(__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao')].NFeConsultaQR, //Este não e o valor final, vamos utilizar apenas para carregar os dados que vão ser utlizados no make
+                urlChave: tempUF[(__classPrivateFieldGet(this, _Make_NFe, "f").infNFe.ide.tpAmb == 1 ? 'producao' : 'homologacao')].urlChave
             };
         }
         let tempBuild = new XMLBuilder({

@@ -39,6 +39,21 @@ declare const _default: {
                 NFeConsultaCadastro: string;
             };
         };
+    } | {
+        homologacao: {
+            NFeRecepcaoEvento: string;
+            NFeDistribuicaoDFe: string;
+            NFeConsultaDest: string;
+            NFeDownloadNF: string;
+            RecepcaoEPEC: string;
+        };
+        producao: {
+            NFeRecepcaoEvento: string;
+            NFeDistribuicaoDFe: string;
+            NFeConsultaDest: string;
+            NFeDownloadNF: string;
+            RecepcaoEPEC: string;
+        };
     };
     eventosCont: (UF: string) => {
         homologacao: {

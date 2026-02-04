@@ -97,8 +97,7 @@ class Tools {
                 }
             });
             try {
-                let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
-                const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeInutilizacao, {
+                const req = https.request(urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").mod, __classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao)[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeInutilizacao, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -172,8 +171,7 @@ class Tools {
             };
             let xmlLote = await this.json2xml(jsonXmlLote);
             try {
-                let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
-                const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeAutorizacao, {
+                const req = https.request(urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").mod, __classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao)[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeAutorizacao, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -304,8 +302,7 @@ class Tools {
                 await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, builder.build({ consSitNFe }), `consSitNFe_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`).catch(reject);
                 ;
                 const xml = builder.build(xmlObj);
-                let tempUF = urlEventos(UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
-                const url = tempUF[`mod${mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
+                const url = urlEventos(mod, UF, __classPrivateFieldGet(this, _Tools_config, "f").versao)[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeConsultaProtocolo;
                 const req = https.request(url, {
                     method: 'POST',
                     headers: {
@@ -377,7 +374,6 @@ class Tools {
                     detEvento["xJust"] = xJust;
                 }
                 // Ciência (210210), Confirmação (210200), Desconhecimento (210220) não precisam de campos extras
-                const tempUF = urlEventos(cUF2UF[cOrgao], __classPrivateFieldGet(this, _Tools_config, "f").versao);
                 const evento = {
                     "envEvento": {
                         "@xmlns": "http://www.portalfiscal.inf.br/nfe",
@@ -417,7 +413,7 @@ class Tools {
                     }
                 });
                 try {
-                    const req = https.request(tempUF[`mod${chNFe.substring(20, 22)}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
+                    const req = https.request(urlEventos(`mod${chNFe.substring(20, 22)}`, cUF2UF[cOrgao], __classPrivateFieldGet(this, _Tools_config, "f").versao)[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeRecepcaoEvento, {
                         ...{
                             method: 'POST',
                             headers: {
@@ -496,7 +492,6 @@ class Tools {
                     }
                 });
                 await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, xmlSing, `distDFeInt_v1.01`).catch(reject); //Validar corpo
-                const tempUF = urlEventos(`AN`, __classPrivateFieldGet(this, _Tools_config, "f").versao);
                 xmlSing = await json2xml({
                     "soap:Envelope": {
                         "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -514,7 +509,7 @@ class Tools {
                     }
                 });
                 // HTTPS Request, trava modelo 55
-                const req = https.request(tempUF[`mod55`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
+                const req = https.request(urlEventos("mod55", `AN`, __classPrivateFieldGet(this, _Tools_config, "f").versao)[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeDistribuicaoDFe, {
                     ...{
                         method: 'POST',
                         headers: {
@@ -591,9 +586,8 @@ class Tools {
                 });
                 //Validação
                 await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_xmlValido).call(this, tempBuild.build({ consStatServ }), `consStatServ_v${__classPrivateFieldGet(this, _Tools_config, "f").versao}`).catch(reject);
-                let tempUF = urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao);
                 let xml = tempBuild.build(xmlObj);
-                const req = https.request(tempUF[`mod${__classPrivateFieldGet(this, _Tools_config, "f").mod}`][(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeStatusServico, {
+                const req = https.request(urlEventos(__classPrivateFieldGet(this, _Tools_config, "f").mod, __classPrivateFieldGet(this, _Tools_config, "f").UF, __classPrivateFieldGet(this, _Tools_config, "f").versao)[(__classPrivateFieldGet(this, _Tools_config, "f").tpAmb == 1 ? "producao" : "homologacao")].NFeStatusServico, {
                     ...{
                         method: 'POST',
                         headers: {
