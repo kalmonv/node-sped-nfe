@@ -103,7 +103,7 @@ class Tools {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/soap+xml; charset=utf-8',
-                            'Content-Length': xmlSing.length,
+                            'Content-Length': Buffer.byteLength(xmlSing, 'utf8'),
                         },
                         rejectUnauthorized: false
                     },
@@ -178,7 +178,7 @@ class Tools {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/soap+xml; charset=utf-8',
-                            'Content-Length': xmlLote.length,
+                            'Content-Length': Buffer.byteLength(xmlLote, 'utf8'),
                         },
                         rejectUnauthorized: false
                     },
@@ -310,7 +310,7 @@ class Tools {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/soap+xml; charset=utf-8',
-                        'Content-Length': xml.length,
+                        'Content-Length': Buffer.byteLength(xml, 'utf8'),
                     },
                     rejectUnauthorized: false,
                     ...await __classPrivateFieldGet(this, _Tools_instances, "m", _Tools_certTools).call(this)
@@ -422,7 +422,7 @@ class Tools {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/soap+xml; charset=utf-8',
-                                'Content-Length': xmlSing.length,
+                                'Content-Length': Buffer.byteLength(xmlSing, 'utf8'),
                             },
                             rejectUnauthorized: false,
                         },
@@ -519,7 +519,7 @@ class Tools {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/soap+xml; charset=utf-8',
-                            'Content-Length': xmlSing.length,
+                            'Content-Length': Buffer.byteLength(xmlSing, 'utf8'),
                         },
                         rejectUnauthorized: false
                     },
@@ -598,7 +598,7 @@ class Tools {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/soap+xml; charset=utf-8',
-                            'Content-Length': xml.length,
+                            'Content-Length': Buffer.byteLength(xml, 'utf8'),
                             'SOAPAction': 'http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico4/nfeStatusServicoNF'
                         },
                         rejectUnauthorized: false
