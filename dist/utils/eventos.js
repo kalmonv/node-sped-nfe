@@ -1,5 +1,5 @@
-import event55 from "./webservices/mod55";
-import event65 from "./webservices/mod65";
+import event55 from "./webservices/mod55.js";
+import event65 from "./webservices/mod65.js";
 function urlEventos(UF, versao) {
     switch (`${versao}`) {
         case "4.00":
