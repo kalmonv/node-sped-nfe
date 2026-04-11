@@ -71,12 +71,6 @@ Toda a documentação completa com guias, exemplos, status SEFAZ e muito mais es
 | Manifestação de Destinatário - Desconhecimento da Operação (210220) | ✅ |
 | Manifestação de Destinatário - Operação Não Realizada (210240) | ✅ |
 
-## 👥 Contribuidores
-
-<a href="https://github.com/kalmonv/node-sped-nfe/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=kalmonv/node-sped-nfe" />
-</a>
-
 ## 📄 XML para DANFE (PDF)
 Esta biblioteca permite a conversão de arquivos XML em documentos PDF, com suporte para execução tanto no backend quanto no frontend.
 <div align="center">
@@ -84,3 +78,10 @@ Esta biblioteca permite a conversão de arquivos XML em documentos PDF, com supo
   🧾 <strong>node-sped-pdf</strong>
 </a>
 </div>
+
+---
+
+## ❤️ Apoie o Projeto
+Se esta biblioteca te ajuda no dia a dia e voce quiser apoiar a continuidade do projeto, voce pode contribuir via PIX:
+
+`47506306000188`
