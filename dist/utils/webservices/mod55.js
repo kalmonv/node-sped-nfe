@@ -127,22 +127,22 @@ const eventos = (UF) => {
         case 'AN':
             return {
                 "homologacao": {
-                    "NFeStatusServico": "https://hom.sefazvirtual.fazenda.gov.br/NFeStatusServico4/NFeStatusServico4.asmx",
-                    "NFeAutorizacao": "https://hom.sefazvirtual.fazenda.gov.br/NFeAutorizacao4/NFeAutorizacao4.asmx",
-                    "NFeConsultaProtocolo": "https://hom.sefazvirtual.fazenda.gov.br/NFeConsultaProtocolo4/NFeConsultaProtocolo4.asmx",
-                    "NFeInutilizacao": "https://hom.sefazvirtual.fazenda.gov.br/NFeInutilizacao4/NFeInutilizacao4.asmx",
-                    "NFeRetAutorizacao": "https://hom.sefazvirtual.fazenda.gov.br/NFeRetAutorizacao4/NFeRetAutorizacao4.asmx",
-                    "NFeRecepcaoEvento": "https://hom.sefazvirtual.fazenda.gov.br/NFeRecepcaoEvento4/NFeRecepcaoEvento4.asmx",
+                    "NFeStatusServico": "https://hom.nfe.fazenda.gov.br/NFeStatusServico4/NFeStatusServico4.asmx",
+                    "NFeAutorizacao": "https://hom.nfe.fazenda.gov.br/NFeAutorizacao4/NFeAutorizacao4.asmx",
+                    "NFeConsultaProtocolo": "https://hom.nfe.fazenda.gov.br/NFeConsultaProtocolo4/NFeConsultaProtocolo4.asmx",
+                    "NFeInutilizacao": "https://hom.nfe.fazenda.gov.br/NFeInutilizacao4/NFeInutilizacao4.asmx",
+                    "NFeRetAutorizacao": "https://hom.nfe.fazenda.gov.br/NFeRetAutorizacao4/NFeRetAutorizacao4.asmx",
+                    "NFeRecepcaoEvento": "https://hom.nfe.fazenda.gov.br/NFeRecepcaoEvento4/NFeRecepcaoEvento4.asmx",
                     "NFeConsultaCadastro": "",
                     "NFeDistribuicaoDFe": "https://hom1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx"
                 },
                 "producao": {
-                    "NFeStatusServico": "https://www.sefazvirtual.fazenda.gov.br/NFeStatusServico4/NFeStatusServico4.asmx",
-                    "NFeAutorizacao": "https://www.sefazvirtual.fazenda.gov.br/NFeAutorizacao4/NFeAutorizacao4.asmx",
-                    "NFeConsultaProtocolo": "https://www.sefazvirtual.fazenda.gov.br/NFeConsultaProtocolo4/NFeConsultaProtocolo4.asmx",
-                    "NFeInutilizacao": "https://www.sefazvirtual.fazenda.gov.br/NFeInutilizacao4/NFeInutilizacao4.asmx",
-                    "NFeRetAutorizacao": "https://www.sefazvirtual.fazenda.gov.br/NFeRetAutorizacao4/NFeRetAutorizacao4.asmx",
-                    "NFeRecepcaoEvento": "https://www.sefazvirtual.fazenda.gov.br/NFeRecepcaoEvento4/NFeRecepcaoEvento4.asmx",
+                    "NFeStatusServico": "https://www.nfe.fazenda.gov.br/NFeStatusServico4/NFeStatusServico4.asmx",
+                    "NFeAutorizacao": "https://www.nfe.fazenda.gov.br/NFeAutorizacao4/NFeAutorizacao4.asmx",
+                    "NFeConsultaProtocolo": "https://www.nfe.fazenda.gov.br/NFeConsultaProtocolo4/NFeConsultaProtocolo4.asmx",
+                    "NFeInutilizacao": "https://www.nfe.fazenda.gov.br/NFeInutilizacao4/NFeInutilizacao4.asmx",
+                    "NFeRetAutorizacao": "https://www.nfe.fazenda.gov.br/NFeRetAutorizacao4/NFeRetAutorizacao4.asmx",
+                    "NFeRecepcaoEvento": "https://www.nfe.fazenda.gov.br/NFeRecepcaoEvento4/NFeRecepcaoEvento4.asmx",
                     "NFeConsultaCadastro": "",
                     "NFeDistribuicaoDFe": "https://www1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx"
                 }
