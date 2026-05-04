@@ -6,7 +6,7 @@ import crypto from "crypto";
 import { urlEventos } from "./eventos.js"
 import fs from "fs"
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { createRequire } from "module";
 import pem from 'pem';
 import { cUF2UF, json2xml, xml2json, formatData, UF2cUF } from "./extras.js"
 import { SignedXml } from 'xml-crypto';
@@ -754,14 +754,22 @@ class Tools {
             fs.writeFileSync(xmlFile.name, xml, { encoding: 'utf8' });
 
             //Obter caminho, dos schemas
-            var schemaPath = ""
-            try { //NW.js + ElectronJS
-                schemaPath = path.dirname(require.resolve("node-sped-nfe"));
-                schemaPath = path.resolve(`${path.join(schemaPath, "..", "schemas")}/PL_010b_V1.30/${xsd}.xsd`);
-            } catch (error) { //Caso o require seja desativo
-                const __filename = fileURLToPath(import.meta.url);
-                const __dirname = path.dirname(__filename);
-                schemaPath = path.resolve(__dirname, `../../schemas/PL_010b_V1.30/${xsd}.xsd`);
+            let schemaPath = ""
+            try {
+                const req = createRequire(path.join(process.cwd(), "package.json"));
+                const packageEntryDir = path.dirname(req.resolve("node-sped-nfe"));
+                const packageRoot = path.basename(packageEntryDir) === "cjs"
+                    ? path.resolve(packageEntryDir, "..", "..")
+                    : path.resolve(packageEntryDir, "..");
+
+                schemaPath = path.resolve(packageRoot, `schemas/PL_010b_V1.30/${xsd}.xsd`);
+            } catch (error) {
+                const candidatePaths = [
+                    path.resolve(process.cwd(), `node_modules/node-sped-nfe/schemas/PL_010b_V1.30/${xsd}.xsd`),
+                    path.resolve(process.cwd(), `schemas/PL_010b_V1.30/${xsd}.xsd`)
+                ];
+                const foundPath = candidatePaths.find((item) => fs.existsSync(item));
+                schemaPath = foundPath || candidatePaths[0];
             }
 
             const verif: SpawnSyncReturns<string> = spawnSync(

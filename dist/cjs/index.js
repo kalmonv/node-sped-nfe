@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.cPais2Pais = exports.cMun2Mun = exports.certInfo = exports.docZip = exports.formatData = exports.xml2json = exports.json2xml = exports.UF2cUF = exports.cUF2UF = exports.Make = exports.Tools = void 0;
+const tools_js_1 = require("./utils/tools.js");
+Object.defineProperty(exports, "Tools", { enumerable: true, get: function () { return tools_js_1.Tools; } });
+const make_js_1 = require("./utils/make.js");
+Object.defineProperty(exports, "Make", { enumerable: true, get: function () { return make_js_1.Make; } });
+const extras_js_1 = require("./utils/extras.js");
+Object.defineProperty(exports, "cUF2UF", { enumerable: true, get: function () { return extras_js_1.cUF2UF; } });
+Object.defineProperty(exports, "UF2cUF", { enumerable: true, get: function () { return extras_js_1.UF2cUF; } });
+Object.defineProperty(exports, "json2xml", { enumerable: true, get: function () { return extras_js_1.json2xml; } });
+Object.defineProperty(exports, "xml2json", { enumerable: true, get: function () { return extras_js_1.xml2json; } });
+Object.defineProperty(exports, "formatData", { enumerable: true, get: function () { return extras_js_1.formatData; } });
+Object.defineProperty(exports, "docZip", { enumerable: true, get: function () { return extras_js_1.docZip; } });
+Object.defineProperty(exports, "certInfo", { enumerable: true, get: function () { return extras_js_1.certInfo; } });
+Object.defineProperty(exports, "cMun2Mun", { enumerable: true, get: function () { return extras_js_1.cMun2Mun; } });
+Object.defineProperty(exports, "cPais2Pais", { enumerable: true, get: function () { return extras_js_1.cPais2Pais; } });

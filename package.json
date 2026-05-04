@@ -1,9 +1,9 @@
 {
   "name": "node-sped-nfe",
-  "version": "1.2.51",
+  "version": "1.2.52",
   "author": "Kalmon V. Tavares",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
   "types": "dist/index.d.ts",
   "keywords": [
     "nota fiscal",
@@ -19,13 +19,15 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.js",
+      "require": "./dist/cjs/index.js",
       "types": "./dist/index.d.ts"
     },
     "./schemas/*": "./schemas/*"
   },
   "scripts": {
-    "build": "tsc > saida.txt",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p tsconfig.json > saida.txt",
+    "build:cjs": "tsc -p tsconfig.cjs.json && node -e \"const fs=require('fs');fs.mkdirSync('dist/cjs',{recursive:true});fs.writeFileSync('dist/cjs/package.json','{\\\"type\\\":\\\"commonjs\\\"}\\n');\"",
     "t:status": "node exemplos/status.js",
     "t:nfe": "node exemplos/nfe.js",
     "t:nfce": "node exemplos/nfce.js",
